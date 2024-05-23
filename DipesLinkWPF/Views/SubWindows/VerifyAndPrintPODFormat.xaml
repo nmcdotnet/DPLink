@@ -1,0 +1,174 @@
+﻿<Window
+    x:Class="DipesLink.Views.SubWindows.VerifyAndPrintPODFormat"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
+    xmlns:local="clr-namespace:DipesLink.Views.SubWindows"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="VerifyAndPrintPODFormat"
+    Width="800"
+    Height="400"
+    ResizeMode="NoResize"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/DataGridResDict.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/ButtonResDict.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/ListViewResDict.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="230" />
+            <RowDefinition Height="*" />
+
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="100" />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <StackPanel Margin="10">
+                <TextBlock
+                    Height="20"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Text="List of Fields" />
+                <ListView
+                    x:Name="listBoxPODLeft"
+                    Height="180"
+                    Margin="0,0,0,0"
+                    
+                    GotFocus="ListViewField_GotFocus"
+                    SelectedItem="{Binding SelectedColumnItem1}"
+                    Style="{StaticResource ModernListViewStyle}" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Margin="0,30,0,0">
+                <Button
+                    x:Name="ButtonAdd"
+                    Width="70"
+                    Height="35"
+                    Margin="2"
+                    Click="Operation_Click"
+                    Content="{fa:Icon CaretRight,
+                                      Foreground=White}"
+                    FontSize="20"
+                    Style="{StaticResource ModernButton2}" />
+                <Button
+                    x:Name="ButtonRemove"
+                    Width="70"
+                    Height="35"
+                    Margin="2"
+                    Click="Operation_Click"
+                    Content="{fa:Icon CaretLeft,
+                                      Foreground=White}"
+                    FontSize="20"
+                    Style="{StaticResource ModernButton2}" />
+                <!--<Button
+                    x:Name="ButtonUp"
+                    Width="70"
+                    Height="35"
+                    Margin="2"
+                    Click="Operation_Click"
+                    Content="{fa:Icon CaretUp,
+                                      Foreground=White}"
+                    FontSize="20"
+                    Style="{StaticResource ModernButton2}" />-->
+                <!--<Button
+                    x:Name="ButtonDown"
+                    Width="70"
+                    Height="35"
+                    Margin="2"
+                    Click="Operation_Click"
+                    Content="{fa:Icon CaretDown,
+                                      Foreground=White}"
+                    FontSize="20"
+                    Style="{StaticResource ModernButton2}" />-->
+                <Button
+                    x:Name="ButtonClearAll"
+                    Width="70"
+                    Height="35"
+                    Margin="2"
+                    Click="Operation_Click"
+                    Content="{fa:Icon FileCircleXmark,
+                                      Foreground=White}"
+                    FontSize="20"
+                    Style="{StaticResource ModernButton2}" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="2" Margin="10">
+                <TextBlock
+                    Height="20"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Text="Data send Fields" />
+                <ListView
+                    x:Name="listBoxPODRight"
+                    Height="180"
+                 
+                    GotFocus="ListViewPodCustom_GotFocus"
+                   
+                    LostFocus="ListViewPodCustom_LostFocus"
+                    SelectedIndex="{Binding SelectedHeaderIndex}"
+                    SelectedItem="{Binding SelectedColumnItem2}"
+                    SelectionChanged="ListViewPodCustom_SelectionChanged"
+                    Style="{StaticResource ModernListViewStyle}" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="3" VerticalAlignment="Center">
+                <Button
+                    Width="100"
+                    Height="40"
+                    Margin="0,10,0,0"
+                    Click="SavePODFormat"
+                    Content="Save"
+                    Style="{StaticResource ModernButton2}" />
+                <!--<Button
+                    x:Name="ButtonFormatView"
+                    Width="100"
+                    Height="40"
+                    Margin="0,10,0,0"
+                    Click="ButtonFormatView_Click"
+                    Content="Format View"
+                    Style="{StaticResource ModernButton2}" />-->
+                <!--<Button
+                    Width="100"
+                    Height="40"
+                    Margin="0,10,0,0"
+                    Click="DBView_Click"
+                    Content="Preview DB"
+                    Style="{StaticResource ModernButton2}" />-->
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <StackPanel Grid.Row="2">
+                <TextBlock
+                    Margin="10,0,0,0"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Text="Send Field Format" />
+                <TextBox Margin="10 0 10 0"
+                    x:Name="txtPrintFields"
+                    Height="100"
+                    BorderBrush="#FF688CAF"
+                    BorderThickness="1"
+                    IsEnabled="False" />
+
+            </StackPanel>
+        </Grid>
+
+
+
+    </Grid>
+</Window>

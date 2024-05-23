@@ -1,0 +1,198 @@
+﻿using DipesLink.ViewModels;
+using DipesLink.Views.SubWindows;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+
+namespace DipesLink.Views.UserControls.MainUc
+{
+    /// <summary>
+    /// Interaction logic for JobDetails.xaml
+    /// </summary>
+    public partial class JobCreation : System.Windows.Controls.UserControl
+    {
+        public JobCreation()
+        {
+            InitializeComponent();
+            
+        }
+
+        public void CallbackCommand(Action<MainViewModel> execute)
+        {
+            try
+            {
+                if (DataContext is MainViewModel model)
+                {
+                    execute?.Invoke(model);
+                }
+                else
+                {
+                    return;
+                }
+            }
+            catch (Exception)
+            {
+                return;
+            }
+        }
+        private T? CurrentViewModel<T>() where T : class
+        {
+            if (DataContext is T viewModel)
+            {
+                return viewModel;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        private void ListBoxMenu_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var listBox = sender as System.Windows.Controls.ListBox; 
+            if (listBox != null)
+            {
+                int jobIndex = listBox.SelectedIndex;
+                CallbackCommand(vm => vm.JobCreationSelectionChanged(jobIndex));
+                CallbackCommand(vm => vm.LoadJobList(jobIndex)); // Update Job on UI
+                
+            }
+
+           
+                
+        }
+
+        private int CurrentIndex() => ListBoxMenu.SelectedIndex;
+        private void ButtonSaveJob_Click(object sender, RoutedEventArgs e)
+        {
+                int jobIndex = ListBoxMenu.SelectedIndex;
+                CallbackCommand(vm => vm.SaveJob(jobIndex));
+                CallbackCommand(vm => vm.LoadJobList(jobIndex)); // Update Job on UI
+           
+        }
+
+        private void ButtonBrowseDb_Click(object sender, RoutedEventArgs e)
+        {
+            CallbackCommand(vm => vm.BrowseDatabasePath());
+            RenewData();
+        }
+        private void RenewData()
+        {
+            var vm = CurrentViewModel<MainViewModel>();
+            if (vm == null) return;
+            vm.CreateNewJob.DataCompareFormat = string.Empty; // Emty TextBox POD Format
+            vm.SelectedHeadersList.Clear(); // Remove POD Format custom List
+        }
+
+        private void ButtonChooseCompareFormat_Click(object sender, RoutedEventArgs e)
+        {
+            CompareFormatWindow compareFormatWindow = new()
+            {
+                DataContext = DataContext as MainViewModel
+            };
+            compareFormatWindow.ShowDialog();
+        }
+
+        private void ButtonAutoNamed_Click(object sender, RoutedEventArgs e)
+        {
+            CallbackCommand(vm=>vm.AutoNamedForJob(CurrentIndex()));
+        }
+
+        private void ButtonReloadPrinterTemplate_Click(object sender, RoutedEventArgs e)
+        {
+            int jobIndex = ListBoxMenu.SelectedIndex;
+            CallbackCommand(vm => vm.RefreshTemplatName(jobIndex));
+            
+        }
+
+       
+
+        private void TabControlJobSettings_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //int jobIndex = ListBoxMenu.SelectedIndex;
+            //CallbackCommand(vm => vm.LoadJobList(jobIndex));
+        }
+
+        private void ListViewJobTemplate_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count > 0)// avoid Multi event action for ListView
+            {
+                int jobIndex = ListBoxMenu.SelectedIndex;
+                CallbackCommand(vm => vm.GetDetailJobList(jobIndex));
+            }
+            ListViewSelectedJob.SelectedItem = null; // Lost focus 
+
+
+        }
+
+        private void ListBoxMenu_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (ListViewJobTemplate.Items.Count > 0)
+            {
+
+                object firstItem = ListViewJobTemplate.Items[0];
+                ListViewJobTemplate.SelectedItem = firstItem;
+                ListViewJobTemplate.Focus();
+
+                System.Windows.Controls.ListViewItem? listViewItem = ListViewJobTemplate.ItemContainerGenerator.ContainerFromItem(firstItem) as System.Windows.Controls.ListViewItem;
+                listViewItem?.Focus();
+            }
+        }
+        private async Task PerformLoadDbAfterDelay(MainViewModel vm)
+        {
+            await Task.Delay(1000); // waiting for 3s connection completed
+            vm.JobList[CurrentIndex()].RaiseLoadDb(CurrentIndex());
+        }
+        private void Button_AddJobClick(object sender, RoutedEventArgs e)
+        {
+            var vm = CurrentViewModel<MainViewModel>();
+            if (vm is null) return;
+           
+            vm.JobList[CurrentIndex()].IsDBExist = false;    // Reset flag for load db
+            
+            vm.AddSelectedJob(CurrentIndex());
+            vm.LoadJobList(CurrentIndex()); // Update Job on UI
+          //  CallbackCommand(vm => vm.RestartDeviceTransfer(jobIndex)); // Update Job on UI
+            vm.UpdateJobInfo(CurrentIndex());
+            //Task.Run(async () => { await PerformLoadDbAfterDelay(vm); });
+            PerformLoadDbAfterDelay(vm);
+        }
+
+        private void ButtonChooseImagePath_Click(object sender, RoutedEventArgs e)
+        {
+            CallbackCommand(vm => vm.SelectImageExportPath());
+        }
+
+        private void Button_SaveAllClick(object sender, RoutedEventArgs e)
+        {
+            CallbackCommand(vm => vm.SaveAllJob());
+        }
+
+        private void ListViewSelectedJob_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count > 0)
+            {
+                int jobIndex = ListBoxMenu.SelectedIndex;
+                CallbackCommand(vm => vm.GetDetailJobList(jobIndex,true));
+            }
+            ListViewJobTemplate.SelectedItem = null; // Lost focus
+        }
+
+        private void TextBoxSearch_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            CallbackCommand(vm => vm.SearchText = ((System.Windows.Controls.TextBox)sender).Text);
+        }
+
+        private void ButtonDelJob_Click(object sender, RoutedEventArgs e)
+        {
+            
+            int jobIndex = ListBoxMenu.SelectedIndex;
+            CurrentViewModel<MainViewModel>()?.DeleteJobAction(jobIndex);
+            CallbackCommand(vm => vm.LoadJobList(jobIndex)); // Update Job on UI
+        }
+
+        private void RadioButtonRynanSeries_Checked(object sender, RoutedEventArgs e)
+        {
+
+        }
+    }
+}

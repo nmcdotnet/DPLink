@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\IPCSharedMemory\IPCSharedMemory.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Cognex.DataMan.CogNamer.PC">
+      <HintPath>..\..\DipesLinkWPF\Libraries\Cameras\Cognex\Dataman\Cognex.DataMan.CogNamer.PC.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.DataMan.SDK.Discovery.PC">
+      <HintPath>..\..\DipesLinkWPF\Libraries\Cameras\Cognex\Dataman\Cognex.DataMan.SDK.Discovery.PC.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.DataMan.SDK.PC">
+      <HintPath>..\..\DipesLinkWPF\Libraries\Cameras\Cognex\Dataman\Cognex.DataMan.SDK.PC.dll</HintPath>
+    </Reference>
+    <Reference Include="Cognex.DataMan.SDK.Utils.PC">
+      <HintPath>..\..\DipesLinkWPF\Libraries\Cameras\Cognex\Dataman\Cognex.DataMan.SDK.Utils.PC.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

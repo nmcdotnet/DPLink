@@ -1,0 +1,101 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Images\Duplicated_res.png" />
+    <None Remove="Images\Error_Event.png" />
+    <None Remove="Images\Image_Not_Found.jpg" />
+    <None Remove="Images\Info_Event.png" />
+    <None Remove="Images\Invalid_res.png" />
+    <None Remove="Images\IsLoading.gif" />
+    <None Remove="Images\loading.gif" />
+    <None Remove="Images\Missed_res.png" />
+    <None Remove="Images\Null_res.png" />
+    <None Remove="Images\printed.png" />
+    <None Remove="Images\Valid_res.png" />
+    <None Remove="Images\waiting.png" />
+    <None Remove="Images\Warning_Event.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="4.6.0" />
+    <PackageReference Include="FontAwesome.Sharp" Version="6.3.0" />
+    <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-rc2" />
+    <PackageReference Include="log4net" Version="2.0.17" />
+    <PackageReference Include="MahApps.Metro" Version="2.4.10" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2478.35" />
+    <PackageReference Include="SQLitePCLRaw.bundle_sqlcipher" Version="1.1.14" />
+    <PackageReference Include="TAlex.WPF.Controls" Version="3.0.3" />
+    <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Libraries\Cameras\Cognex\Dataman\" />
+    <Folder Include="Libraries\NugetPackages\" />
+    <Folder Include="Libraries\NugetPackages\" />
+    <Folder Include="Views\UserControls\SubUc\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ClassLibrary1\RelationalDatabaseHelper.csproj" />
+    <ProjectReference Include="..\DipesLinkDeviceTransfer\DipesLinkDeviceTransfer.csproj" />
+    <ProjectReference Include="..\DipesLink_SDK\DipesLink_SDK.Cameras\DipesLink_SDK_Cameras.csproj" />
+    <ProjectReference Include="..\IPCSharedMemory\IPCSharedMemory.csproj" />
+    <ProjectReference Include="..\UILanguage\UILanguage.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Cognex.DataMan.SDK.PC">
+      <HintPath>Libraries\Cameras\Cognex\Dataman\Cognex.DataMan.SDK.PC.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\Duplicated_res.png" />
+    <Resource Include="Images\Error_Event.png" />
+    <Resource Include="Images\Image_Not_Found.jpg" />
+    <Resource Include="Images\Info_Event.png" />
+    <Resource Include="Images\Invalid_res.png" />
+    <Resource Include="Images\IsLoading.gif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\loading.gif" />
+      <!--<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>-->
+    <Resource Include="Images\Missed_res.png" />
+    <Resource Include="Images\Null_res.png" />
+    <Resource Include="Images\printed.png" />
+    <Resource Include="Images\Valid_res.png" />
+    <Resource Include="Images\waiting.png" />
+    <Resource Include="Images\Warning_Event.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="log4net.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+</Project>

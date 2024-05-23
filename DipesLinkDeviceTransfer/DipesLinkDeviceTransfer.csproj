@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DipesLink_SDK\DipesLink_SDK.Cameras\DipesLink_SDK_Cameras.csproj" />
+    <ProjectReference Include="..\DipesLink_SDK\DipesLink_SDK_Printers\DipesLink_SDK_Printers.csproj" />
+    <ProjectReference Include="..\DipesLink_SDK_PLC\DipesLink_SDK_PLC.csproj" />
+    <ProjectReference Include="..\IPCSharedMemory\IPCSharedMemory.csproj" />
+    <ProjectReference Include="..\UILanguage\UILanguage.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
+</Project>

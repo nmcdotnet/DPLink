@@ -1,0 +1,1232 @@
+﻿<UserControl
+    x:Class="DipesLink.Views.UserControls.MainUc.JobCreation"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converter="clr-namespace:DipesLink.Views.Converter"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
+    xmlns:local="clr-namespace:DipesLink.Views.UserControls.MainUc"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    d:Background="White"
+    d:DesignHeight="640"
+    d:DesignWidth="1165"
+    FontSize="14"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/TextBoxResDict.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/ButtonResDict.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/ListViewResDict.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <!--  Converter  -->
+            <converter:PrinterSeriesToBool x:Key="PrinterToBool" />
+            <converter:JobTypeToBool x:Key="JobtypeToBool" />
+            <converter:CompareTypeToBool x:Key="CompareTypeToBool" />
+            <converter:CompleteConditionToBool x:Key="CompleteCondToBool" />
+            <converter:RadioButtonToBool x:Key="CoupRadToBol" />
+
+            <!--  Common Var  -->
+            <SolidColorBrush x:Key="ColorMenuItem">White</SolidColorBrush>
+            <Thickness x:Key="CommonMenuMargin">20 0 0 0</Thickness>
+            <system:Double x:Key="MenuItemHeight">40</system:Double>
+            <system:Double x:Key="MenuIconSize">24</system:Double>
+            <system:Double x:Key="MenuItemSize">150</system:Double>
+            <system:Double x:Key="LabelWidth">110</system:Double>
+
+            <!--#region Radio Button Style-->
+            <Style x:Key="FocusVisual">
+                <Setter Property="Control.Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <Rectangle
+                                Margin="2"
+                                SnapsToDevicePixels="true"
+                                Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                                StrokeDashArray="1 2"
+                                StrokeThickness="1" />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="OptionMarkFocusVisual">
+                <Setter Property="Control.Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <Rectangle
+                                Margin="14,0,0,0"
+                                SnapsToDevicePixels="true"
+                                Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                                StrokeDashArray="1 2"
+                                StrokeThickness="1" />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <SolidColorBrush x:Key="RadioButton.Static.Background" Color="#FFFFFFFF" />
+            <SolidColorBrush x:Key="RadioButton.Static.Border" Color="#FF707070" />
+            <SolidColorBrush x:Key="RadioButton.Static.Glyph" Color="#00ABE6" />
+            <SolidColorBrush x:Key="RadioButton.MouseOver.Background" Color="#FFF3F9FF" />
+            <SolidColorBrush x:Key="RadioButton.MouseOver.Border" Color="#FF5593FF" />
+            <SolidColorBrush x:Key="RadioButton.MouseOver.Glyph" Color="#FF212121" />
+            <SolidColorBrush x:Key="RadioButton.Pressed.Background" Color="#FFD9ECFF" />
+            <SolidColorBrush x:Key="RadioButton.Pressed.Border" Color="#FF3C77DD" />
+            <SolidColorBrush x:Key="RadioButton.Pressed.Glyph" Color="#00ABE6" />
+            <SolidColorBrush x:Key="RadioButton.Disabled.Background" Color="#FFE6E6E6" />
+            <SolidColorBrush x:Key="RadioButton.Disabled.Border" Color="#FFBCBCBC" />
+            <SolidColorBrush x:Key="RadioButton.Disabled.Glyph" Color="#FF707070" />
+            <Style x:Key="RadioButtonStyle1" TargetType="{x:Type RadioButton}">
+                <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}" />
+                <Setter Property="Background" Value="{StaticResource RadioButton.Static.Background}" />
+                <Setter Property="BorderBrush" Value="{StaticResource RadioButton.Static.Border}" />
+                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type RadioButton}">
+                            <Grid
+                                x:Name="templateRoot"
+                                Background="Transparent"
+                                SnapsToDevicePixels="True">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Border
+                                    x:Name="radioButtonBorder"
+                                    Margin="1,1,2,1"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="100">
+                                    <Grid x:Name="markGrid" Margin="2">
+                                        <Ellipse
+                                            x:Name="optionMark"
+                                            MinWidth="10"
+                                            MinHeight="10"
+                                            Fill="{StaticResource RadioButton.Static.Glyph}"
+                                            Opacity="0" />
+                                    </Grid>
+                                </Border>
+                                <ContentPresenter
+                                    x:Name="contentPresenter"
+                                    Grid.Column="1"
+                                    Margin="{TemplateBinding Padding}"
+                                    HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                    VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                    Focusable="False"
+                                    RecognizesAccessKey="True"
+                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="HasContent" Value="true">
+                                    <Setter Property="FocusVisualStyle" Value="{StaticResource OptionMarkFocusVisual}" />
+                                    <Setter Property="Padding" Value="4,-1,0,0" />
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="true">
+                                    <Setter TargetName="radioButtonBorder" Property="Background" Value="{StaticResource RadioButton.MouseOver.Background}" />
+                                    <Setter TargetName="radioButtonBorder" Property="BorderBrush" Value="{StaticResource RadioButton.MouseOver.Border}" />
+                                    <Setter TargetName="optionMark" Property="Fill" Value="#00ABE6" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="false">
+                                    <Setter TargetName="radioButtonBorder" Property="Background" Value="{StaticResource RadioButton.Disabled.Background}" />
+                                    <Setter TargetName="radioButtonBorder" Property="BorderBrush" Value="{StaticResource RadioButton.Disabled.Border}" />
+                                    <Setter TargetName="optionMark" Property="Fill" Value="{StaticResource RadioButton.Disabled.Glyph}" />
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="true">
+                                    <Setter TargetName="radioButtonBorder" Property="Background" Value="{StaticResource RadioButton.Pressed.Background}" />
+                                    <Setter TargetName="radioButtonBorder" Property="BorderBrush" Value="{StaticResource RadioButton.Pressed.Border}" />
+                                    <Setter TargetName="optionMark" Property="Fill" Value="{StaticResource RadioButton.Pressed.Glyph}" />
+                                </Trigger>
+                                <Trigger Property="IsChecked" Value="true">
+                                    <Setter TargetName="optionMark" Property="Opacity" Value="1" />
+                                </Trigger>
+                                <Trigger Property="IsChecked" Value="{x:Null}">
+                                    <Setter TargetName="optionMark" Property="Opacity" Value="0.56" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <!--#endregion Radio Button Style-->
+
+
+            <!--  TabControl Style  -->
+            <!--  Định nghĩa Style cho TabControl  -->
+            <Style TargetType="TabControl">
+                <Setter Property="Padding" Value="5" />
+                <Setter Property="Background" Value="WhiteSmoke" />
+            </Style>
+
+            <!--  Định nghĩa Style cho TabItem  -->
+            <Style TargetType="TabItem">
+                <Setter Property="Foreground" Value="Gray" />
+                <Setter Property="FontFamily" Value="Segoe UI" />
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="Padding" Value="10,4" />
+                <Setter Property="Margin" Value="2" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TabItem">
+                            <Border
+                                x:Name="TabBorder"
+                                Height="30"
+                                Padding="0,0,0,3"
+                                Background="Transparent"
+                                BorderBrush="#00ABE6"
+                                BorderThickness="1,1,1,0"
+                                CornerRadius="5,5,0,0">
+                                <ContentPresenter
+                                    x:Name="ContentSite"
+                                    Margin="12,2,12,2"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    ContentSource="Header" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter TargetName="TabBorder" Property="Background" Value="#9EDFF6" />
+                                    <Setter Property="Foreground" Value="Black" />
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="False">
+                                    <Setter TargetName="TabBorder" Property="Background" Value="LightGray" />
+                                    <Setter Property="Foreground" Value="Black" />
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="TabBorder" Property="Background" Value="#9EDFF6" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="FontWeight" Value="SemiBold" />
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Foreground" Value="Black" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="180" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <!--  Menu  -->
+        <Border
+            Margin="5,5,0,0"
+            Background="#F2F2F2"
+            BorderBrush="LightGray"
+            BorderThickness="1,1,1,0"
+            CornerRadius="5 5 0 0">
+            <ListBox
+                x:Name="ListBoxMenu"
+                Margin="2"
+                VerticalAlignment="Top"
+                BorderBrush="Transparent"
+                ItemContainerStyle="{DynamicResource ListBoxItemContainerStyle1}"
+                ItemsSource="{Binding JobList}"
+                SelectedIndex="0"
+                SelectionChanged="ListBoxMenu_SelectionChanged">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Width="{StaticResource MenuItemSize}"
+                            Height="{StaticResource MenuItemHeight}"
+                            BorderBrush="Transparent"
+                            BorderThickness="0,0,0,0.6">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="30" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Viewbox
+                                    Width="{StaticResource MenuIconSize}"
+                                    Height="{StaticResource MenuIconSize}"
+                                    Margin="5,0,0,0"
+                                    HorizontalAlignment="Left">
+                                    <fa:IconImage Foreground="Gray" Icon="FileCircleCheck" />
+                                </Viewbox>
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Margin="10,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    FontSize="16"
+                                    Foreground="Black"
+                                    Text="{Binding JobTitleName}" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.Resources>
+                    <Style x:Key="FocusVisual">
+                        <Setter Property="Control.Template">
+                            <Setter.Value>
+                                <ControlTemplate>
+                                    <Rectangle
+                                        Margin="2"
+                                        SnapsToDevicePixels="true"
+                                        Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
+                                        StrokeDashArray="1 2"
+                                        StrokeThickness="1" />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                    <SolidColorBrush x:Key="Item.MouseOver.Background" Color="#1F26A0DA" />
+                    <SolidColorBrush x:Key="Item.MouseOver.Border" Color="#a826A0Da" />
+                    <SolidColorBrush x:Key="Item.SelectedActive.Background" Color="#9EDFF6" />
+                    <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="#9EDFF6" />
+                    <SolidColorBrush x:Key="Item.SelectedInactive.Background" Color="#9EDFF6" />
+                    <SolidColorBrush x:Key="Item.SelectedInactive.Border" Color="#9EDFF6" />
+                    <Style x:Key="ListBoxItemContainerStyle1" TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="SnapsToDevicePixels" Value="True" />
+                        <Setter Property="Padding" Value="4,1" />
+                        <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
+                        <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="BorderBrush" Value="Transparent" />
+                        <Setter Property="BorderThickness" Value="1" />
+                        <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                    <Border
+                                        x:Name="Bd"
+                                        Padding="{TemplateBinding Padding}"
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        SnapsToDevicePixels="true">
+                                        <ContentPresenter
+                                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="IsMouseOver" Value="True" />
+                                            </MultiTrigger.Conditions>
+                                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource Item.MouseOver.Background}" />
+                                            <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource Item.MouseOver.Border}" />
+                                        </MultiTrigger>
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="Selector.IsSelectionActive" Value="False" />
+                                                <Condition Property="IsSelected" Value="True" />
+                                            </MultiTrigger.Conditions>
+                                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource Item.SelectedInactive.Background}" />
+                                            <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource Item.SelectedInactive.Border}" />
+                                        </MultiTrigger>
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="Selector.IsSelectionActive" Value="True" />
+                                                <Condition Property="IsSelected" Value="True" />
+                                            </MultiTrigger.Conditions>
+                                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource Item.SelectedActive.Background}" />
+                                            <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource Item.SelectedActive.Border}" />
+                                        </MultiTrigger>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter TargetName="Bd" Property="TextElement.Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListBox.Resources>
+            </ListBox>
+        </Border>
+
+
+        <Border Grid.Column="1">
+            <Grid>
+                <TabControl x:Name="TabControlJobSettings" SelectionChanged="TabControlJobSettings_SelectionChanged">
+
+                    <!--  SELECT JOB  -->
+
+                    <TabItem
+                        x:Name="TabItemSelectJob"
+                        DataContext="{Binding SelectJob}"
+                        Header="Select Job">
+                        <Grid Margin="10,10,0,0" Background="WhiteSmoke">
+                            <Grid.Resources>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontSize" Value="16" />
+                                </Style>
+                                <Style TargetType="TextBox">
+                                    <Setter Property="FontSize" Value="16" />
+                                </Style>
+                            </Grid.Resources>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+
+                            <Grid Width="800" HorizontalAlignment="Left">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="320" />
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <Grid.Resources>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="FontWeight" Value="Normal" />
+                                    </Style>
+                                </Grid.Resources>
+
+                                <GroupBox Margin="2">
+                                    <GroupBox.Header>
+                                        <TextBlock
+                                            FontSize="16"
+                                            FontWeight="Bold"
+                                            Text="Job Selection" />
+                                    </GroupBox.Header>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="4*" />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition Width="4*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel>
+                                            <TextBlock
+                                                Margin="10,0,0,0"
+                                                FontSize="16"
+                                                Text="List Job" />
+                                            <ListView
+                                                x:Name="ListViewJobTemplate"
+                                                Height="200"
+                                                Margin="10"
+                                                FontWeight="Normal"
+                                                ItemsSource="{Binding JobFileList}"
+                                                SelectedItem="{Binding SelectedJob}"
+                                                SelectionChanged="ListViewJobTemplate_SelectionChanged"
+                                                Style="{StaticResource ModernListViewStyle}" />
+                                            <Button
+                                                x:Name="ButtonDelJob"
+                                                Width="60"
+                                                Height="30"
+                                                Click="ButtonDelJob_Click"
+                                                Content="DELETE"
+                                                Style="{StaticResource ModernButtonDel}" />
+                                        </StackPanel>
+
+
+                                        <StackPanel Grid.Column="1" Margin="0,50,0,0">
+                                            <Button
+                                                Width="70"
+                                                Height="30"
+                                                Click="Button_AddJobClick"
+                                                Content="ADD"
+                                                Style="{StaticResource ModernButton2}" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2">
+                                            <TextBlock
+                                                Margin="10,0,0,0"
+                                                FontSize="16"
+                                                Text="Selected" />
+                                            <ListView
+                                                x:Name="ListViewSelectedJob"
+                                                Height="200"
+                                                Margin="10"
+                                                ItemsSource="{Binding SelectedJobFileList}"
+                                                SelectedItem="{Binding SelectedWorkJob}"
+                                                SelectionChanged="ListViewSelectedJob_SelectionChanged"
+                                                Style="{StaticResource ModernListViewStyle}" />
+                                        </StackPanel>
+
+                                    </Grid>
+                                </GroupBox>
+
+                                <Grid Grid.Row="1">
+                                    <GroupBox
+                                        Height="280"
+                                        Margin="2"
+                                        VerticalAlignment="Top"
+                                        FontSize="16"
+                                        FontWeight="Bold"
+                                        Header="Job Info">
+                                        <StackPanel>
+                                            <!--<TextBlock Text="Job Info" />-->
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="35" />
+                                                    <RowDefinition Height="35" />
+                                                    <RowDefinition Height="35" />
+                                                    <RowDefinition Height="35" />
+                                                    <RowDefinition Height="35" />
+                                                    <RowDefinition Height="35" />
+                                                    <RowDefinition Height="35" />
+                                                    <RowDefinition Height="*" />
+                                                </Grid.RowDefinitions>
+                                                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                                    <TextBlock
+                                                        Width="150"
+                                                        VerticalAlignment="Center"
+                                                        Text="Job name" />
+                                                    <TextBox
+                                                        Width="200"
+                                                        Height="30"
+                                                        Margin="10,0,0,0"
+                                                        FontSize="16"
+                                                        FontWeight="Normal"
+                                                        IsReadOnly="True"
+                                                        Style="{StaticResource TextBoxStyle1}"
+                                                        Text="{Binding Name}" />
+                                                    <TextBlock
+                                                        Width="150"
+                                                        Margin="30,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Text="Complete Type" />
+                                                    <TextBox
+                                                        Width="200"
+                                                        Height="30"
+                                                        Margin="10,0,0,0"
+                                                        FontSize="16"
+                                                        FontWeight="Normal"
+                                                        IsReadOnly="True"
+                                                        Style="{StaticResource TextBoxStyle1}"
+                                                        Text="{Binding CompleteCondition}" />
+                                                </StackPanel>
+
+                                                <StackPanel
+                                                    Grid.Row="1"
+                                                    VerticalAlignment="Center"
+                                                    Orientation="Horizontal">
+                                                    <TextBlock
+                                                        Width="150"
+                                                        VerticalAlignment="Center"
+                                                        Text="Printer Series" />
+                                                    <TextBox
+                                                        Width="200"
+                                                        Height="30"
+                                                        Margin="10,0,0,0"
+                                                        FontSize="16"
+                                                        FontWeight="Normal"
+                                                        IsReadOnly="True"
+                                                        Style="{StaticResource TextBoxStyle1}"
+                                                        Text="{Binding PrinterSeries}" />
+                                                    <TextBlock
+                                                        Width="150"
+                                                        Margin="30,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Text="Output Camera" />
+                                                    <TextBox
+                                                        Width="200"
+                                                        Height="30"
+                                                        Margin="10,0,0,0"
+                                                        FontSize="16"
+                                                        FontWeight="Normal"
+                                                        IsReadOnly="True"
+                                                        Style="{StaticResource TextBoxStyle1}"
+                                                        Text="{Binding OutputCamera}" />
+                                                </StackPanel>
+
+                                                <StackPanel
+                                                    Grid.Row="2"
+                                                    VerticalAlignment="Center"
+                                                    Orientation="Horizontal">
+                                                    <TextBlock
+                                                        Width="150"
+                                                        VerticalAlignment="Center"
+                                                        Text="Job Type" />
+                                                    <TextBox
+                                                        Width="200"
+                                                        Height="30"
+                                                        Margin="10,0,0,0"
+                                                        FontSize="16"
+                                                        FontWeight="Normal"
+                                                        IsReadOnly="True"
+                                                        Style="{StaticResource TextBoxStyle1}"
+                                                        Text="{Binding JobType}" />
+                                                    <TextBlock
+                                                        Width="150"
+                                                        Margin="30,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Text="Image Export" />
+                                                    <TextBox
+                                                        Width="200"
+                                                        Height="30"
+                                                        Margin="10,0,0,0"
+                                                        FontSize="16"
+                                                        FontWeight="Normal"
+                                                        IsReadOnly="True"
+                                                        Style="{StaticResource TextBoxStyle1}"
+                                                        Text="{Binding IsImageExport}" />
+                                                </StackPanel>
+
+                                                <StackPanel
+                                                    Grid.Row="3"
+                                                    VerticalAlignment="Center"
+                                                    Orientation="Horizontal">
+                                                    <TextBlock
+                                                        Width="150"
+                                                        VerticalAlignment="Center"
+                                                        Text="Comapre Type" />
+                                                    <TextBox
+                                                        Width="200"
+                                                        Height="30"
+                                                        Margin="10,0,0,0"
+                                                        FontSize="16"
+                                                        FontWeight="Normal"
+                                                        IsReadOnly="True"
+                                                        Style="{StaticResource TextBoxStyle1}"
+                                                        Text="{Binding CompareType}" />
+                                                    <TextBlock
+                                                        Width="150"
+                                                        Margin="30,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Text="Image Export Path" />
+                                                    <TextBox
+                                                        Width="200"
+                                                        Height="30"
+                                                        Margin="10,0,0,0"
+                                                        FontSize="16"
+                                                        FontWeight="Normal"
+                                                        IsReadOnly="True"
+                                                        Style="{StaticResource TextBoxStyle1}"
+                                                        Text="{Binding ImageExportPath}" />
+                                                </StackPanel>
+
+
+                                                <StackPanel
+                                                    Grid.Row="4"
+                                                    VerticalAlignment="Center"
+                                                    Orientation="Horizontal">
+                                                    <TextBlock
+                                                        Width="150"
+                                                        VerticalAlignment="Center"
+                                                        Text="DB Path" />
+                                                    <TextBox
+                                                        Width="200"
+                                                        Height="30"
+                                                        Margin="10,0,0,0"
+                                                        FontSize="16"
+                                                        FontWeight="Normal"
+                                                        IsReadOnly="True"
+                                                        Style="{StaticResource TextBoxStyle1}"
+                                                        Text="{Binding DatabasePath}" />
+                                                    <TextBlock
+                                                        Width="150"
+                                                        Margin="30,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Text="Total Record DB" />
+                                                    <TextBox
+                                                        Width="200"
+                                                        Height="30"
+                                                        Margin="10,0,0,0"
+                                                        FontSize="16"
+                                                        FontWeight="Normal"
+                                                        IsReadOnly="True"
+                                                        Style="{StaticResource TextBoxStyle1}"
+                                                        Text="{Binding TotalRecDb}" />
+                                                </StackPanel>
+
+                                                <StackPanel
+                                                    Grid.Row="5"
+                                                    VerticalAlignment="Center"
+                                                    Orientation="Horizontal">
+                                                    <TextBlock
+                                                        Width="150"
+                                                        VerticalAlignment="Center"
+                                                        Text="Compare fomat" />
+                                                    <TextBox
+                                                        Width="200"
+                                                        Height="30"
+                                                        Margin="10,0,0,0"
+                                                        FontSize="16"
+                                                        FontWeight="Normal"
+                                                        IsReadOnly="True"
+                                                        Style="{StaticResource TextBoxStyle1}"
+                                                        Text="{Binding DataCompareFormat}" />
+
+                                                </StackPanel>
+
+                                                <StackPanel
+                                                    Grid.Row="6"
+                                                    VerticalAlignment="Center"
+                                                    Orientation="Horizontal">
+                                                    <TextBlock
+                                                        Width="150"
+                                                        VerticalAlignment="Center"
+                                                        Text="Printer Template" />
+                                                    <TextBox
+                                                        Width="200"
+                                                        Height="30"
+                                                        Margin="10,0,0,0"
+                                                        FontSize="16"
+                                                        FontWeight="Normal"
+                                                        IsReadOnly="True"
+                                                        Style="{StaticResource TextBoxStyle1}"
+                                                        Text="{Binding PrinterTemplate}" />
+
+                                                </StackPanel>
+                                            </Grid>
+                                        </StackPanel>
+                                    </GroupBox>
+                                </Grid>
+
+                            </Grid>
+
+
+
+                        </Grid>
+                    </TabItem>
+
+                    <!--  CREATE NEW JOB  -->
+
+                    <TabItem DataContext="{Binding CreateNewJob}" Header="Create New Job">
+                        <Grid Margin="10,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="490" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Grid.Resources>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontWeight" Value="Normal" />
+                                    <Setter Property="FontSize" Value="16" />
+                                </Style>
+                                <Style TargetType="GroupBox">
+                                    <Setter Property="FontWeight" Value="Normal" />
+                                    <Setter Property="FontSize" Value="16" />
+
+                                </Style>
+                            </Grid.Resources>
+                            <Grid Margin="5">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="60" />
+                                    <RowDefinition Height="50" />
+                                    <RowDefinition Height="50" />
+                                    <RowDefinition Height="50" />
+                                    <RowDefinition Height="50" />
+                                    <RowDefinition Height="110" />
+                                    <RowDefinition Height="200" />
+                                </Grid.RowDefinitions>
+
+                                <StackPanel
+                                    Margin="0,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="{StaticResource LabelWidth}"
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Text="Job Name" />
+                                    <TextBox
+                                        Width="260"
+                                        Height="30"
+                                        Margin="10,0,0,0"
+                                        FontWeight="Normal"
+                                        Style="{StaticResource TextBoxStyle1}"
+                                        Text="{Binding Name}" />
+                                    <Button
+                                        x:Name="ButtonAutoNamed"
+                                        Width="60"
+                                        Height="30"
+                                        Margin="5,0,0,0"
+                                        Click="ButtonAutoNamed_Click"
+                                        Content="{fa:Icon Pencil,
+                                                          Foreground=White}"
+                                        FontSize="20"
+                                        Style="{StaticResource ModernButton2}" />
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Row="1"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                                    <GroupBox Width="470" Height="50">
+                                        <GroupBox.Header>
+                                            <TextBlock FontWeight="Bold" Text="Printer Series" />
+                                        </GroupBox.Header>
+                                        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                            <RadioButton
+                                                x:Name="RadioButtonRynanSeries"
+                                                Width="150"
+                                                Content="Rynan Series"
+                                                GroupName="PrinterSeriesGr"
+                                                IsChecked="{Binding PrinterSeries, Converter={StaticResource PrinterToBool}, ConverterParameter=0}"
+                                                Style="{DynamicResource RadioButtonStyle1}" />
+                                            <RadioButton
+                                                x:Name="RadioButtonStandalone"
+                                                Width="150"
+                                                Margin="10,0,0,0"
+                                                Content="Standalone"
+                                                GroupName="PrinterSeriesGr"
+                                                IsChecked="{Binding PrinterSeries, Converter={StaticResource PrinterToBool}, ConverterParameter=1}"
+                                                Style="{DynamicResource RadioButtonStyle1}" />
+                                        </StackPanel>
+                                    </GroupBox>
+
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Row="2"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+
+                                    <!--  Job Type  -->
+                                    <GroupBox Width="470" Height="50">
+                                        <GroupBox.Header>
+                                            <TextBlock FontWeight="Bold" Text="Job Type" />
+                                        </GroupBox.Header>
+                                        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                            <RadioButton
+                                                Width="150"
+                                                Content="After Production"
+                                                GroupName="JobTypeGr"
+                                                IsChecked="{Binding JobType, Converter={StaticResource JobtypeToBool}, ConverterParameter=AfterProduction}"
+                                                Style="{DynamicResource RadioButtonStyle1}" />
+                                            <RadioButton
+                                                Width="150"
+                                                Margin="10,0,0,0"
+                                                Content="On Production"
+                                                GroupName="JobTypeGr"
+                                                IsChecked="{Binding JobType, Converter={StaticResource JobtypeToBool}, ConverterParameter=OnProduction}"
+                                                Style="{DynamicResource RadioButtonStyle1}" />
+                                            <RadioButton
+                                                Width="150"
+                                                Margin="10,0,0,0"
+                                                Content="Verify And Print"
+                                                GroupName="JobTypeGr"
+                                                IsChecked="{Binding JobType, Converter={StaticResource JobtypeToBool}, ConverterParameter=VerifyAndPrint}"
+                                                Style="{DynamicResource RadioButtonStyle1}" />
+                                        </StackPanel>
+                                    </GroupBox>
+
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Row="3"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                                    <GroupBox Width="470" Height="50">
+                                        <GroupBox.Header>
+                                            <TextBlock FontWeight="Bold">Compare Type</TextBlock>
+                                        </GroupBox.Header>
+                                        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                            <RadioButton
+                                                x:Name="RadioButtonCanRead"
+                                                Width="150"
+                                                Content="Can Read"
+                                                GroupName="CmpTypeGr"
+                                                IsChecked="{Binding CompareType, Converter={StaticResource CompareTypeToBool}, ConverterParameter=CanRead}"
+                                                Style="{DynamicResource RadioButtonStyle1}" />
+                                            <RadioButton
+                                                x:Name="RadioButtonStaticText"
+                                                Width="150"
+                                                Margin="10,0,0,0"
+                                                Content="Static Text"
+                                                GroupName="CmpTypeGr"
+                                                IsChecked="{Binding CompareType, Converter={StaticResource CompareTypeToBool}, ConverterParameter=StaticText}"
+                                                Style="{DynamicResource RadioButtonStyle1}" />
+                                            <RadioButton
+                                                Width="150"
+                                                Margin="10,0,0,0"
+                                                Content="Database"
+                                                GroupName="CmpTypeGr"
+                                                IsChecked="{Binding CompareType, Converter={StaticResource CompareTypeToBool}, ConverterParameter=Database}"
+                                                Style="{DynamicResource RadioButtonStyle1}" />
+                                        </StackPanel>
+                                    </GroupBox>
+                                </StackPanel>
+                                <StackPanel
+                                    Grid.Row="5"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                                    <GroupBox Width="470" Height="110">
+                                        <GroupBox.Header>
+                                            <TextBlock FontWeight="Bold">Database Type</TextBlock>
+                                        </GroupBox.Header>
+                                        <StackPanel>
+                                            <StackPanel
+                                                Margin="0,10,0,0"
+                                                VerticalAlignment="Center"
+                                                Orientation="Horizontal">
+                                                <TextBlock
+                                                    Width="110"
+                                                    VerticalAlignment="Center"
+                                                    Text="Database Path" />
+                                                <TextBox
+                                                    Width="260"
+                                                    Height="30"
+                                                    Margin="10,0,0,0"
+                                                    IsReadOnly="True"
+                                                    Style="{StaticResource TextBoxStyle1}"
+                                                    Text="{Binding DatabasePath}" />
+                                                <Button
+                                                    x:Name="ButtonBrowseDb"
+                                                    Width="60"
+                                                    Height="30"
+                                                    Margin="5,0,0,0"
+                                                    Click="ButtonBrowseDb_Click"
+                                                    Content="{fa:Icon Folder,
+                                                                      Foreground=White}"
+                                                    FontSize="20"
+                                                    Style="{StaticResource ModernButton2}" />
+                                            </StackPanel>
+
+                                            <StackPanel
+                                                Margin="0,10,0,0"
+                                                VerticalAlignment="Center"
+                                                Orientation="Horizontal">
+                                                <TextBlock
+                                                    Width="110"
+                                                    VerticalAlignment="Center"
+                                                    Text="POD Format" />
+                                                <TextBox
+                                                    Width="260"
+                                                    Height="30"
+                                                    Margin="10,0,0,0"
+                                                    Style="{StaticResource TextBoxStyle1}"
+                                                    Text="{Binding DataCompareFormat}" />
+                                                <Button
+                                                    x:Name="ButtonChooseCompareFormat"
+                                                    Width="60"
+                                                    Height="30"
+                                                    Margin="5,0,0,0"
+                                                    Click="ButtonChooseCompareFormat_Click"
+                                                    Content="{fa:Icon Table,
+                                                                      Foreground=White}"
+                                                    FontSize="20"
+                                                    Style="{StaticResource ModernButton2}" />
+                                            </StackPanel>
+                                        </StackPanel>
+
+                                    </GroupBox>
+                                </StackPanel>
+
+                                <StackPanel
+                                    Grid.Row="4"
+                                    Margin="6,0,0,0"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="{StaticResource LabelWidth}"
+                                        VerticalAlignment="Center"
+                                        Text="Static Text" />
+                                    <TextBox
+                                        Width="260"
+                                        Height="30"
+                                        Margin="10,0,0,0"
+                                        IsEnabled="{Binding ElementName=RadioButtonStaticText, Path=IsChecked}"
+                                        Style="{StaticResource TextBoxStyle1}"
+                                        Text="{Binding StaticText}" />
+                                </StackPanel>
+
+                                <GroupBox
+                                    Grid.Row="6"
+                                    Width="470"
+                                    Height="200"
+                                    HorizontalAlignment="Left">
+                                    <GroupBox.Header>
+                                        <TextBlock FontWeight="Bold" Text="Printer Template" />
+                                    </GroupBox.Header>
+                                    <StackPanel>
+                                        <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                            <TextBlock
+                                                Width="110"
+                                                VerticalAlignment="Center"
+                                                Text="Template Name" />
+                                            <TextBox
+                                                x:Name="TextBoxSearch"
+                                                Width="260"
+                                                Height="30"
+                                                Margin="10,0,0,0"
+                                                Style="{StaticResource TextBoxStyle1}"
+                                                TextChanged="TextBoxSearch_TextChanged" />
+
+                                            <Button
+                                                x:Name="ButtonReloadPrinterTemplate"
+                                                Width="60"
+                                                Height="30"
+                                                Margin="5,0,0,0"
+                                                Click="ButtonReloadPrinterTemplate_Click"
+                                                Content="{fa:Icon Rotate,
+                                                                  Foreground=White}"
+                                                FontSize="20"
+                                                Style="{StaticResource ModernButton2}" />
+                                        </StackPanel>
+                                        <ListView
+                                            x:Name="ListViewTemplate"
+                                            Width="380"
+                                            Height="120"
+                                            Margin="0,5,0,0"
+                                            HorizontalAlignment="Left"
+                                            ItemsSource="{Binding TemplateList}"
+                                            SelectedItem="{Binding PrinterTemplate}" />
+                                    </StackPanel>
+                                </GroupBox>
+
+
+
+                            </Grid>
+                            <Grid
+                                Grid.Column="1"
+                                HorizontalAlignment="Left"
+                                Background="Transparent">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="50" />
+                                    <RowDefinition Height="50" />
+                                    <RowDefinition Height="50" />
+                                    <RowDefinition Height="50" />
+                                    <RowDefinition Height="50" />
+                                    <RowDefinition Height="50" />
+                                    <RowDefinition Height="50" />
+                                    <RowDefinition Height="50" />
+                                    <RowDefinition Height="50" />
+                                    <RowDefinition Height="50" />
+                                    <RowDefinition Height="40" />
+                                    <RowDefinition Height="50" />
+
+                                    <RowDefinition />
+                                </Grid.RowDefinitions>
+                                <Button
+                                    x:Name="ButtonSaveJob"
+                                    Grid.Row="11"
+                                    Width="100"
+                                    Height="40"
+                                    Margin="0,0,10,0"
+                                    HorizontalAlignment="Right"
+                                    Click="ButtonSaveJob_Click"
+                                    Content="CREATE"
+                                    Style="{StaticResource ModernButton1}" />
+                                <!--  Complete Condition  -->
+                                <GroupBox
+                                    Grid.Row="0"
+                                    Width="460"
+                                    Height="50">
+                                    <GroupBox.Header>
+                                        <TextBlock FontWeight="Bold" Text="Complete Condition" />
+                                    </GroupBox.Header>
+                                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                        <RadioButton
+                                            Width="150"
+                                            Content="Total Passed"
+                                            GroupName="compcondGr"
+                                            IsChecked="{Binding CompleteCondition, Converter={StaticResource CompleteCondToBool}, ConverterParameter=TotalPassed}"
+                                            Style="{DynamicResource RadioButtonStyle1}" />
+                                        <RadioButton
+                                            Width="150"
+                                            Margin="10,0,0,0"
+                                            Content="Total Checked"
+                                            GroupName="compcondGr"
+                                            IsChecked="{Binding CompleteCondition, Converter={StaticResource CompleteCondToBool}, ConverterParameter=TotalChecked}"
+                                            Style="{DynamicResource RadioButtonStyle1}" />
+                                    </StackPanel>
+                                </GroupBox>
+
+                                <!--  Output camera  -->
+                                <GroupBox
+                                    Grid.Row="1"
+                                    Width="460"
+                                    Height="50">
+                                    <GroupBox.Header>
+                                        <TextBlock FontWeight="Bold" Text="Output Camera" />
+                                    </GroupBox.Header>
+                                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                        <RadioButton
+                                            Width="150"
+                                            Content="Enable"
+                                            GroupName="OutCamGr"
+                                            IsChecked="{Binding OutputCamera, Converter={StaticResource CoupRadToBol}, ConverterParameter=0}"
+                                            Style="{DynamicResource RadioButtonStyle1}" />
+                                        <RadioButton
+                                            Width="150"
+                                            Margin="10,0,0,0"
+                                            Content="Disable"
+                                            GroupName="OutCamGr"
+                                            IsChecked="{Binding OutputCamera, Converter={StaticResource CoupRadToBol}, ConverterParameter=1}"
+                                            Style="{DynamicResource RadioButtonStyle1}" />
+                                    </StackPanel>
+                                </GroupBox>
+
+                                <!--  Image Export  -->
+                                <GroupBox
+                                    Grid.Row="2"
+                                    Width="460"
+                                    Height="50">
+                                    <GroupBox.Header>
+                                        <TextBlock FontWeight="Bold" Text="Image Export" />
+                                    </GroupBox.Header>
+                                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                        <RadioButton
+                                            Width="150"
+                                            Content="Enable"
+                                            GroupName="ImgExGr"
+                                            IsChecked="{Binding IsImageExport, Converter={StaticResource CoupRadToBol}, ConverterParameter=0}"
+                                            Style="{DynamicResource RadioButtonStyle1}" />
+                                        <RadioButton
+                                            Width="150"
+                                            Margin="10,0,0,0"
+                                            Content="Disable"
+                                            GroupName="ImgExGr"
+                                            IsChecked="{Binding IsImageExport, Converter={StaticResource CoupRadToBol}, ConverterParameter=1}"
+                                            Style="{DynamicResource RadioButtonStyle1}" />
+                                    </StackPanel>
+                                </GroupBox>
+
+                                <!--  Image Export Paht  -->
+                                <StackPanel
+                                    Grid.Row="3"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="130"
+                                        VerticalAlignment="Center"
+                                        Text="Image Export Path" />
+                                    <TextBox
+                                        Width="260"
+                                        Height="30"
+                                        Margin="10,0,0,0"
+                                        FontWeight="Normal"
+                                        IsReadOnly="True"
+                                        Style="{StaticResource TextBoxStyle1}"
+                                        Text="{Binding ImageExportPath}" />
+                                    <Button
+                                        Width="60"
+                                        Height="30"
+                                        Margin="5,0,0,0"
+                                        Click="ButtonChooseImagePath_Click"
+                                        Content="{fa:Icon Folder,
+                                                          Foreground=White}"
+                                        FontSize="20"
+                                        Style="{StaticResource ModernButton2}" />
+                                </StackPanel>
+
+
+                                <!--  Printer IP  -->
+                                <!--<StackPanel
+                                    Grid.Row="4"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="120"
+                                        VerticalAlignment="Center"
+                                        Text="Printer IP" />
+                                    <TextBox
+                                        Width="140"
+                                        Height="30"
+                                        Margin="10,0,0,0"
+                                        IsEnabled="False"
+                                        Text="{Binding PrinterIP, FallbackValue=192.168.100.100}" />
+                                    <TextBlock
+                                        Width="30"
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Text="Port" />
+                                    <TextBox
+                                        Width="70"
+                                        Height="30"
+                                        Margin="10,0,0,0"
+                                        IsEnabled="False"
+                                        Text="{Binding PrinterPort, FallbackValue=12500}" />
+                                </StackPanel>-->
+
+                                <!--  Printer Port  -->
+                                <!--<StackPanel
+                                    Grid.Row="5"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="120"
+                                        VerticalAlignment="Center"
+                                        Text="Printer Web Port" />
+                                    <TextBox
+                                        Width="70"
+                                        Height="30"
+                                        Margin="10,0,0,0"
+                                        IsEnabled="False"
+                                        Text="{Binding PrinterWebPort}" />
+                                </StackPanel>-->
+
+                                <!--  Printer Web port  -->
+                                <!--<StackPanel
+                                    Grid.Row="6"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="120"
+                                        VerticalAlignment="Center"
+                                        Text="Camera IP" />
+                                    <TextBox
+                                        Width="270"
+                                        Height="30"
+                                        Margin="10,0,0,0"
+                                        Text="{Binding PrinterWebPort}" />
+                                </StackPanel>-->
+
+                                <!--  Cam IP  -->
+                                <!--<StackPanel
+                                    Grid.Row="6"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="120"
+                                        VerticalAlignment="Center"
+                                        Text="Camera IP" />
+                                    <TextBox
+                                        Width="140"
+                                        Height="30"
+                                        Margin="10,0,0,0"
+                                        IsEnabled="False"
+                                        Text="{Binding CameraIP, FallbackValue=192.168.100.100}" />
+                                    <TextBlock
+                                        Width="30"
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Text="Port"
+                                        Visibility="Collapsed" />
+                                    <TextBox
+                                        Width="70"
+                                        Height="30"
+                                        Margin="10,0,0,0"
+                                        Text="{Binding CameraPort, FallbackValue=21}"
+                                        Visibility="Collapsed" />
+                                </StackPanel>-->
+
+                                <!--  Controller IP and Port  -->
+                                <!--<StackPanel
+                                    Grid.Row="7"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                                    <TextBlock
+                                        Width="120"
+                                        VerticalAlignment="Center"
+                                        Text="Controller" />
+                                    <TextBox
+                                        Width="140"
+                                        Height="30"
+                                        Margin="10,0,0,0"
+                                        IsEnabled="False"
+                                        Text="{Binding ControllerIP, FallbackValue=192.168.100.100}" />
+                                    <TextBlock
+                                        Width="30"
+                                        Margin="5,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Text="Port" />
+                                    <TextBox
+                                        Width="70"
+                                        Height="30"
+                                        Margin="10,0,0,0"
+                                        IsEnabled="False"
+                                        Text="{Binding ControllerPort, FallbackValue=21}" />
+                                </StackPanel>-->
+                            </Grid>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+            </Grid>
+        </Border>
+
+    </Grid>
+</UserControl>
