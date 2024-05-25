@@ -23,7 +23,7 @@
     <SolidColorBrush x:Key="Item.SelectedInactive.Border" Color="Transparent" />
     <Style x:Key="ListBoxItemStyleMenu" TargetType="{x:Type ListBoxItem}">
         <Setter Property="SnapsToDevicePixels" Value="True" />
-        <Setter Property="Padding" Value="4 12 0 0" />
+        <Setter Property="Padding" Value="4,12,0,0" />
         <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
         <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />
         <Setter Property="Background" Value="Transparent" />

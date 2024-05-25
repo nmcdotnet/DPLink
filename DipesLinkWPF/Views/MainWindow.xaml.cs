@@ -5,6 +5,7 @@ using DipesLink.Views.CustomDialogs;
 using DipesLink.Views.Extension;
 using DipesLink.Views.SubWindows;
 using DipesLink.Views.UserControls.MainUc;
+using System.Configuration;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,26 +21,38 @@ namespace DipesLink.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-       public static event EventHandler<EventArgs>? MainWindowSizeChangeCustomEvent;
-       public static SplashScreenLoading? SplashScreenLoading = new();
+        public static event EventHandler<EventArgs>? MainWindowSizeChangeCustomEvent;
+        public static SplashScreenLoading? SplashScreenLoading = new();
         public static event EventHandler? ListBoxMenuSelectionChange;
+
         public MainWindow()
         {
             InitializeComponent();
-            DataContext =  MainViewModel.GetIntance();
+            DataContext = MainViewModel.GetIntance();
             EventRegister();
             if (AuthorizationHelper.IsAdmin())
             {
                 ComboBoxSelectView.IsEnabled = false;
             }
         }
+
         private void EventRegister()
         {
             SizeChanged += MainWindow_SizeChanged;
+            Closing += MainWindow_Closing;
             Closed += MainWindow_Closed;
             AllStationUc.DoneLoadUIEvent += AllStationUc_DoneLoadUIEvent;
             Shared.OnActionLoadingSplashScreen += Shared_OnActionLoadingSplashScreen;
             ListBoxMenu.SelectionChanged += ListBoxMenu_SelectionChanged;
+        }
+
+        private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+        {
+            var isExit = CusMsgBox.Show("Do you want to exit the application ?", "Exit Application", Enums.ViewEnums.ButtonStyleMessageBox.YesNo, Enums.ViewEnums.ImageStyleMessageBox.Warning);
+            if (!isExit)
+            {
+                e.Cancel = true;
+            }
         }
 
         private void ListBoxMenu_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -100,6 +113,7 @@ namespace DipesLink.Views
                 return;
             }
         }
+
         private T? CurrentViewModel<T>() where T : class
         {
             if (DataContext is T viewModel)
@@ -121,13 +135,10 @@ namespace DipesLink.Views
             MainWindowSizeChangeCustomEvent?.Invoke(ActualWidth, EventArgs.Empty);
         }
 
-
-
         private void ButtonExitApp_Click(object sender, RoutedEventArgs e)
         {
-            var customMessageBox = new MessageBoxCus("Exit Application", "You want to close the application!");
-            
-            if (customMessageBox.ShowDialog() == true)
+            var isExit = CusMsgBox.Show("Do you want to exit the application ?", "Exit Application", Enums.ViewEnums.ButtonStyleMessageBox.YesNo, Enums.ViewEnums.ImageStyleMessageBox.Warning);
+            if (isExit)
             {
                 Application.Current?.Shutdown();
             }
@@ -135,13 +146,13 @@ namespace DipesLink.Views
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-           
+
         }
 
         private void DeviceStatListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            var index =  DeviceStatListBox.SelectedIndex;
-            CallbackCommand(vm =>vm.ChangeJobByDeviceStatSymbol(index));
+            var index = DeviceStatListBox.SelectedIndex;
+            CallbackCommand(vm => vm.ChangeJobByDeviceStatSymbol(index));
         }
 
         private void ComboBoxStationNum_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -152,7 +163,7 @@ namespace DipesLink.Views
         private void ComboBoxSelectView_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             var cbb = (System.Windows.Controls.ComboBox)sender;
-            if(cbb.SelectedIndex == 1)
+            if (cbb.SelectedIndex == 1)
             {
                 ListBoxMenu.SelectedIndex = -1;
             }
@@ -161,8 +172,6 @@ namespace DipesLink.Views
                 ListBoxMenu.SelectedIndex = 0;
             }
         }
-
-      
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
@@ -174,10 +183,10 @@ namespace DipesLink.Views
                     case "Account Management":
                         UsersManagement um = new();
                         um.Show();
-                    break;
+                        break;
                     case "Logout": //Restart
                         var res = CusMsgBox.Show("Do you want to logout ?", "Logout", Enums.ViewEnums.ButtonStyleMessageBox.OKCancel, Enums.ViewEnums.ImageStyleMessageBox.Warning);
-                        if(res)
+                        if (res)
                         {
                             Process.Start(Process.GetCurrentProcess().MainModule.FileName);
                             Application.Current.Shutdown();
@@ -221,5 +230,7 @@ namespace DipesLink.Views
                 }
             }
         }
+
+
     }
 }

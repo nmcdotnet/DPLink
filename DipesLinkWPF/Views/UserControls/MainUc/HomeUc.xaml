@@ -70,9 +70,9 @@
             Visibility="{Binding ElementName=UcStationDetail, Path=Visibility}" />-->
         <TabControl
             x:Name="TabControl_Station"
-            SelectedIndex="0"
             Grid.Row="1"
-            ItemsSource="{Binding TabStation}">
+            ItemsSource="{Binding TabStation}"
+            SelectedIndex="0">
 
             <!--  Title  -->
             <TabControl.ItemTemplate>

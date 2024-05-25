@@ -204,7 +204,7 @@ namespace DipesLinkDeviceTransfer
                  catch (Exception ex)
                  {
 #if DEBUG
-                     await Console.Out.WriteLineAsync("save image failed: " + ex);
+                   //  await Console.Out.WriteLineAsync("save image failed: " + ex);
 #endif
                  }
              });

@@ -1,5 +1,4 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <!--  Style cho ToggleButton bên trong ComboBox  -->
     <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="ToggleButton">
         <Grid>
@@ -8,24 +7,24 @@
                 <ColumnDefinition Width="20" />
             </Grid.ColumnDefinitions>
             <Border
-              x:Name="Border"
-              Grid.ColumnSpan="2"
-              Background="White"
-              BorderBrush="#3399FF"
-              BorderThickness="1"
-              CornerRadius="5" />
+                x:Name="Border"
+                Grid.ColumnSpan="2"
+                Background="White"
+                BorderBrush="#3399FF"
+                BorderThickness="1"
+                CornerRadius="5" />
             <Border
-              Grid.Column="1"
-              Background="#3399FF"
-              BorderThickness="0,1,1,1"
-              CornerRadius="0,5,5,0" />
+                Grid.Column="1"
+                Background="#3399FF"
+                BorderThickness="0,1,1,1"
+                CornerRadius="0,5,5,0" />
             <Path
-              x:Name="Arrow"
-              Grid.Column="1"
-              HorizontalAlignment="Center"
-              VerticalAlignment="Center"
-              Data="M 0 0 L 4 4 L 8 0 Z"
-              Fill="White" />
+                x:Name="Arrow"
+                Grid.Column="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Data="M 0 0 L 4 4 L 8 0 Z"
+                Fill="White" />
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="ToggleButton.IsMouseOver" Value="true">
@@ -41,7 +40,7 @@
     </ControlTemplate>
 
     <!--  Style cho ComboBox  -->
-    <Style TargetType="ComboBox" x:Key="ComboBoxStyle1">
+    <Style x:Key="ComboBoxStyle1" TargetType="ComboBox">
         <Setter Property="Foreground" Value="#333" />
         <Setter Property="FontFamily" Value="Segoe UI" />
         <Setter Property="FontSize" Value="12" />
@@ -55,48 +54,48 @@
                 <ControlTemplate TargetType="ComboBox">
                     <Grid>
                         <ToggleButton
-                          Name="ToggleButton"
-                          Grid.Column="2"
-                          ClickMode="Press"
-                          Focusable="false"
-                          IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                          Template="{StaticResource ComboBoxToggleButton}" />
+                            Name="ToggleButton"
+                            Grid.Column="2"
+                            ClickMode="Press"
+                            Focusable="false"
+                            IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                            Template="{StaticResource ComboBoxToggleButton}" />
                         <ContentPresenter
-                          Name="ContentSite"
-                          Margin="3,3,23,3"
-                          HorizontalAlignment="Left"
-                          VerticalAlignment="Center"
-                          Content="{TemplateBinding SelectionBoxItem}"
-                          ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                          ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                          IsHitTestVisible="False" />
+                            Name="ContentSite"
+                            Margin="3,3,23,3"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Content="{TemplateBinding SelectionBoxItem}"
+                            ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                            ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                            IsHitTestVisible="False" />
                         <TextBox
-                          x:Name="PART_EditableTextBox"
-                          Margin="3,3,23,3"
-                          HorizontalAlignment="Left"
-                          VerticalAlignment="Center"
-                          Background="Transparent"
-                          Focusable="True"
-                          IsReadOnly="{TemplateBinding IsReadOnly}"
-                          Style="{x:Null}"
-                          Visibility="Hidden" />
+                            x:Name="PART_EditableTextBox"
+                            Margin="3,3,23,3"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Background="Transparent"
+                            Focusable="True"
+                            IsReadOnly="{TemplateBinding IsReadOnly}"
+                            Style="{x:Null}"
+                            Visibility="Hidden" />
                         <Popup
-                          Name="Popup"
-                          AllowsTransparency="True"
-                          Focusable="False"
-                          IsOpen="{TemplateBinding IsDropDownOpen}"
-                          Placement="Bottom"
-                          PopupAnimation="Slide">
+                            Name="Popup"
+                            AllowsTransparency="True"
+                            Focusable="False"
+                            IsOpen="{TemplateBinding IsDropDownOpen}"
+                            Placement="Bottom"
+                            PopupAnimation="Slide">
                             <Grid
-                              Name="DropDown"
-                              MinWidth="{TemplateBinding ActualWidth}"
-                              MaxHeight="{TemplateBinding MaxDropDownHeight}"
-                              SnapsToDevicePixels="True">
+                                Name="DropDown"
+                                MinWidth="{TemplateBinding ActualWidth}"
+                                MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                SnapsToDevicePixels="True">
                                 <Border
-                                  x:Name="DropDownBorder"
-                                  Background="White"
-                                  BorderBrush="#CCC"
-                                  BorderThickness="1" />
+                                    x:Name="DropDownBorder"
+                                    Background="White"
+                                    BorderBrush="#CCC"
+                                    BorderThickness="1" />
                                 <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
                                     <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
                                 </ScrollViewer>

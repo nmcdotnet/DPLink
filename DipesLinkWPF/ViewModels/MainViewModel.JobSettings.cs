@@ -368,6 +368,7 @@ namespace DipesLink.ViewModels
             SelectJob.IsImageExport = jobModel.IsImageExport;
             SelectJob.ImageExportPath = jobModel.ImageExportPath;
             SelectJob.TotalRecDb = jobModel.TotalRecDb;
+            SelectJob.JobStatus = jobModel.JobStatus;
         }
 
 

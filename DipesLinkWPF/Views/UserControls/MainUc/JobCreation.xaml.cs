@@ -194,5 +194,37 @@ namespace DipesLink.Views.UserControls.MainUc
         {
 
         }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            var rad = sender as RadioButton;
+            switch (rad.Name)
+            {
+                case "RadioButtonStandalone":
+                    GroupBoxJobType.IsEnabled = false;
+                    RadioButtonCanRead.IsEnabled = true;
+                    RadioButtonStaticText.IsEnabled = true;
+                    RadioButtonAfterProduction.IsChecked = false;
+                    RadioButtonOnProduction.IsChecked = false;
+                    RadioButtonVerifyAndPrint.IsChecked = false;
+                    break;
+                case "RadioButtonRynanSeries":
+                    GroupBoxJobType.IsEnabled = true;
+                    RadioButtonCanRead.IsEnabled = false;
+                    RadioButtonStaticText.IsEnabled = false;
+                    RadioButtonDatabase.IsChecked = true;
+                    RadioButtonAfterProduction.IsChecked = true;
+                    break;
+                case "RadioButtonCanRead":
+                case "RadioButtonStaticText":
+                    GroupBoxDatabaseType.IsEnabled = false;
+                    break;
+                case "RadioButtonDatabase":
+                    GroupBoxDatabaseType.IsEnabled = true;
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }

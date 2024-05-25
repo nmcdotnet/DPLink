@@ -9,7 +9,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     d:Background="White"
-    d:DesignHeight="640"
+    d:DesignHeight="740"
     d:DesignWidth="1165"
     FontSize="14"
     mc:Ignorable="d">
@@ -652,7 +652,20 @@
                                                         IsReadOnly="True"
                                                         Style="{StaticResource TextBoxStyle1}"
                                                         Text="{Binding DataCompareFormat}" />
-
+                                                    <TextBlock
+                                                        Width="150"
+                                                        Margin="30,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        Text="Job Status" />
+                                                    <TextBox
+                                                        Width="200"
+                                                        Height="30"
+                                                        Margin="10,0,0,0"
+                                                        FontSize="16"
+                                                        FontWeight="Normal"
+                                                        IsReadOnly="True"
+                                                        Style="{StaticResource TextBoxStyle1}"
+                                                        Text="{Binding JobStatus}" />
                                                 </StackPanel>
 
                                                 <StackPanel
@@ -708,10 +721,10 @@
                             <Grid Margin="5">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="60" />
-                                    <RowDefinition Height="50" />
-                                    <RowDefinition Height="50" />
-                                    <RowDefinition Height="50" />
-                                    <RowDefinition Height="50" />
+                                    <RowDefinition Height="60" />
+                                    <RowDefinition Height="60" />
+                                    <RowDefinition Height="60" />
+                                    <RowDefinition Height="60" />
                                     <RowDefinition Height="110" />
                                     <RowDefinition Height="200" />
                                 </Grid.RowDefinitions>
@@ -747,7 +760,7 @@
                                     Grid.Row="1"
                                     VerticalAlignment="Center"
                                     Orientation="Horizontal">
-                                    <GroupBox Width="470" Height="50">
+                                    <GroupBox Width="470" Height="60">
                                         <GroupBox.Header>
                                             <TextBlock FontWeight="Bold" Text="Printer Series" />
                                         </GroupBox.Header>
@@ -755,6 +768,7 @@
                                             <RadioButton
                                                 x:Name="RadioButtonRynanSeries"
                                                 Width="150"
+                                                Checked="RadioButton_Checked"
                                                 Content="Rynan Series"
                                                 GroupName="PrinterSeriesGr"
                                                 IsChecked="{Binding PrinterSeries, Converter={StaticResource PrinterToBool}, ConverterParameter=0}"
@@ -763,6 +777,7 @@
                                                 x:Name="RadioButtonStandalone"
                                                 Width="150"
                                                 Margin="10,0,0,0"
+                                                Checked="RadioButton_Checked"
                                                 Content="Standalone"
                                                 GroupName="PrinterSeriesGr"
                                                 IsChecked="{Binding PrinterSeries, Converter={StaticResource PrinterToBool}, ConverterParameter=1}"
@@ -777,18 +792,23 @@
                                     Orientation="Horizontal">
 
                                     <!--  Job Type  -->
-                                    <GroupBox Width="470" Height="50">
+                                    <GroupBox
+                                        x:Name="GroupBoxJobType"
+                                        Width="470"
+                                        Height="60">
                                         <GroupBox.Header>
                                             <TextBlock FontWeight="Bold" Text="Job Type" />
                                         </GroupBox.Header>
                                         <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                                             <RadioButton
+                                                x:Name="RadioButtonAfterProduction"
                                                 Width="150"
                                                 Content="After Production"
                                                 GroupName="JobTypeGr"
                                                 IsChecked="{Binding JobType, Converter={StaticResource JobtypeToBool}, ConverterParameter=AfterProduction}"
                                                 Style="{DynamicResource RadioButtonStyle1}" />
                                             <RadioButton
+                                                x:Name="RadioButtonOnProduction"
                                                 Width="150"
                                                 Margin="10,0,0,0"
                                                 Content="On Production"
@@ -796,6 +816,7 @@
                                                 IsChecked="{Binding JobType, Converter={StaticResource JobtypeToBool}, ConverterParameter=OnProduction}"
                                                 Style="{DynamicResource RadioButtonStyle1}" />
                                             <RadioButton
+                                                x:Name="RadioButtonVerifyAndPrint"
                                                 Width="150"
                                                 Margin="10,0,0,0"
                                                 Content="Verify And Print"
@@ -810,7 +831,7 @@
                                     Grid.Row="3"
                                     VerticalAlignment="Center"
                                     Orientation="Horizontal">
-                                    <GroupBox Width="470" Height="50">
+                                    <GroupBox Width="470" Height="60">
                                         <GroupBox.Header>
                                             <TextBlock FontWeight="Bold">Compare Type</TextBlock>
                                         </GroupBox.Header>
@@ -818,6 +839,7 @@
                                             <RadioButton
                                                 x:Name="RadioButtonCanRead"
                                                 Width="150"
+                                                Checked="RadioButton_Checked"
                                                 Content="Can Read"
                                                 GroupName="CmpTypeGr"
                                                 IsChecked="{Binding CompareType, Converter={StaticResource CompareTypeToBool}, ConverterParameter=CanRead}"
@@ -826,13 +848,16 @@
                                                 x:Name="RadioButtonStaticText"
                                                 Width="150"
                                                 Margin="10,0,0,0"
+                                                Checked="RadioButton_Checked"
                                                 Content="Static Text"
                                                 GroupName="CmpTypeGr"
                                                 IsChecked="{Binding CompareType, Converter={StaticResource CompareTypeToBool}, ConverterParameter=StaticText}"
                                                 Style="{DynamicResource RadioButtonStyle1}" />
                                             <RadioButton
+                                                x:Name="RadioButtonDatabase"
                                                 Width="150"
                                                 Margin="10,0,0,0"
+                                                Checked="RadioButton_Checked"
                                                 Content="Database"
                                                 GroupName="CmpTypeGr"
                                                 IsChecked="{Binding CompareType, Converter={StaticResource CompareTypeToBool}, ConverterParameter=Database}"
@@ -844,7 +869,10 @@
                                     Grid.Row="5"
                                     VerticalAlignment="Center"
                                     Orientation="Horizontal">
-                                    <GroupBox Width="470" Height="110">
+                                    <GroupBox
+                                        x:Name="GroupBoxDatabaseType"
+                                        Width="470"
+                                        Height="110">
                                         <GroupBox.Header>
                                             <TextBlock FontWeight="Bold">Database Type</TextBlock>
                                         </GroupBox.Header>
@@ -972,31 +1000,26 @@
                             </Grid>
                             <Grid
                                 Grid.Column="1"
+                                Margin="0,5,0,0"
                                 HorizontalAlignment="Left"
                                 Background="Transparent">
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="50" />
-                                    <RowDefinition Height="50" />
-                                    <RowDefinition Height="50" />
-                                    <RowDefinition Height="50" />
-                                    <RowDefinition Height="50" />
-                                    <RowDefinition Height="50" />
-                                    <RowDefinition Height="50" />
-                                    <RowDefinition Height="50" />
-                                    <RowDefinition Height="50" />
-                                    <RowDefinition Height="50" />
-                                    <RowDefinition Height="40" />
-                                    <RowDefinition Height="50" />
+                                    <RowDefinition Height="60" />
+                                    <RowDefinition Height="60" />
+                                    <RowDefinition Height="60" />
+                                    <RowDefinition Height="60" />
+
 
                                     <RowDefinition />
                                 </Grid.RowDefinitions>
                                 <Button
                                     x:Name="ButtonSaveJob"
-                                    Grid.Row="11"
+                                    Grid.Row="5"
                                     Width="100"
                                     Height="40"
-                                    Margin="0,0,10,0"
+                                    Margin="0,0,10,50"
                                     HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom"
                                     Click="ButtonSaveJob_Click"
                                     Content="CREATE"
                                     Style="{StaticResource ModernButton1}" />
@@ -1004,7 +1027,7 @@
                                 <GroupBox
                                     Grid.Row="0"
                                     Width="460"
-                                    Height="50">
+                                    Height="60">
                                     <GroupBox.Header>
                                         <TextBlock FontWeight="Bold" Text="Complete Condition" />
                                     </GroupBox.Header>
@@ -1029,7 +1052,7 @@
                                 <GroupBox
                                     Grid.Row="1"
                                     Width="460"
-                                    Height="50">
+                                    Height="60">
                                     <GroupBox.Header>
                                         <TextBlock FontWeight="Bold" Text="Output Camera" />
                                     </GroupBox.Header>
@@ -1054,12 +1077,13 @@
                                 <GroupBox
                                     Grid.Row="2"
                                     Width="460"
-                                    Height="50">
+                                    Height="60">
                                     <GroupBox.Header>
                                         <TextBlock FontWeight="Bold" Text="Image Export" />
                                     </GroupBox.Header>
                                     <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                                         <RadioButton
+                                            x:Name="RadioButtonImageExport"
                                             Width="150"
                                             Content="Enable"
                                             GroupName="ImgExGr"
@@ -1079,6 +1103,7 @@
                                 <StackPanel
                                     Grid.Row="3"
                                     VerticalAlignment="Center"
+                                    IsEnabled="{Binding Path=IsChecked, ElementName=RadioButtonImageExport}"
                                     Orientation="Horizontal">
                                     <TextBlock
                                         Width="130"

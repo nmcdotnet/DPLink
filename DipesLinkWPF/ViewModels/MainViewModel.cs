@@ -772,6 +772,39 @@ namespace DipesLink.ViewModels
                 case NotifyType.PrinterSuddenlyStop:
                     CusAlert.Show($"Station {stationIndex+1}: Printer suddenly Stop", ImageStyleMessageBox.Warning);
                     break;
+                case NotifyType.StartEndPageInvalid:
+                    CusAlert.Show($"Station {stationIndex + 1}: Printer Start/End Page Invalid", ImageStyleMessageBox.Warning);
+                    break;
+                case NotifyType.NoPrintheadSelected:
+                    CusAlert.Show($"Station {stationIndex + 1}: No Print Head Selected", ImageStyleMessageBox.Warning);
+                    break;
+                case NotifyType.PrinterSpeedLimit:
+                    CusAlert.Show($"Station {stationIndex + 1}: Printer speed limit", ImageStyleMessageBox.Warning);
+                    break;
+                case NotifyType.PrintheadDisconnected:
+                    CusAlert.Show($"Station {stationIndex + 1}: Printhead Disconnected", ImageStyleMessageBox.Warning);
+                    break;
+                case NotifyType.UnknownPrinthead:
+                    CusAlert.Show($"Station {stationIndex + 1}: Printer Unknown Printhead", ImageStyleMessageBox.Warning);
+                    break;
+                case NotifyType.NoCartridges:
+                    CusAlert.Show($"Station {stationIndex + 1}: Printer No Cartridges", ImageStyleMessageBox.Warning);
+                    break;
+                case NotifyType.InvalidCartridges:
+                    CusAlert.Show($"Station {stationIndex + 1}: Printer Invalid Cartridges", ImageStyleMessageBox.Warning);
+                    break;
+                case NotifyType.OutOfInk:
+                    CusAlert.Show($"Station {stationIndex + 1}: Printer Out Of Ink", ImageStyleMessageBox.Warning);
+                    break;
+                case NotifyType.CartridgesLocked:
+                    CusAlert.Show($"Station {stationIndex + 1}: Cartridges Locked", ImageStyleMessageBox.Warning);
+                    break;
+                case NotifyType.InvalidVersion:
+                    CusAlert.Show($"Station {stationIndex + 1}: Printer Invalid Version", ImageStyleMessageBox.Warning);
+                    break;
+                case NotifyType.IncorrectPrinthead:
+                    CusAlert.Show($"Station {stationIndex + 1}: Printer Incorrect Printhead", ImageStyleMessageBox.Warning);
+                    break;
             }
         }
 

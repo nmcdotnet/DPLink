@@ -27,7 +27,7 @@ namespace DipesLinkDeviceTransfer
             if (sender is DetectModel detectModel)
             {
                 _QueueBufferCameraReceivedData.Enqueue(detectModel); // Add camera data read to buffer
-                Console.WriteLine("Camera Enqueue");
+              //  Console.WriteLine("Camera Enqueue");
             }
         }
 

@@ -107,9 +107,9 @@ namespace DipesLinkDeviceTransfer
                     if (message != null && DeviceSharedValues.EnController)
                     {
                         var fullMess = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + ": " + message + "\n";
-                        Console.WriteLine("Full mess: " + fullMess);
+                     //   Console.WriteLine("Full mess: " + fullMess);
                         var data = DataConverter.ToByteArray(fullMess);
-                        Console.WriteLine(data.Length);
+                      //  Console.WriteLine(data.Length);
                         MemoryTransfer.SendControllerResponseMessageToUI(JobIndex, data);
                     }
                 }

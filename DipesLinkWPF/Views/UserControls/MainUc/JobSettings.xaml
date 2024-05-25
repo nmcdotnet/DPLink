@@ -467,8 +467,8 @@
                                                                         <Grid>
                                                                             <Border
                                                                                 x:Name="Border"
-                                                                                Width="100"
-                                                                                Height="40"
+                                                                                Width="80"
+                                                                                Height="35"
                                                                                 Background="Gray"
                                                                                 BorderBrush="LightGray"
                                                                                 BorderThickness="1"
@@ -476,8 +476,8 @@
                                                                                 <Grid>
                                                                                     <Border
                                                                                         x:Name="Switch"
-                                                                                        Width="35"
-                                                                                        Height="35"
+                                                                                        Width="30"
+                                                                                        Height="30"
                                                                                         Background="White"
                                                                                         CornerRadius="20" />
                                                                                     <Label

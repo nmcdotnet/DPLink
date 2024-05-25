@@ -26,8 +26,8 @@ namespace DipesLinkDeviceTransfer
             catch (Exception)  // for Device transfer only 
             {
                 DeviceSharedValues.Index = 0;
-                DeviceSharedValues.CameraIP = "192.168.253.22";
-                DeviceSharedValues.PrinterIP = "192.168.3.52"; //192.168.3.52
+                DeviceSharedValues.CameraIP = "192.168.253.23";
+                DeviceSharedValues.PrinterIP = "192.168.253.3"; //192.168.3.52
                 DeviceSharedValues.PrinterPort = "2030";
                 DeviceSharedValues.ControllerIP = "127.0.0.1";
                 DeviceSharedValues.ControllerPort = "2001";

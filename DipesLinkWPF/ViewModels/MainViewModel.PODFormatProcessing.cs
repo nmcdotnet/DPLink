@@ -271,7 +271,7 @@ namespace DipesLink.ViewModels
             }
             catch (Exception)
             {
-                MessageBox.Show("Database Not Found", "", MessageBoxButton.OK, MessageBoxImage.Error);
+              //  MessageBox.Show("Database Not Found", "", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

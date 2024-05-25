@@ -224,6 +224,7 @@ namespace DipesLinkDeviceTransfer
             }
 
             _SelectedJob.JobStatus = JobStatus.Unfinished;
+
             SaveJobChangedSettings(_SelectedJob);
 
             SendCompleteDataToUIAsync();
@@ -491,10 +492,14 @@ namespace DipesLinkDeviceTransfer
                             if (result is PODDataModel podDataModel)
                             {
                                 string[] pODcommand = podDataModel.Text.Split(';'); // Array of Command use only ; symbol
-
+                                //foreach (var cmd in pODcommand)
+                                //{
+                                //    await Console.Out.WriteLineAsync("Phan hoi lenh: " + cmd);
+                                //}
                                 var PODResponseModel = new PODResponseModel { Command = pODcommand[0] }; // Get header command (DATA, RSFP,...)
                                 if (PODResponseModel.Command != null)
                                 {
+                                  //  await Console.Out.WriteLineAsync("Command: " + PODResponseModel.Command);
                                     switch (PODResponseModel.Command)
                                     {
                                         case "RSLI": // Feedback Template Printer 
@@ -541,6 +546,12 @@ namespace DipesLinkDeviceTransfer
 
                                         case "MON":  // Monitor 
                                             MonitorCommandHandler(pODcommand, PODResponseModel);
+                                            //foreach (var item in pODcommand)
+                                            //{
+                                            //    Console.Write("Mon" + item);
+                                            //}
+                                          //  Console.WriteLine();
+                                           // Console.WriteLine("Fb Printer: " + PODResponseModel.Error);
                                             break;
 
                                         default:
@@ -641,9 +652,16 @@ namespace DipesLinkDeviceTransfer
 
         private void StartCommandHandler(string[] podCommand, PODResponseModel podResponse, PODDataModel podData)
         {
-            podResponse.Command = podCommand[0];
-            podResponse.Status = podCommand[1]; // OK . Ready
-                                                // podResponse.Error = podCommand[2]; // Error code
+            try
+            {
+                podResponse.Command = podCommand[0];
+                podResponse.Status = podCommand[1]; // OK . Ready
+                podResponse.Error = podCommand[2]; // Error code
+            }
+            catch (Exception)
+            {
+            }
+           
 
             // Correct case
             if (podResponse.Status != null && (podResponse.Status == "OK" || podResponse.Status == "READY"))
@@ -657,23 +675,64 @@ namespace DipesLinkDeviceTransfer
             else // Error case
             {
                 string message = "Unknown";
+                NotifyType notifyType = NotifyType.Unk;
                 switch (podResponse.Error)
                 {
-                    case "001": message = "Open templates failed (dose not exist, others templates being opening,...)"; break;
-                    case "002": message = "Start pages, End pages is invalid"; break;
-                    case "003": message = "No printhead is selected"; break;
-                    case "004": message = "Speed limit"; break;
-                    case "005": message = "Printhead disconnected"; break;
-                    case "006": message = "Unknown printhead"; break;
-                    case "007": message = "No cartridges"; break;
-                    case "008": message = "Invalid cartridges"; break;
-                    case "009": message = "Out of ink"; break;
-                    case "010": message = "Cartridges is locked"; break;
-                    case "011": message = "Invalid version"; break;
-                    case "012": message = "Incorrect printhead"; break;
+                    case "001": 
+                        message = "Open templates failed (dose not exist, others templates being opening,...)";
+                        notifyType = NotifyType.NotLoadTemplate;
+                        break;
+                    case "002": 
+                        message = "Start pages, End pages is invalid";
+                        notifyType = NotifyType.StartEndPageInvalid;
+                        break;
+                    case "003": 
+                        message = "No printhead is selected";
+                        notifyType = NotifyType.NoPrintheadSelected;
+                        break;
+                    case "004": 
+                        message = "Speed limit";
+                        notifyType = NotifyType.PrinterSpeedLimit;
+                        break;
+                    case "005":
+                        message = "Printhead disconnected";
+                        notifyType = NotifyType.PrintheadDisconnected;
+                        break;
+                    case "006": 
+                        message = "Unknown printhead";
+                        notifyType = NotifyType.UnknownPrinthead;
+                        break;
+                    case "007": 
+                        message = "No cartridges";
+                        notifyType = NotifyType.NoCartridges;
+                        break;
+                    case "008": 
+                        message = "Invalid cartridges";
+                        notifyType = NotifyType.InvalidCartridges;
+                        break;
+
+                    case "009": 
+                        message = "Out of ink";
+                        notifyType = NotifyType.OutOfInk;
+                        break;
+                    case "010": 
+                        message = "Cartridges is locked"; 
+                        notifyType = NotifyType.CartridgesLocked;
+                        break;
+                    case "011": 
+                        message = "Invalid version";
+                        notifyType = NotifyType.InvalidVersion;
+                        break;
+                    case "012": 
+                        message = "Incorrect printhead";
+                        notifyType = NotifyType.IncorrectPrinthead;
+                        break;
                     default:
                         break;
                 }
+              //  Console.WriteLine("Loi satrt"+message);
+                NotificationProcess(notifyType);
+                _ = StopProcessAsync();
             }
         }
 
@@ -690,6 +749,7 @@ namespace DipesLinkDeviceTransfer
                     Monitor.PulseAll(_StopLocker); //Notification has stopped completed
                 }
             }
+           
         }
 
         private void MonitorCommandHandler(string[] podCommand, PODResponseModel podResponse)
@@ -729,10 +789,19 @@ namespace DipesLinkDeviceTransfer
                         _PrinterStatus = PrinterStatus.WaitingData;
                         SharedValues.OperStatus = OperationStatus.WaitingData;
                         break;
-                    case "Printing": _PrinterStatus = PrinterStatus.Printing; break;
-                    case "Connected": _PrinterStatus = PrinterStatus.Connected; ; break;
-                    case "Disconnected": _PrinterStatus = PrinterStatus.Disconnected; break;
-                    case "Error": _PrinterStatus = PrinterStatus.Error; ; break;
+                    case "Printing": 
+                        _PrinterStatus = PrinterStatus.Printing; 
+                        break;
+                    case "Connected": 
+                        _PrinterStatus = PrinterStatus.Connected; 
+                        break;
+                    case "Disconnected": 
+                        _PrinterStatus = PrinterStatus.Disconnected;
+                        break;
+                    case "Error": 
+                        _PrinterStatus = PrinterStatus.Error;
+                     //   Console.WriteLine("Error !!!");
+                        break;
                     case "Disable": _PrinterStatus = PrinterStatus.Disable; break;
                     case "": _PrinterStatus = PrinterStatus.Null; break;
                     default:
@@ -1633,7 +1702,7 @@ namespace DipesLinkDeviceTransfer
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine("Loi gửi qua UI !");
+                           // Console.WriteLine("Loi gửi qua UI !");
                         }
                         await Task.Delay(10);
                     }

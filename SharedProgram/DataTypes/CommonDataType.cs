@@ -179,7 +179,18 @@ namespace SharedProgram.DataTypes
             PauseSystem,
             StopSystem,
             PrinterSuddenlyStop,
-            DeviceDBLoaded
+            DeviceDBLoaded,
+            StartEndPageInvalid,
+            NoPrintheadSelected,
+            PrinterSpeedLimit,
+            PrintheadDisconnected,
+            UnknownPrinthead,
+            NoCartridges,
+            InvalidCartridges,
+            OutOfInk,
+            CartridgesLocked,
+            InvalidVersion,
+            IncorrectPrinthead
         }
         public enum EventsLogType
         {

@@ -141,7 +141,7 @@ namespace SharedProgram.Models
             set { _IsImageExport = value; OnPropertyChanged(); }
         }
 
-        private string? _ImageExportPath = "Select Path to save failed image !"; 
+        private string? _ImageExportPath; 
         public string? ImageExportPath
         {
             get { return _ImageExportPath; }
