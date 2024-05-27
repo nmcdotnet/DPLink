@@ -463,7 +463,7 @@ namespace DipesLinkDeviceTransfer
                 }
                 catch (Exception)
                 {
-                    Debug.WriteLine("Thread send data to printer was error!");
+                    Console.WriteLine("Thread send data to printer was error!");
                     _ = StopProcessAsync();
                 }
             }, _CTS_SendWorkingDataToPrinter.Token);
@@ -1139,7 +1139,7 @@ namespace DipesLinkDeviceTransfer
                 currentCheckedIndex = -1;
             }
         }
-        public event EventHandler OnReceiveVerifyDataEvent;
+        public event EventHandler? OnReceiveVerifyDataEvent;
         public void RaiseOnReceiveVerifyDataEvent(object sender)
         {
             OnReceiveVerifyDataEvent?.Invoke(sender, EventArgs.Empty);
@@ -1330,6 +1330,7 @@ namespace DipesLinkDeviceTransfer
 #if DEBUG
                     Console.WriteLine("Thread update printed status was stoppped!");
 #endif
+                    ReleaseIPCTask();
                     _CTS_BackupPrintedResponse?.Cancel(); // Stop thread export respone data to file
                     _QueueBufferBackupPrintedCode.Enqueue(null); // Queue for backup printed code and status
                 }
@@ -1401,8 +1402,9 @@ namespace DipesLinkDeviceTransfer
 #if DEBUG
                     Console.WriteLine("Thread update checked result was stopped!");
 #endif
-                    _CTS_BackupFailedImage?.Cancel(); //Cancel backup failed image task
-                    _CTS_BackupCheckedResult?.Cancel(); //Cancel backup checked result task
+                    ReleaseBackupTask();
+                   // _CTS_BackupFailedImage?.Cancel(); //Cancel backup failed image task
+                   // _CTS_BackupCheckedResult?.Cancel(); //Cancel backup checked result task
 
                     ///   _CTS_BackupPrintedResponse?.Cancel();
 
@@ -1418,6 +1420,12 @@ namespace DipesLinkDeviceTransfer
                 }
 
             });
+        }
+
+        private void ReleaseBackupTask()
+        {
+            _CTS_BackupFailedImage?.Cancel(); //Cancel backup failed image task
+            _CTS_BackupCheckedResult?.Cancel(); //Cancel backup checked result task
         }
 
         private void KillTThreadSendWorkingDataToPrinter()
@@ -1516,6 +1524,14 @@ namespace DipesLinkDeviceTransfer
             MemoryTransfer.SendPrinterTemplateListToUI(index, byteRes);
         }
 
+        private void ReleaseIPCTask()
+        {
+            _CTS_SendStsPrint?.Cancel();
+            _CTS_SendStsCheck?.Cancel();
+            _CTS_SendData?.Cancel();
+            Console.WriteLine("Thread send IPC was stoppped!");
+        }
+
         public void SendCompleteDataToUIAsync()
         {
             // Sent Number, Received Number, Printed Number
@@ -1565,9 +1581,6 @@ namespace DipesLinkDeviceTransfer
 
                             printedDataNumberBytes = SharedFunctions.StringToFixedLengthByteArray(printedNumber.ToString(), 7);
                             MemoryTransfer.SendCounterPrintedToUI(JobIndex, printedDataNumberBytes);
-
-
-
                         }
 
                         //Current position (index and page)
@@ -1604,7 +1617,9 @@ namespace DipesLinkDeviceTransfer
                     {
                         if (tokenResult.IsCancellationRequested)
                         {
-                            if (_QueueTotalChekedNumber.IsEmpty && _QueueTotalPassedNumber.IsEmpty && _QueueTotalFailedNumber.IsEmpty)
+                            if (_QueueTotalChekedNumber.IsEmpty &&
+                            _QueueTotalPassedNumber.IsEmpty && 
+                            _QueueTotalFailedNumber.IsEmpty)
                             {
                                 tokenResult.ThrowIfCancellationRequested();
                             }
@@ -1669,7 +1684,9 @@ namespace DipesLinkDeviceTransfer
                         {
                             if (tokenData.IsCancellationRequested)
                             {
-                                if (_QueuePrintedCode.IsEmpty && _QueueCheckedResultForUpdateUI.IsEmpty && _QueueCheckedResult.IsEmpty)
+                                if (_QueuePrintedCode.IsEmpty && 
+                                _QueueCheckedResultForUpdateUI.IsEmpty && 
+                                _QueueCheckedResult.IsEmpty)
                                 {
                                     tokenData.ThrowIfCancellationRequested();
                                 }
@@ -1679,10 +1696,6 @@ namespace DipesLinkDeviceTransfer
                             if (_QueuePrintedCode.TryDequeue(out string[]? data))
                             {
                                 MemoryTransfer.SendPrintedCodeRawToUI(JobIndex, DataConverter.ToByteArray(data));
-                                //foreach (var item in data)
-                                //{
-                                //    Console.WriteLine(item);
-                                //}
                             }
 
                             //Detect Model Data
@@ -1700,9 +1713,9 @@ namespace DipesLinkDeviceTransfer
                              //   await Console.Out.WriteLineAsync("Checked code: "+ checkedResultBytes.Count());
                             }
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
-                           // Console.WriteLine("Loi gửi qua UI !");
+                          
                         }
                         await Task.Delay(10);
                     }

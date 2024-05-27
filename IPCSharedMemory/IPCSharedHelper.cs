@@ -50,20 +50,24 @@ namespace IPCSharedMemory
            
         }
 
+        CancellationTokenSource _ctsThreadListenData;
         public void ListenReceiveData()
         {
             Thread listenDataThread = new(() =>
             {
                 try
                 {
+                    _ctsThreadListenData = new();
+                    var token = _ctsThreadListenData.Token;
                     using ISubscriber subscriber = _Factory.CreateSubscriber(_Options);
                     while (true)
                     {
                         try
                         {
-                            if (_Options.QueueName == "DeviceToUISharedMemory1")
+                            if (token.IsCancellationRequested && MessageQueue.IsEmpty)
                             {
-                               // Debug.WriteLine("DeviceToUISharedMemory1 is alive !");
+                                Console.WriteLine("Huy Thread !");
+                                token.ThrowIfCancellationRequested();
                             }
                             if (subscriber.TryDequeue(default, out ReadOnlyMemory<byte> message))
                             {
@@ -101,6 +105,8 @@ namespace IPCSharedMemory
         public void Dispose()
         {
             _Publisher?.Dispose();
+            _ctsThreadListenData?.Cancel();
+            _ctsThreadListenData?.Dispose();
             GC.SuppressFinalize(this);
         }
     }

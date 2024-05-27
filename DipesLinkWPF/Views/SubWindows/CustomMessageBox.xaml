@@ -21,7 +21,7 @@
         <Style x:Key="AccentButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#FF0078D7" />
             <Setter Property="Foreground" Value="White" />
-            <Setter Property="BorderBrush" Value="#FF005A9E" />
+            <Setter Property="BorderBrush" Value="Transparent" />
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Cursor" Value="Hand" />
@@ -53,7 +53,9 @@
 
     <Border
         Padding="0"
-        Background="Wheat"
+        Background="White"
+        BorderBrush="Gray"
+        BorderThickness="1,0,1,1"
         CornerRadius="10">
         <Border.Effect>
             <DropShadowEffect
@@ -109,13 +111,14 @@
                     TextWrapping="Wrap" />
                 <StackPanel
                     Grid.Row="1"
-                    Margin="0,20,0,0"
+                    Margin="0,0,0,0"
                     HorizontalAlignment="Right"
                     Orientation="Horizontal">
                     <Button
                         Width="80"
                         Height="30"
-                        Margin="5"
+                        Margin="5,0,10,0"
+                        Background="#0078D7"
                         Click="OKButton_Click"
                         Content="{Binding Button1Content}"
                         Style="{StaticResource AccentButtonStyle}"
@@ -124,6 +127,7 @@
                         Width="80"
                         Height="30"
                         Margin="5"
+                        Background="OrangeRed"
                         Click="CancelButton_Click"
                         Content="{Binding Button2Content}"
                         Style="{StaticResource AccentButtonStyle}"

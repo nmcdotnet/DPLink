@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:NumUd="http://schemas.talex-soft.com/2010/xaml/presentation"
     xmlns:converter="clr-namespace:DipesLink.Views.Converter"
+    xmlns:cuscontrol="clr-namespace:DipesLink.Views.UserControls.CustomControl"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -273,7 +274,12 @@
                                                 Width="110"
                                                 VerticalAlignment="Center"
                                                 Text="IP Address: " />
-                                            <TextBox
+                                            <cuscontrol:IpAddressControl
+                                                x:Name="TextBoxPrinterIP"
+                                                Width="200"
+                                                Height="30"
+                                                Text="{Binding PrinterIP}" />
+                                            <!--<TextBox
                                                 x:Name="TextBoxPrinterIP"
                                                 Width="150"
                                                 Height="30"
@@ -281,7 +287,7 @@
                                                 FontSize="16"
                                                 Style="{StaticResource TextBoxStyle1}"
                                                 Text="{Binding PrinterIP, FallbackValue=255.255.255.255}"
-                                                TextChanged="TextBox_ParamsChanged" />
+                                                TextChanged="TextBox_ParamsChanged" />-->
                                         </StackPanel>
 
                                         <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
@@ -290,12 +296,12 @@
                                                 VerticalAlignment="Center"
                                                 Text="Port: " />
                                             <TextBox
-                                                x:Name="TextBoxPrinterPort"
+                                                x:Name="TextBoxPrinterPort" 
                                                 Width="80"
                                                 Height="30"
                                                 Padding="0,3,0,0"
+                                                BorderBrush="LightBlue"
                                                 FontSize="16"
-                                                Style="{StaticResource TextBoxStyle1}"
                                                 Text="{Binding PrinterPort, FallbackValue=0000}"
                                                 TextChanged="TextBox_ParamsChanged" />
                                         </StackPanel>
@@ -363,7 +369,12 @@
                                                 Width="110"
                                                 VerticalAlignment="Center"
                                                 Text="IP Address: " />
-                                            <TextBox
+                                            <cuscontrol:IpAddressControl
+                                                x:Name="TextBoxCamIP"
+                                                Width="200"
+                                                Height="30"
+                                                Text="{Binding CameraIP}" />
+                                            <!--<TextBox
                                                 x:Name="TextBoxCamIP"
                                                 Width="150"
                                                 Height="30"
@@ -371,7 +382,7 @@
                                                 FontSize="16"
                                                 Style="{StaticResource TextBoxStyle1}"
                                                 Text="{Binding CameraIP, FallbackValue=255.255.255.255}"
-                                                TextChanged="TextBox_ParamsChanged" />
+                                                TextChanged="TextBox_ParamsChanged" />-->
                                         </StackPanel>
 
                                         <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
@@ -384,9 +395,9 @@
                                                 Width="150"
                                                 Height="30"
                                                 Padding="0,8,0,0"
+                                                BorderBrush="LightBlue"
                                                 FontSize="16"
                                                 IsEnabled="False"
-                                                Style="{StaticResource TextBoxStyle1}"
                                                 Text="{Binding CameraModel}" />
                                         </StackPanel>
 
@@ -400,9 +411,9 @@
                                                 Width="150"
                                                 Height="30"
                                                 Padding="0,8,0,0"
+                                                BorderBrush="LightBlue"
                                                 FontSize="16"
                                                 IsEnabled="False"
-                                                Style="{StaticResource TextBoxStyle1}"
                                                 Text="{Binding CameraSerial}" />
                                         </StackPanel>
 
@@ -451,7 +462,7 @@
                                                     Width="170"
                                                     VerticalAlignment="Center"
                                                     Text="Enable Controller: " />
-                                                <ToggleButton
+                                                <ToggleButton 
                                                     Width="100"
                                                     Height="45"
                                                     HorizontalAlignment="Center"
@@ -470,7 +481,7 @@
                                                                                 Width="80"
                                                                                 Height="35"
                                                                                 Background="Gray"
-                                                                                BorderBrush="LightGray"
+                                                                                BorderBrush="LightBlue"
                                                                                 BorderThickness="1"
                                                                                 CornerRadius="20">
                                                                                 <Grid>
@@ -524,7 +535,12 @@
                                                     Width="170"
                                                     VerticalAlignment="Center"
                                                     Text="IP Address: " />
-                                                <TextBox
+                                                <cuscontrol:IpAddressControl
+                                                    x:Name="TextBoxControllerIP"
+                                                    Width="200"
+                                                    Height="30"
+                                                    Text="{Binding ControllerIP}" />
+                                                <!--<TextBox
                                                     x:Name="TextBoxControllerIP"
                                                     Width="150"
                                                     Height="30"
@@ -532,7 +548,7 @@
                                                     FontSize="16"
                                                     Style="{StaticResource TextBoxStyle1}"
                                                     Text="{Binding ControllerIP, FallbackValue=255.255.255.255}"
-                                                    TextChanged="TextBox_ParamsChanged" />
+                                                    TextChanged="TextBox_ParamsChanged" />-->
                                             </StackPanel>
 
                                             <StackPanel Margin="0,3,0,0" Orientation="Horizontal">
@@ -545,8 +561,8 @@
                                                     Width="100"
                                                     Height="30"
                                                     Padding="0,3,0,0"
+                                                    BorderBrush="LightBlue"
                                                     FontSize="16"
-                                                    Style="{StaticResource TextBoxStyle1}"
                                                     Text="{Binding ControllerPort, FallbackValue=0000}"
                                                     TextChanged="TextBox_ParamsChanged" />
                                             </StackPanel>
@@ -561,6 +577,7 @@
                                                     Width="100"
                                                     Height="30"
                                                     VerticalAlignment="Center"
+                                                    BorderBrush="LightBlue"
                                                     DecimalPlaces="0"
                                                     Increment="1"
                                                     Maximum="1000"
@@ -579,6 +596,7 @@
                                                     Width="100"
                                                     Height="30"
                                                     VerticalAlignment="Center"
+                                                    BorderBrush="LightBlue"
                                                     DecimalPlaces="0"
                                                     Increment="1"
                                                     Maximum="1000"
@@ -597,6 +615,7 @@
                                                     Width="100"
                                                     Height="30"
                                                     VerticalAlignment="Center"
+                                                    BorderBrush="LightBlue"
                                                     DecimalPlaces="0"
                                                     Increment="1"
                                                     Maximum="1000"
@@ -615,6 +634,7 @@
                                                     Width="100"
                                                     Height="30"
                                                     VerticalAlignment="Center"
+                                                    BorderBrush="LightBlue"
                                                     DecimalPlaces="2"
                                                     Increment="0.1"
                                                     Maximum="1000"
@@ -630,7 +650,7 @@
                                                     HorizontalAlignment="Left"
                                                     VerticalAlignment="Center"
                                                     Text="Response:" />
-                                                <ListView
+                                                <ListView BorderBrush="LightBlue"
                                                     Height="100"
                                                     Margin="10,10,0,0"
                                                     ItemsSource="{Binding ResponseMessList}" />
@@ -669,12 +689,11 @@
                                                         HorizontalAlignment="Center"
                                                         Checked="ModeSendCheckedChange"
                                                         Content="Basic"
-                                                        FontSize="16" 
-                                                        IsChecked="{Binding Path=VerifyAndPrintBasicSentMethod_UI, Converter={StaticResource BoolToRadioButtonConverter},Mode=TwoWay, ConverterParameter=True}"
-                                                       
+                                                        FontSize="16"
                                                         GroupName="PrinterSeriesGr"
+                                                        IsChecked="{Binding Path=VerifyAndPrintBasicSentMethod_UI, Converter={StaticResource BoolToRadioButtonConverter}, Mode=TwoWay, ConverterParameter=True}"
                                                         Style="{StaticResource RadioButtonStyle1}" />
-                                                   
+
                                                     <RadioButton
                                                         x:Name="RadCompare"
                                                         Width="150"
@@ -683,9 +702,9 @@
                                                         Content="Compare"
                                                         FontSize="16"
                                                         GroupName="PrinterSeriesGr"
-                                                        IsChecked="{Binding Path=VerifyAndPrintBasicSentMethod_UI, Converter={StaticResource BoolToRadioButtonConverter},Mode=TwoWay, ConverterParameter=False}"
+                                                        IsChecked="{Binding Path=VerifyAndPrintBasicSentMethod_UI, Converter={StaticResource BoolToRadioButtonConverter}, Mode=TwoWay, ConverterParameter=False}"
                                                         Style="{StaticResource RadioButtonStyle1}" />
-                                                    <!--IsChecked="{Binding VerifyAndPrintBasicSentMethod, Converter={StaticResource CoupRadToBol}, ConverterParameter=0}"-->
+                                                    <!--  IsChecked="{Binding VerifyAndPrintBasicSentMethod, Converter={StaticResource CoupRadToBol}, ConverterParameter=0}"  -->
                                                 </StackPanel>
                                             </GroupBox>
 
@@ -697,6 +716,7 @@
                                                     Width="200"
                                                     Height="30"
                                                     Margin="0,0,10,0"
+                                                    BorderBrush="LightBlue"
                                                     Text="{Binding FormatedPOD}" />
                                                 <Button
                                                     Width="70"
@@ -715,6 +735,7 @@
                                                     Width="200"
                                                     Height="30"
                                                     Margin="0,0,10,0"
+                                                    BorderBrush="LightBlue"
                                                     Text="{Binding FailedDataSentToPrinter}"
                                                     TextChanged="TextBox_ParamsChanged" />
                                                 <Button

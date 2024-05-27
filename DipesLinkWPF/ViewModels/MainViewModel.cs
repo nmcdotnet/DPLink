@@ -57,8 +57,6 @@ namespace DipesLink.ViewModels
 
             InitStations(_NumberOfStation);
 
-           
-
         }
 
         private void InitDir()

@@ -136,10 +136,10 @@ namespace DipesLink.ViewModels
                 SharedFunctions.DeviceTransferKillProcess(ViewModelSharedValues.Running.StationList[index].TransferID);
             }
         }
-        public static void RestartDeviceTransfer(int jobIndex)
+        public static void RestartDeviceTransfer(int jobIndex, JobOverview job)
         {
-            KillDeviceTransferByIndex(jobIndex); // kill old process
-            InitDeviceTransfer(jobIndex); // start new process
+            KillDeviceTransferByIndex(job.DeviceTransferID); // kill old process
+            InitDeviceTransfer(job.DeviceTransferID); // start new process
         }
     }
 }

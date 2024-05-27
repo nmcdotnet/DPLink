@@ -88,7 +88,7 @@ namespace DipesLink.Views.SubWindows
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            DragMove();
+           // DragMove(); // move window
         }
     }
 }

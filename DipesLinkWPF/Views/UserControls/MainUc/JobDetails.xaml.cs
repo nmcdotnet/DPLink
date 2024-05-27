@@ -128,18 +128,14 @@ namespace DipesLink.Views.UserControls.MainUc
         /// <param name="e"></param>
         private void Shared_OnLoadCompleteDatabase(object? sender, EventArgs e)
         {
-            //  ImageLoadingDatabase.Visibility = Visibility.Visible;
             Application.Current.Dispatcher.Invoke(async () =>
             {
                 if (sender is List<(List<string[]>, int)> dbList)  // Item 1: db, item 2: current page
-                {
-                    await _printingDataTableHelper.InitDatabase(dbList.FirstOrDefault().Item1, DataGridDB, dbList.FirstOrDefault().Item2, CurrentViewModel<JobOverview>());
+                { 
+                    await _printingDataTableHelper.InitDatabaseAsync(dbList.FirstOrDefault().Item1, DataGridDB, dbList.FirstOrDefault().Item2, CurrentViewModel<JobOverview>());
                     if (_currentJob != null) _currentJob.PrintedDataNumber = _printingDataTableHelper.PrintedNumber.ToString(); // Update UI First time
-                    CurrentViewModel<JobOverview>().IsShowLoadingDB = Visibility.Collapsed;
-
                 }
             });
-
         }
 
         ConcurrentQueue<string[]> _queuePrintedCode = new();

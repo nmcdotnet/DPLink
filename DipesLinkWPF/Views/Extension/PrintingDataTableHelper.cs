@@ -27,31 +27,32 @@ namespace DipesLink.Views.Extension
         /// <param name="dataGrid"></param>
         /// <param name="currentPage"></param>
         /// <param name="currentViewModel"></param>
-        public async Task InitDatabase(List<string[]> dbList, DataGrid dataGrid, int currentPage, JobOverview? currentViewModel)
+        public async Task InitDatabaseAsync(List<string[]> dbList, DataGrid dataGrid, int currentPage, JobOverview? currentViewModel)
         {
-          
+            DataTable dataTable = new();
             await Task.Run(() =>
             {
-                Application.Current.Dispatcher.Invoke(() =>
+                foreach (var header in dbList[0]) // add column
                 {
-                    if (currentViewModel == null) return;
-                    CurrentViewModel = currentViewModel;
-                    DataTable dataTable = new();
-                    dataGrid.Columns.Clear();
-                    foreach (var header in dbList[0]) // add column
-                    {
-                        dataTable.Columns.Add(header);
-                    }
-                    for (int i = 1; i < dbList.Count; i++) // add Row data
-                    {
-                        dataTable.Rows.Add(dbList[i]);
-                    }
-                    _orgDBList = dbList;
-                    CounterPrintedFirstLoad(dataTable);
-                    ProcessMiniPage(dataGrid, dataTable, currentPage);
-                });
+                    dataTable.Columns.Add(header);
+                }
+                for (int i = 1; i < dbList.Count; i++) // add Row data
+                {
+                    dataTable.Rows.Add(dbList[i]);
+                }
+                _orgDBList = dbList;
+                CounterPrintedFirstLoad(dataTable);
             });
-    
+
+            // Update UI after datatable loaded
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                if (currentViewModel == null) return;
+                CurrentViewModel = currentViewModel;
+                dataGrid.Columns.Clear();
+                ProcessMiniPage(dataGrid, dataTable, currentPage);
+                currentViewModel.IsShowLoadingDB = Visibility.Collapsed;
+            });
         }
 
         private int FindIndexByData(string[] printedCode, List<string[]> dbList) => dbList
@@ -95,7 +96,7 @@ namespace DipesLink.Views.Extension
                 if (row[0].ToString() == rowIdentifier)
                 {
                     row["Status"] = newStatus;
-                    if(newStatus != "Printed") 
+                    if (newStatus != "Printed")
                     {
                         RaiseDetectMissPrintedCode();
                     }

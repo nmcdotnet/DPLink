@@ -47,7 +47,7 @@
         <Setter Property="Stylus.IsFlicksEnabled" Value="False" />
 
         <Setter Property="AlternatingRowBackground" Value="#F5F5F5" />
-        <Setter Property="BorderBrush" Value="#FF688CAF" />
+        <Setter Property="BorderBrush" Value="LightBlue" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CanUserSortColumns" Value="False" />
         <Setter Property="EnableColumnVirtualization" Value="True" />

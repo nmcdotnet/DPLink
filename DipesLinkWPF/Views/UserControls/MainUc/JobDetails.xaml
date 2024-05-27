@@ -11,6 +11,7 @@
     d:Background="White"
     d:DesignHeight="616"
     d:DesignWidth="1155"
+    UseLayoutRounding="True"
     mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -46,10 +47,11 @@
             </Grid.RowDefinitions>
             <Border
                 Margin="3"
-                Padding="0,0,0,0"
-                BorderBrush="#00ABE6"
+                BorderBrush="LightBlue"
                 BorderThickness="1"
-                CornerRadius="3" />
+                CornerRadius="14 14 14 14"
+                RenderOptions.EdgeMode="Unspecified"
+                SnapsToDevicePixels="True" />
             <Grid ShowGridLines="False">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="41" />
@@ -59,7 +61,8 @@
                 <Border
                     Margin="3"
                     Background="#00ABE6"
-                    CornerRadius="3">
+                    CornerRadius="15 15 0 0"
+                    SnapsToDevicePixels="True">
                     <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                         <TextBlock
                             HorizontalAlignment="Center"
@@ -106,7 +109,6 @@
                                 Grid.Row="1"
                                 Height="30"
                                 Margin="10,0,10,0"
-                                Padding="0,4,0,0"
                                 FontSize="16"
                                 IsReadOnly="True"
                                 Style="{StaticResource TextBoxStyle1}"
@@ -116,7 +118,7 @@
                         <!--  Compare Type  -->
                         <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
+                                <ColumnDefinition Width="1.4*" />
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
                             <Grid
@@ -295,7 +297,7 @@
 
             <Grid
                 Grid.Row="1"
-                Margin="10,0,10,10"
+                Margin="0,0,0,0" VerticalAlignment="Bottom"
                 Background="AliceBlue"
                 ShowGridLines="False">
                 <Grid.ColumnDefinitions>
@@ -318,11 +320,7 @@
                                       Foreground=WhiteSmoke}"
                     FontSize="30"
                     IsEnabled="{Binding StatusStartButton}"
-                    Style="{StaticResource ModernButton1}" 
-                    
-                    />
-
-
+                    Style="{StaticResource ModernButton1}" />
                 <Button
                     x:Name="ButtonPause"
                     Grid.Column="1"
@@ -349,8 +347,6 @@
                     FontSize="30"
                     IsEnabled="{Binding StatusStopButton}"
                     Style="{StaticResource ModernButton1}" />
-
-                <!--  {Binding StatusStopButton}  -->
                 <Button
                     x:Name="ButtonTrigger"
                     Grid.Column="3"
@@ -372,18 +368,22 @@
         <!--#region MID-->
         <Grid Grid.Column="1">
             <Border
-                Margin="3,3,3,3"
-                Padding="0,0,0,0"
-                BorderBrush="#00ABE6"
+                Margin="3"
+                BorderBrush="LightBlue"
                 BorderThickness="1"
-                CornerRadius="3">
+                CornerRadius="15 15 15 15"
+                SnapsToDevicePixels="True">
                 <Grid Background="Transparent" ShowGridLines="False">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="34" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <Border Background="#00ABE6" CornerRadius="3">
+                    <Border
+                        Background="#00ABE6"
+                        CornerRadius="14 14 0 0"
+                        RenderOptions.EdgeMode="Aliased"
+                        SnapsToDevicePixels="True">
                         <TextBlock
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
@@ -398,8 +398,8 @@
                         Grid.Row="1"
                         Background="Transparent">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="8.5*" />
-                            <RowDefinition Height="5*" MinHeight="327" />
+                            <RowDefinition Height="8*" />
+                            <RowDefinition Height="5*" MinHeight="350" />
                         </Grid.RowDefinitions>
                         <Grid Background="Transparent">
                             <Grid.RowDefinitions>
@@ -421,23 +421,7 @@
                                 BorderBrush="LightGray"
                                 BorderThickness="0.6"
                                 CornerRadius="5">
-                                <!--<StackPanel
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Orientation="Horizontal">
-                                    <TextBlock
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        FontSize="50"
-                                        Foreground="DarkBlue"
-                                        Text="{Binding Percent, FallbackValue=100}" />
-                                    <TextBlock
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        FontSize="50"
-                                        Foreground="DarkBlue"
-                                        Text="%" />
-                                </StackPanel>-->
+
 
                                 <lvc:PieChart
                                     InitialRotation="-90"
@@ -446,17 +430,21 @@
                                     Series="{Binding CircleChart.Series}" />
                             </Border>
                         </Grid>
-                        <Grid Grid.Row="1" VerticalAlignment="Bottom">
+                        <Grid
+                            Grid.Row="1"
+                            Margin="0,0,0,0"
+                            VerticalAlignment="Bottom"
+                            Background="Transparent">
                             <Grid.RowDefinitions>
                                 <RowDefinition MaxHeight="140" />
                                 <RowDefinition MaxHeight="140" />
                                 <RowDefinition MaxHeight="140" />
                             </Grid.RowDefinitions>
 
-                            <Border
+                            <Border SnapsToDevicePixels="True"
                                 Margin="2"
                                 Background="#00ABE6"
-                                CornerRadius="10"
+                                CornerRadius="15"
                                 PreviewMouseDown="ViewChekedResult_PreMouDown">
                                 <Grid>
                                     <Grid.RowDefinitions>
@@ -482,11 +470,11 @@
                                 </Grid>
 
                             </Border>
-                            <Border
+                            <Border SnapsToDevicePixels="True"
                                 Grid.Row="1"
                                 Margin="2"
                                 Background="#00C752"
-                                CornerRadius="10">
+                                CornerRadius="15">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*" />
@@ -513,7 +501,8 @@
                                 Grid.Row="2"
                                 Margin="2"
                                 Background="#FF0000"
-                                CornerRadius="10">
+                                CornerRadius="15"
+                                SnapsToDevicePixels="True">
                                 <Grid>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*" />
@@ -676,7 +665,7 @@
                     </Grid>
                     <!--  Đặt WrapPanel trong một container có khả năng co dãn, chẳng hạn như Grid  -->
                     <Grid Grid.Row="1">
-                        <Grid.Resources>
+                        <!--<Grid.Resources>
                             <ResourceDictionary>
                                 <SolidColorBrush x:Key="TextBox.Static.Border" Color="#3399FF" />
                                 <SolidColorBrush x:Key="TextBox.MouseOver.Border" Color="#FF7EB4EA" />
@@ -733,7 +722,7 @@
                                     </Style.Triggers>
                                 </Style>
                             </ResourceDictionary>
-                        </Grid.Resources>
+                        </Grid.Resources>-->
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
                             <ColumnDefinition />
@@ -787,9 +776,7 @@
                                     Text="{Binding CompareResult}" />
                             </StackPanel>
                         </StackPanel>
-                        <StackPanel Grid.Column="1"  >
-                            
-                        </StackPanel>
+                        <StackPanel Grid.Column="1" />
                     </Grid>
 
                 </Grid>
@@ -801,9 +788,11 @@
                 Margin="3"
                 Padding="0,0,0,0"
                 Background="Transparent"
-                BorderBrush="#00ABE6"
+                BorderBrush="LightBlue"
                 BorderThickness="1"
-                CornerRadius="3">
+                CornerRadius="17 17 16 16"
+                RenderOptions.EdgeMode="Unspecified"
+                SnapsToDevicePixels="True">
                 <Grid
                     x:Name="Grid_DataDetail"
                     Background="Transparent"
@@ -812,7 +801,10 @@
                         <RowDefinition Height="1*" MaxHeight="40" />
                         <RowDefinition Height="10*" />
                     </Grid.RowDefinitions>
-                    <Border  Background="#00ABE6" CornerRadius="3">
+                    <Border
+                        Background="#00ABE6"
+                        CornerRadius="15 15 0 0"
+                        SnapsToDevicePixels="True">
                         <TextBlock
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
