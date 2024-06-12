@@ -1,6 +1,7 @@
 ﻿using DipesLink_SDK_Cameras;
 using DipesLink_SDK_PLC;
 using DipesLink_SDK_Printers;
+using IPCSharedMemory;
 using SharedProgram.DeviceTransfer;
 using SharedProgram.Models;
 using SharedProgram.Shared;
@@ -12,22 +13,33 @@ namespace DipesLinkDeviceTransfer
         public static DatamanCamera? DatamanCameraDeviceHandler;
         public static RynanRPrinterTCPClient? RynanRPrinterDeviceHandler;
         public static S7TCPIP? ControllerDeviceHandler;
-        public static char keyStep;
+        public static string keyStep;
+        private IPCSharedHelper? _ipcDeviceToUISharedMemory_DT;
+        private IPCSharedHelper? _ipcUIToDeviceSharedMemory_DT;
+        private IPCSharedHelper? _ipcDeviceToUISharedMemory_DB;
+        private IPCSharedHelper? _ipcDeviceToUISharedMemory_RD;
+
+      
+        
+        private void InitInstanceIPC()
+        {
+            _ipcDeviceToUISharedMemory_DT = new(JobIndex, "DeviceToUISharedMemory_DT", SharedValues.SIZE_1MB); // data
+            _ipcUIToDeviceSharedMemory_DT = new(JobIndex, "UIToDeviceSharedMemory_DT", SharedValues.SIZE_1MB); // data
+            _ipcDeviceToUISharedMemory_DB = new(JobIndex, "DeviceToUISharedMemory_DB", SharedValues.SIZE_200MB); // database
+            _ipcDeviceToUISharedMemory_RD = new(JobIndex, "DeviceToUISharedMemory_RD", SharedValues.SIZE_100MB); // Realtime data
+        }
 
         private static void GetArgumentList(string[] args)
         {
             try
             {
                 DeviceSharedValues.Index = int.Parse(args[0]);
-                //DeviceSharedValues.CameraIP = args[1];
-                //DeviceSharedValues.PrinterIP = args[2];
-                //DeviceSharedValues.PrinterPort = args[3];
             }
             catch (Exception)  // for Device transfer only 
             {
                 DeviceSharedValues.Index = 0;
-                DeviceSharedValues.CameraIP = "192.168.253.23";
-                DeviceSharedValues.PrinterIP = "192.168.253.3"; //192.168.3.52
+                DeviceSharedValues.CameraIP = "192.168.15.109";
+                DeviceSharedValues.PrinterIP = "192.168.15.122"; //192.168.3.52
                 DeviceSharedValues.PrinterPort = "2030";
                 DeviceSharedValues.ControllerIP = "127.0.0.1";
                 DeviceSharedValues.ControllerPort = "2001";
@@ -40,7 +52,7 @@ namespace DipesLinkDeviceTransfer
                         new() { Index = 1,Type=PODModel.TypePOD.FIELD, PODName="", Value=""}
                     }
                 };
-               
+
             }
         }
 
@@ -68,30 +80,34 @@ namespace DipesLinkDeviceTransfer
             {
                 while (true)
                 {
-                    var key = Console.ReadKey();
-                    if (key.KeyChar == 's')
+                    var key = Console.ReadLine();
+                    if (key == "start")
                     {
-                        keyStep = 's';
+                        keyStep = "start";
                     }
-                    if (key.KeyChar == 'v')
+                    if (key == "v")
                     {
-                        keyStep = 'v';
+                        keyStep = "v";
                     }
-                    if (key.KeyChar == 'f')
+                    if (key == "f")
                     {
-                        keyStep = 'f';
+                        keyStep = "f";
                     }
-                    if (key.KeyChar == 'd')
+                    if (key == "d")
                     {
-                        keyStep = 'd';
+                        keyStep = "d";
                     }
-                    if (key.KeyChar == 'n')
+                    if (key == "n")
                     {
-                        keyStep = 'n';
+                        keyStep = "n";
                     }
-                    if (key.KeyChar == 'e')
+                    if (key == "e")
                     {
-                        keyStep = 'e';
+                        keyStep = "e";
+                    }
+                    if (key == "loaddb")
+                    {
+                        keyStep = "loaddb";
                     }
                     Thread.Sleep(10);
                 }
@@ -108,12 +124,13 @@ namespace DipesLinkDeviceTransfer
         public async void NonStaticMainProgram()
         {
             AppDomain.CurrentDomain.ProcessExit += new EventHandler(ProcessExitHandler);
-            ListenConnectionParam(JobIndex);
+            InitInstanceIPC();
+            ListenConnectionParam();
             AlwaySendPrinterOperationToUI();
-            DatamanCameraDeviceHandler = new(JobIndex);
-            RynanRPrinterDeviceHandler = new(JobIndex);
-            ControllerDeviceHandler = new(JobIndex);
-            
+            DatamanCameraDeviceHandler = new(JobIndex, _ipcDeviceToUISharedMemory_DT);
+            RynanRPrinterDeviceHandler = new(JobIndex, _ipcDeviceToUISharedMemory_DT);
+            ControllerDeviceHandler = new(JobIndex, _ipcDeviceToUISharedMemory_DT);
+
 
             InitEvents();
             //  LoadSelectedJob();
@@ -122,36 +139,42 @@ namespace DipesLinkDeviceTransfer
             {
                 while (true)
                 {
-                    if (keyStep == 's')
+                    if (keyStep == "loaddb")
+                    {
+                        DeviceSharedValues.ActionButtonType = SharedProgram.DataTypes.CommonDataType.ActionButtonType.LoadDB;
+                        ActionButtonFromUIProcessingAsync();
+                        keyStep = "";
+                    }
+                    if (keyStep == "start")
                     {
                         DeviceSharedValues.ActionButtonType = SharedProgram.DataTypes.CommonDataType.ActionButtonType.Start;
                         ActionButtonFromUIProcessingAsync();
-                        keyStep = '\0';
+                        keyStep = "";
                     }
-                    if (keyStep == 'v')
-                    {
-                        SimulateValidDataCamera();
-                        keyStep = '\0';
-                    }
-                    if (keyStep == 'f')
-                    {
-                        SimulateInvalidDataCamera(TypeOfSimulateInvalidDataCamera.Fail);
-                        keyStep = '\0';
-                    }
-                    if (keyStep == 'd')
-                    {
-                        SimulateInvalidDataCamera(TypeOfSimulateInvalidDataCamera.Duplicate);
-                        keyStep = '\0';
-                    }
-                    if ((keyStep == 'n'))
-                    {
-                        SimulateInvalidDataCamera(TypeOfSimulateInvalidDataCamera.Null);
-                        keyStep = '\0';
-                    }
-                    if ((keyStep == 'e'))
+                    //if (keyStep == 'v')
+                    //{
+                    //    SimulateValidDataCamera();
+                    //    keyStep = "";
+                    //}
+                    //if (keyStep == 'f')
+                    //{
+                    //    SimulateInvalidDataCamera(TypeOfSimulateInvalidDataCamera.Fail);
+                    //    keyStep = "";
+                    //}
+                    //if (keyStep == 'd')
+                    //{
+                    //    SimulateInvalidDataCamera(TypeOfSimulateInvalidDataCamera.Duplicate);
+                    //    keyStep = "";
+                    //}
+                    //if ((keyStep == 'n'))
+                    //{
+                    //    SimulateInvalidDataCamera(TypeOfSimulateInvalidDataCamera.Null);
+                    //    keyStep = '\0';
+                    //}
+                    if ((keyStep == "stop"))
                     {
                         _ = StopProcessAsync();
-                        keyStep = '\0';
+                        keyStep = "";
                     }
                     Thread.Sleep(1000);
                 }
@@ -164,10 +187,10 @@ namespace DipesLinkDeviceTransfer
         {
             if (DatamanCameraDeviceHandler != null && !DatamanCameraDeviceHandler.IsConnected)
                 return Task.FromResult(1);
-            
+
             if (RynanRPrinterDeviceHandler != null && !RynanRPrinterDeviceHandler.IsConnected())
                 return Task.FromResult(2);
-            
+
             return Task.FromResult(0);
         }
 
@@ -176,7 +199,7 @@ namespace DipesLinkDeviceTransfer
             //SharedPaths.InitCommonPathByIndex(JobIndex);
             PrinterEventInit();
             CameraEventInit();
-       
+
         }
 
 
