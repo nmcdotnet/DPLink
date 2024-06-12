@@ -1,44 +1,57 @@
 ﻿using DipesLink.Models;
 using DipesLink.Views.Extension;
+using LiveChartsCore.VisualElements;
 using RelationalDatabaseHelper.SQLite;
 using SharedProgram.Shared;
+using SQLite;
+using System.Diagnostics;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
-
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 namespace DipesLink.Views.SubWindows
 {
     /// <summary>
     /// Interaction logic for UsersManagement.xaml
     /// </summary>
+    /// 
+
     public partial class UsersManagement : Window
     {
         public static string OldPassword = string.Empty;
+
         bool isInit = true;
+        SQLiteAsyncConnection db;
+
         public UsersManagement()
         {
             InitializeComponent();
-            isInit = true;  
+            isInit = true;
             Loaded += UsersManagement_Loaded;
+            InitDatabase();
         }
-
+        void InitDatabase()
+        {
+            var databasePath = Path.Combine(SharedPaths.PathAccountsDb, "MyData.db");
+            SQLiteConnectionString options = new(databasePath, true, key: "123456");
+            db = new SQLiteAsyncConnection(options);
+        }
         private void UsersManagement_Loaded(object sender, RoutedEventArgs e)
         {
             LoadAllUser();
             isInit = false;
         }
 
-        private void LoadAllUser()
+        private async void LoadAllUser()
         {
-            using SQLiteHelper sqlitehelper = new(SharedValues.ConnectionString);
-            sqlitehelper.OpenConnection();
-            sqlitehelper.BeginTransaction();
+
+
+            // Retrieve all records from the User table asynchronously
+            var users = await db.Table<User>().ToListAsync();
             try
             {
-                string commmand = @"SELECT * FROM users";
-                List<IDictionary<string, object>> usersList = sqlitehelper.ExecuteQuery(commmand).ToList();
-                List<UsersModel> listDataUsers = ConvertToListOfStringArrays(usersList);
-                DataGridUsers.ItemsSource = listDataUsers;
+                DataGridUsers.ItemsSource = users;
             }
             catch (Exception)
             {
@@ -102,41 +115,45 @@ namespace DipesLink.Views.SubWindows
             }
             if (TextBoxPassword.Text == null)
             {
-                //bool isPasswordValid = passwordRegex.IsMatch(TextBoxPassword.Text);
-                //if (!isPasswordValid)
-                //{
                 CusMsgBox.Show("Username Invalid", "Input Validation", Enums.ViewEnums.ButtonStyleMessageBox.OK, Enums.ViewEnums.ImageStyleMessageBox.Warning);
-                //}
                 return false;
             }
             return true;
 
         }
-        private void CreateUser()
+        private async void CreateUser()
         {
             bool isCreated = false;
-            using SQLiteHelper sqlitehelper = new(SharedValues.ConnectionString);
-            sqlitehelper.OpenConnection();
-            sqlitehelper.BeginTransaction();
+            
             try
             {
-                string createUserCommand =
-                    @"INSERT INTO users (username,password, role) VALUES (@username, @password, @role)";
-                Dictionary<string, object> parameters = new()
+                User newUser = new User()
                 {
-                    { "@username", TextBoxUsername.Text },
-                    { "@password", TextBoxPassword.Text },
-                    { "@role",   ((ComboBoxItem)ComboBoxRole.SelectedItem).Content.ToString()  }
+                    username = TextBoxUsername.Text,
+                    password = TextBoxPassword.Text,
+                    role = ((ComboBoxItem)ComboBoxRole.SelectedItem).Content.ToString(),
                 };
-                sqlitehelper.ExecuteNonQuery(createUserCommand, parameters);
-                sqlitehelper.CommitTransaction();
-                isCreated = true;
+                var users = await db.Table<User>().ToListAsync();
+                var user = users.FirstOrDefault(u => u.username == newUser.username);
+                if (newUser.username != "" && newUser.password != "" && user == null )
+                {
+                    await db.RunInTransactionAsync(tran => {
+                        // database calls inside the transaction
+                        tran.Insert(newUser);
+                    });
+
+                    isCreated = true;
+                    LoadAllUser();
+                }
+                else
+                {
+                    CusMsgBox.Show("Invalid User", "Create User", Enums.ViewEnums.ButtonStyleMessageBox.OK, Enums.ViewEnums.ImageStyleMessageBox.Error);
+                }
+
             }
             catch (Exception)
             {
                 isCreated = false;
-                sqlitehelper.RollbackTransaction();
-                CusMsgBox.Show("Create User Failed !", "Create User", Enums.ViewEnums.ButtonStyleMessageBox.OK, Enums.ViewEnums.ImageStyleMessageBox.Error);
             }
             finally
             {
@@ -144,36 +161,49 @@ namespace DipesLink.Views.SubWindows
                 {
                     CusMsgBox.Show("Create User Done !", "Create User", Enums.ViewEnums.ButtonStyleMessageBox.OK, Enums.ViewEnums.ImageStyleMessageBox.Info);
                 }
-                sqlitehelper.CloseConnection();
             }
         }
 
-        private void EditUserPassword(string username, string newPassword, string oldPassword, string newRole)
+
+        private async void EditUserPassword(string username, string newPassword, string oldPassword, string newRole, string confirmedPassword)
         {
             bool isChanged = false;
-            using SQLiteHelper sqlitehelper = new(SharedValues.ConnectionString);
-            sqlitehelper.OpenConnection();
-            sqlitehelper.BeginTransaction();
 
             try
             {
-                string editUserPassword = @"UPDATE users SET password = @newPassword, role = @newRole WHERE username = @username AND password = @oldPassword";
-                Dictionary<string, object> parameters = new()
+                // Update the user's password
+
+                if (newPassword == confirmedPassword)
                 {
-                    { "@username", username },
-                    { "@newPassword", newPassword },
-                    { "@oldPassword", oldPassword },
-                    { "@newRole", newRole }
-                };
-                int rowCount = sqlitehelper.ExecuteNonQuery(editUserPassword, parameters);
-                if (rowCount >= 1) { isChanged = true;  } else throw new Exception("Not row effected");
-                sqlitehelper.CommitTransaction();
-                
+
+                    User userToUpdate = await db.Table<User>().Where(u => u.username == username).FirstOrDefaultAsync();
+
+                    if (userToUpdate != null)
+                    {
+                        userToUpdate.password = newPassword;
+                        userToUpdate.role = newRole;
+                        await db.RunInTransactionAsync(tran =>
+                        {
+                            tran.Update(userToUpdate);
+                        });
+                        LoadAllUser();
+                        CusMsgBox.Show("Change user info successfully !", "Edit User", Enums.ViewEnums.ButtonStyleMessageBox.OK, Enums.ViewEnums.ImageStyleMessageBox.Info);
+                    }
+                    else
+                    {
+                        CusMsgBox.Show("User not found for updating", "Edit User", Enums.ViewEnums.ButtonStyleMessageBox.OK, Enums.ViewEnums.ImageStyleMessageBox.Error);
+                    }
+                }
+                else
+                {
+                    CusMsgBox.Show("Unmatched Password", "Edit User", Enums.ViewEnums.ButtonStyleMessageBox.OK, Enums.ViewEnums.ImageStyleMessageBox.Error);
+                }
+
+
             }
             catch (Exception)
             {
                 isChanged = false;
-                sqlitehelper.RollbackTransaction();
                 CusMsgBox.Show("Change user info failed !", "Edit User", Enums.ViewEnums.ButtonStyleMessageBox.OK, Enums.ViewEnums.ImageStyleMessageBox.Error);
             }
             finally
@@ -182,7 +212,6 @@ namespace DipesLink.Views.SubWindows
                 {
                     CusMsgBox.Show($"Change info for {username} done !", "Edit User", Enums.ViewEnums.ButtonStyleMessageBox.OK, Enums.ViewEnums.ImageStyleMessageBox.Info);
                 }
-                sqlitehelper.CloseConnection();
             }
 
         }
@@ -192,29 +221,33 @@ namespace DipesLink.Views.SubWindows
             string curUsername = Application.Current.Properties["Username"].ToString();
             return curUsername == username;
         }
-        private void DeleteUser(string username)
+        private async void DeleteUser(string username)
         {
             bool isDeleted = false;
-            using SQLiteHelper sqlitehelper = new(SharedValues.ConnectionString);
-            sqlitehelper.OpenConnection();
-            sqlitehelper.BeginTransaction();
-
             try
             {
-                string deleteUserCommand = @"DELETE FROM users WHERE username = @username";
-                Dictionary<string, object> parameters = new()
-                {
-                    { "@username", username }
-                };
+                User userToDelete = await db.Table<User>().Where(u => u.username == username).FirstOrDefaultAsync();
 
-                sqlitehelper.ExecuteNonQuery(deleteUserCommand, parameters);
-                sqlitehelper.CommitTransaction();
-                isDeleted = true;
+                if (userToDelete != null)
+                {
+                    await db.RunInTransactionAsync(tran =>
+                    {
+                        tran.Delete(userToDelete);
+                    });
+                    isDeleted = true;
+                    LoadAllUser();
+                    CusMsgBox.Show("delete user successfully !", "Delete User", Enums.ViewEnums.ButtonStyleMessageBox.OK, Enums.ViewEnums.ImageStyleMessageBox.Info);
+                }
+                else
+                {
+                    CusMsgBox.Show("User not found !", "Delete User", Enums.ViewEnums.ButtonStyleMessageBox.OK, Enums.ViewEnums.ImageStyleMessageBox.Error);
+                }
+
             }
             catch (Exception)
             {
                 isDeleted = false;
-                sqlitehelper.RollbackTransaction();
+
                 CusMsgBox.Show("Delete User Failed !", "Delete User", Enums.ViewEnums.ButtonStyleMessageBox.OK, Enums.ViewEnums.ImageStyleMessageBox.Error);
             }
             finally
@@ -223,15 +256,12 @@ namespace DipesLink.Views.SubWindows
                 {
                     CusMsgBox.Show("Delete User Done !", "Delete User", Enums.ViewEnums.ButtonStyleMessageBox.OK, Enums.ViewEnums.ImageStyleMessageBox.Info);
                 }
-                sqlitehelper.CloseConnection();
             }
         }
-      
-
-  
 
         private void Red_Checked(object sender, RoutedEventArgs e)
         {
+
             if (isInit == true) { return; };
             var rad = sender as RadioButton;
             switch (rad.Name)
@@ -239,29 +269,42 @@ namespace DipesLink.Views.SubWindows
                 case "RadNew":
                     TextBoxPassword.IsEnabled = true;
                     ComboBoxRole.IsEnabled = true;
+                    ToggleStackPanel("RadNew");
                     break;
                 case "RadEdit":
                     TextBoxPassword.IsEnabled = true;
                     ComboBoxRole.IsEnabled = true;
+                    ToggleStackPanel("RadEdit");
                     break;
                 case "RadDel":
                     TextBoxPassword.IsEnabled = false;
-                    ComboBoxRole.IsEnabled = false; 
+                    ComboBoxRole.IsEnabled = false;
+                    ToggleStackPanel("RadDel");
                     break;
                 default:
                     break;
             }
         }
-
-        private void SubmitClick(object sender, RoutedEventArgs e)
+        public void ToggleStackPanel(string Rad)
+        {
+            if (Rad == "RadEdit")
+            {
+                MyStackPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                MyStackPanel.Visibility = Visibility.Collapsed;
+            }
+        }
+        private async void SubmitClick(object sender, RoutedEventArgs e)
         {
 
             //ADD NEW
-            if(RadNew.IsChecked == true)
+            if (RadNew.IsChecked == true)
             {
                 if (CheckInvalidInput())
                 {
-                    var res = CusMsgBox.Show("Create new user ?","Create new user", Enums.ViewEnums.ButtonStyleMessageBox.OKCancel,Enums.ViewEnums.ImageStyleMessageBox.Info);
+                    var res = CusMsgBox.Show("Create new user ?", "Create new user", Enums.ViewEnums.ButtonStyleMessageBox.OKCancel, Enums.ViewEnums.ImageStyleMessageBox.Info);
                     if (res)
                     {
                         CreateUser();
@@ -273,14 +316,8 @@ namespace DipesLink.Views.SubWindows
             //EDIT
             if (RadEdit.IsChecked == true)
             {
-                ConfirmOldPassword cfmOldPassWindow = new();
-                var res = cfmOldPassWindow.ShowDialog();
-                if (cfmOldPassWindow.IsConfirmed)
-                {
-                    EditUserPassword(TextBoxUsername.Text, TextBoxPassword.Text, OldPassword, ((ComboBoxItem)ComboBoxRole.SelectedItem).Content.ToString());
-                }
+                EditUserPassword(TextBoxUsername.Text, TextBoxPassword.Text, OldPassword, ((ComboBoxItem)ComboBoxRole.SelectedItem).Content.ToString(), ConfirmBoxPassword.Text);
             }
-
             //DELETE
             if (RadDel.IsChecked == true)
             {
@@ -306,13 +343,15 @@ namespace DipesLink.Views.SubWindows
             if (DataGridUsers.SelectedItem != null)
             {
                 var item = DataGridUsers.SelectedItem; // This is the row data.
-                                                  // Assuming the model has a property named 'Name'
-                var username = item.GetType().GetProperty("Username").GetValue(item, null);
+                                                       // Assuming the model has a property named 'Name'
+                                                       //var username = item.GetType().GetProperty("Username").GetValue(item, null);
+                var username = item.GetType().GetProperty("username").GetValue(item, null);
+
                 TextBoxUsername.Text = username.ToString();
-                var role = item.GetType().GetProperty("Role").GetValue(item, null);
-                if (role.ToString()=="Administrator")
+                var role = item.GetType().GetProperty("role").GetValue(item, null);
+                if (role.ToString() == "Administrator")
                 {
-                    ComboBoxRole.SelectedIndex =0;
+                    ComboBoxRole.SelectedIndex = 0;
                 }
                 else
                 {
@@ -320,5 +359,6 @@ namespace DipesLink.Views.SubWindows
                 }
             }
         }
+
     }
 }
