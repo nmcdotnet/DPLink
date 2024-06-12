@@ -20,17 +20,7 @@ namespace DipesLink.Views.UserControls.CustomControl
     /// </summary>
     public partial class IpAddressControl : UserControl
     {
-        // Định nghĩa RoutedEvent
-        //public static readonly RoutedEvent TextChangedEvent = EventManager.RegisterRoutedEvent(
-        //    "TextChanged", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(IpAddressControl));
-
-        //// .NET wrapper
-        //public event RoutedEventHandler TextChanged
-        //{
-        //    add { AddHandler(TextChangedEvent, value); }
-        //    remove { RemoveHandler(TextChangedEvent, value); }
-        //}
-        // Định nghĩa sự kiện TextChanged tùy chỉnh
+     
         public event TextChangedEventHandler TextChanged;
 
         public IpAddressControl()
