@@ -11,6 +11,7 @@
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <Window.Resources>
+
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/ComboBoxResDict.xaml" />
@@ -54,7 +55,7 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn
                         Width="*"
-                        Binding="{Binding Username}"
+                        Binding="{Binding username}"
                         Header="Username" />
                     <!--<DataGridTextColumn
                         Width="*"
@@ -69,7 +70,7 @@
                     </DataGridTemplateColumn>-->
                     <DataGridTextColumn
                         Width="*"
-                        Binding="{Binding Role}"
+                        Binding="{Binding role}"
                         Header="Role" />
                 </DataGrid.Columns>
             </DataGrid>
@@ -104,6 +105,7 @@
                         </RadioButton>
                         <RadioButton
                             x:Name="RadEdit"
+                            
                             Margin="10,0,0,0"
                             Checked="Red_Checked"
                             FontSize="16"
@@ -131,7 +133,10 @@
                     <StackPanel
                         Height="35"
                         Margin="0,10,0,0"
-                        Orientation="Horizontal">
+                        Orientation="Horizontal"
+                        
+                        
+                        >
                         <TextBlock
                             x:Name="TextPassword"
                             Width="120"
@@ -143,6 +148,28 @@
                             Height="30"
                             Style="{StaticResource TextBoxStyle1}" />
                     </StackPanel>
+
+                    <StackPanel
+                        Height="35"
+                        Margin="0,10,0,0"
+                        Orientation="Horizontal"
+                        x:Name="MyStackPanel"
+                        Visibility="Collapsed"
+                        >
+                        <TextBlock
+                            x:Name="ConfirmPassword"
+                            Width="130"
+                            VerticalAlignment="Center"
+                            Text="Confirm Password" />
+                        <TextBox
+                            x:Name="ConfirmBoxPassword"
+                            Margin="10 0 0 0"
+                            Width="110"
+                            Height="30"
+                            Style="{StaticResource TextBoxStyle1}"  />
+                    </StackPanel>
+
+
 
                     <StackPanel
                         Height="35"

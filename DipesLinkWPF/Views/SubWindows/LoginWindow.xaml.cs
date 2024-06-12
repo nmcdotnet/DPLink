@@ -2,8 +2,14 @@
 using DipesLink.Views.Extension;
 using RelationalDatabaseHelper.SQLite;
 using SharedProgram.Shared;
+using SQLite;
 using System.Windows;
 using System.Windows.Input;
+using SQLitePCL;
+using System.Windows.Controls;
+
+using System.Transactions;
+using System.IO;
 
 
 namespace DipesLink.Views.SubWindows
@@ -23,7 +29,6 @@ namespace DipesLink.Views.SubWindows
             CreateDefaultUser.Init();
             GetRememberLoginInfo();
 
-
         }
         private void GetRememberLoginInfo()
         {
@@ -40,35 +45,37 @@ namespace DipesLink.Views.SubWindows
         {
             Username = TextBoxUsername.Text;
             Password = TextBoxPassword.Password;
-            if(CheckBoxRememberme.IsChecked!=null) IsRememberMe = (bool)CheckBoxRememberme.IsChecked;
+            if (CheckBoxRememberme.IsChecked != null) IsRememberMe = (bool)CheckBoxRememberme.IsChecked;
         }
-
-        private void LoginAction()
+        private void Login_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                LoginAction();
+            }
+        }
+        private async void LoginAction()
         {
             GetInputsValues();
             if (Username == null || Password == null) { return; }
-            using SQLiteHelper sqlitehelper = new(SharedValues.ConnectionString);
-            sqlitehelper.OpenConnection();
-            sqlitehelper.BeginTransaction();
+            // thinh is fixing
+            var databasePath = Path.Combine(SharedPaths.PathAccountsDb, "MyData.db");
+            var options = new SQLiteConnectionString(databasePath, true, key: "123456");
+            var db = new SQLiteAsyncConnection(options);
+
+            // Retrieve all records from the User table asynchronously
+            var users = await db.Table<User>().ToListAsync();
             try
             {
-                string commmand = @"SELECT * FROM users WHERE username = @username AND password = @password;";
-                Dictionary<string, object> parameters = new()
-                {
-                    { "@username", Username },
-                    { "@password", Password }
-                };
-                var user = sqlitehelper.ExecuteQuery(commmand, parameters).ToList().FirstOrDefault();
+                var user = users.FirstOrDefault(u => u.username == Username);
                 if (user != null)
                 {
-                    user.TryGetValue("username", out var resUsername);
-                    user.TryGetValue("password", out var resPassword);
-                    user.TryGetValue("role", out var resRole);
-                    if (resUsername != null) Application.Current.Properties["Username"] = resUsername.ToString();
-                    if (resRole!=null) Application.Current.Properties["UserRole"] = AuthorizationHelper.GetRole(resRole); // save role
-                    if (resUsername != null && resPassword! != null)
+                    if (user.username != null) Application.Current.Properties["Username"] = user.username.ToString();
+                    if (user.role != null) Application.Current.Properties["UserRole"] = AuthorizationHelper.GetRole(user.role); // save role
+
+                    if (user.username != null && user.password! != null)
                     {
-                        if (Username == resUsername.ToString() && Password == resPassword.ToString())
+                        if (Username == user.username.ToString() && Password == user.password.ToString())
                         {
                             IsLoggedIn = true;
                             Hide();
@@ -81,29 +88,24 @@ namespace DipesLink.Views.SubWindows
                                 SecureStorage.SaveCredentials("", "");
                             }
                         }
+                        else
+                        {
+                            CusMsgBox.Show("Username or password is incorrect !", "Login", Enums.ViewEnums.ButtonStyleMessageBox.OK, Enums.ViewEnums.ImageStyleMessageBox.Error);
+                        }
                     }
+
+
                 }
-                else
-                {
-                    CusMsgBox.Show("Username or password is incorrect !", "Login", Enums.ViewEnums.ButtonStyleMessageBox.OK, Enums.ViewEnums.ImageStyleMessageBox.Error);
-                    //MessageBox.Show("Username not exist !");
-                    //CusMsgBox.Show("Username or password is incorrect !","Login Fail",Enums.ViewEnums.ButtonStyleMessageBox.OK,Enums.ViewEnums.ImageStyleMessageBox.Error);
-                }
+
             }
             catch (Exception)
             {
-                sqlitehelper.RollbackTransaction();
                 CusMsgBox.Show("Username or password is incorrect !", "Login", Enums.ViewEnums.ButtonStyleMessageBox.OK, Enums.ViewEnums.ImageStyleMessageBox.Error);
-                //CusMsgBox.Show("Username or password is incorrect !", "Login Fail", Enums.ViewEnums.ButtonStyleMessageBox.OK, Enums.ViewEnums.ImageStyleMessageBox.Error);
-                //MessageBox.Show("Login Fail");
-            }
-            finally
-            {
-                sqlitehelper.CloseConnection();
+
             }
         }
 
-        
+
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DragMove();

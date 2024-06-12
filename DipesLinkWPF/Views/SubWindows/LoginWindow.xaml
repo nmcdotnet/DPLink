@@ -259,7 +259,7 @@
                                         VerticalScrollBarVisibility="Hidden" />
 
                                 </Grid>
-                              </Border>
+                            </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsEnabled" Value="false">
                                     <Setter TargetName="border" Property="Opacity" Value="0.56" />
@@ -343,6 +343,7 @@
                     Width="250"
                     Height="35"
                     FontSize="15"
+                    KeyDown="Login_KeyDown"
                     Style="{DynamicResource TextBoxStyle1}" />
 
                 <PasswordBox x:Name="TextBoxPassword"
@@ -350,6 +351,7 @@
                     Width="250"
                     Height="35"
                     FontSize="15"
+                    KeyDown="Login_KeyDown"         
                     PasswordChar="*"
                     Style="{DynamicResource PasswordBoxStyle1}" />
 
