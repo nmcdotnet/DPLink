@@ -34,7 +34,6 @@
     <PackageReference Include="MahApps.Metro" Version="2.4.10" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2478.35" />
     <PackageReference Include="sqlite-net-sqlcipher" Version="1.9.172" />
-    <PackageReference Include="SQLitePCLRaw.bundle_sqlcipher" Version="1.1.14" />
     <PackageReference Include="TAlex.WPF.Controls" Version="3.0.3" />
     <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />
   </ItemGroup>

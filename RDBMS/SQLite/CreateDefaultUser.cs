@@ -1,12 +1,7 @@
-﻿using Microsoft.VisualBasic.ApplicationServices;
-using SharedProgram.Shared;
-using static System.Windows.Forms.LinkLabel;
+﻿using SharedProgram.Shared;
 //using SQLite;
 using SQLitePCL;
 using SQLite;
-using System.Windows.Controls;
-using System.Windows;
-using System.Transactions;
 namespace RelationalDatabaseHelper.SQLite
 {
     public class User
@@ -27,8 +22,8 @@ namespace RelationalDatabaseHelper.SQLite
         public static async void Init()
         {
             //Create Account Database Directory
-
-            if (!Directory.Exists(SharedPaths.PathAccountsDb))
+            var dbPath = (SharedPaths.PathAccountsDb + "\\AccountDB.db");
+            if (!File.Exists(dbPath))
             {
                 //var options = new SQLiteConnectionString(SharedPaths.PathAccountsDb, true, key: "password");
 
@@ -37,7 +32,7 @@ namespace RelationalDatabaseHelper.SQLite
 
                 // Get an absolute path to the database file
 
-                var databasePath = Path.Combine(SharedPaths.PathAccountsDb, "MyData.db");
+                var databasePath = Path.Combine(SharedPaths.PathAccountsDb, "AccountDB.db");
                 SQLiteConnectionString options = new(databasePath, true, key: "123456");
                 SQLiteAsyncConnection db = new(options);
                 await db.CreateTableAsync<User>();
