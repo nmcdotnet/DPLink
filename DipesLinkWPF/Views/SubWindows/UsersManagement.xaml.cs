@@ -33,7 +33,7 @@ namespace DipesLink.Views.SubWindows
         }
         void InitDatabase()
         {
-            var databasePath = Path.Combine(SharedPaths.PathAccountsDb, "MyData.db");
+            var databasePath = Path.Combine(SharedPaths.PathAccountsDb, "AccountDB.db");
             SQLiteConnectionString options = new(databasePath, true, key: "123456");
             db = new SQLiteAsyncConnection(options);
         }

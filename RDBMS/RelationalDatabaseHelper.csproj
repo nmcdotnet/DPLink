@@ -8,8 +8,6 @@
 
   <ItemGroup>
     <PackageReference Include="sqlite-net-sqlcipher" Version="1.9.172" />
-    <PackageReference Include="SQLitePCLRaw.bundle_sqlcipher" Version="1.1.14" />
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.117" />
   </ItemGroup>
 
   <ItemGroup>

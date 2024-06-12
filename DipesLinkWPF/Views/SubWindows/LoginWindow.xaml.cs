@@ -3,13 +3,9 @@ using DipesLink.Views.Extension;
 using RelationalDatabaseHelper.SQLite;
 using SharedProgram.Shared;
 using SQLite;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
-using SQLitePCL;
-using System.Windows.Controls;
-
-using System.Transactions;
-using System.IO;
 
 
 namespace DipesLink.Views.SubWindows
@@ -59,7 +55,7 @@ namespace DipesLink.Views.SubWindows
             GetInputsValues();
             if (Username == null || Password == null) { return; }
             // thinh is fixing
-            var databasePath = Path.Combine(SharedPaths.PathAccountsDb, "MyData.db");
+            var databasePath = Path.Combine(SharedPaths.PathAccountsDb, "AccountDB.db");
             var options = new SQLiteConnectionString(databasePath, true, key: "123456");
             var db = new SQLiteAsyncConnection(options);
 
@@ -93,15 +89,12 @@ namespace DipesLink.Views.SubWindows
                             CusMsgBox.Show("Username or password is incorrect !", "Login", Enums.ViewEnums.ButtonStyleMessageBox.OK, Enums.ViewEnums.ImageStyleMessageBox.Error);
                         }
                     }
-
-
                 }
 
             }
             catch (Exception)
             {
                 CusMsgBox.Show("Username or password is incorrect !", "Login", Enums.ViewEnums.ButtonStyleMessageBox.OK, Enums.ViewEnums.ImageStyleMessageBox.Error);
-
             }
         }
 
@@ -115,7 +108,6 @@ namespace DipesLink.Views.SubWindows
         {
             Close();
         }
-
         private void ButtonLogin_Click(object sender, RoutedEventArgs e)
         {
             LoginAction();
