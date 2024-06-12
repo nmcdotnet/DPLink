@@ -25,16 +25,18 @@ namespace DipesLink_SDK_PLC
         private readonly int _Index;
         private CancellationTokenSource _ThreadReceiveDataCts = new();
        
-
+        IPCSharedHelper? _ipc;
         string oldIP = "";
         string oldPort = "";
 
 
-        public S7TCPIP(int index)
+        public S7TCPIP(int index, IPCSharedHelper? ipc)
         {
             _Index = index;
+            _ipc = ipc;
             MonitorConnection();
             SharedEventsIpc.ControllerStatusChanged += SharedEventsIpc_ControllerStatusChanged;
+         
         }
 
         public static void RaiseOnPODReceiveDataEventEvent(string data)
@@ -60,7 +62,7 @@ namespace DipesLink_SDK_PLC
                     controllerSts = ControllerStatus.Disconnected;
                 }
                
-                MemoryTransfer.SendControllerStatusToUI(_Index, controllerSts);
+                MemoryTransfer.SendControllerStatusToUI(_ipc,_Index, controllerSts);
             }
             catch (Exception)
             {

@@ -32,13 +32,14 @@ namespace DipesLink_SDK_Cameras
         private DataManSystem? _dataManSystem;
         private ResultCollector? _results;
         private ISystemConnector? _connector;
+        IPCSharedHelper? _ipc;
 
         #endregion
 
-        public DatamanCamera(int index)
+        public DatamanCamera(int index, IPCSharedHelper? ipc)
         {
             _index = index;
-
+            _ipc = ipc;
             SharedEventsIpc.CameraStatusChanged += SharedEvents_DeviceStatusChanged;
             SharedEvents.OnCameraOutputSignalChange += SharedEvents_OnCameraOutputSignalChange;
 
@@ -93,7 +94,7 @@ namespace DipesLink_SDK_Cameras
                 {
                     camsts = IPCSharedMemory.Datatypes.Enums.CameraStatus.Disconnected;
                 }
-                MemoryTransfer.SendCameraStatusToUI(_index, camsts);
+                MemoryTransfer.SendCameraStatusToUI(_ipc,_index, camsts);
             }
             catch (Exception) { }
         }

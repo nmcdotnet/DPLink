@@ -45,9 +45,11 @@ namespace DipesLinkDeviceTransfer
                 // Save to List
                 _ListPrintedCodeObtainFromFile = databaseTsk.Result;
                 _ListCheckedResultCode = checkedResultTsk.Result;
-                
-                MemoryTransfer.SendDatabaseToUIFirstTime(JobIndex,DataConverter.ToByteArray(_ListPrintedCodeObtainFromFile)); // Send saved DB to UI
-                MemoryTransfer.SendCheckedDatabaseToUIFirstTime(JobIndex, DataConverter.ToByteArray(_ListCheckedResultCode)); // Send checked list to UI
+
+                MemoryTransfer.SendDatabaseToUIFirstTime(_ipcDeviceToUISharedMemory_DB, JobIndex, DataConverter.ToByteArray(_ListPrintedCodeObtainFromFile)); // Send saved DB to UI
+                MemoryTransfer.SendCheckedDatabaseToUIFirstTime(_ipcDeviceToUISharedMemory_DB, JobIndex, DataConverter.ToByteArray(_ListCheckedResultCode)); // Send checked list to UI
+                //MemoryTransfer.SendDatabaseToUIFirstTime(JobIndex,DataConverter.ToByteArray(_ListPrintedCodeObtainFromFile)); // Send saved DB to UI
+                //MemoryTransfer.SendCheckedDatabaseToUIFirstTime(JobIndex, DataConverter.ToByteArray(_ListCheckedResultCode)); // Send checked list to UI
 
 #if DEBUG
                 Console.WriteLine("\nDatabase: {0} raw", _ListPrintedCodeObtainFromFile.Count-1);

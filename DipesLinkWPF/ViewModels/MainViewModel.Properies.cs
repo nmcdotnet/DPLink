@@ -2,6 +2,7 @@
 using DipesLink.Models;
 using DipesLink.Views.Models;
 using FontAwesome.Sharp;
+using IPCSharedMemory;
 using SharedProgram.Models;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -176,7 +177,7 @@ namespace DipesLink.ViewModels
       
 
 
-        private ObservableCollection<TabItemModel> _TabStation  = new ObservableCollection<TabItemModel>();
+        private ObservableCollection<TabItemModel> _TabStation  = new();
         public ObservableCollection<TabItemModel> TabStation
         {
             get { return _TabStation; }
@@ -190,7 +191,12 @@ namespace DipesLink.ViewModels
             }
         }
 
-      
+
+        private IPCSharedHelper? _ipcDeviceToUISharedMemory_DT;
+        private IPCSharedHelper? _ipcUIToDeviceSharedMemory_DT;
+        private IPCSharedHelper? _ipcDeviceToUISharedMemory_DB;
+        private IPCSharedHelper? _ipcDeviceToUISharedMemory_RD;
+
 
     }
 

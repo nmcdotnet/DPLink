@@ -841,11 +841,11 @@
                             Height="50"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
-                            gif:ImageBehavior.AnimatedSource="pack://application:,,,/Images/IsLoading.gif"
+                            gif:ImageBehavior.AnimatedSource="/Images/LoadingIcon.gif"
                             Stretch="Uniform"
                             Visibility="{Binding IsShowLoadingDB}" />
 
-
+                        <!--pack://application:,,,/Images/IsLoading.gif-->
                         <TextBlock
                             Grid.Row="2"
                             Margin="20,0,0,0"
@@ -869,7 +869,7 @@
                             Height="50"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
-                            gif:ImageBehavior.AnimatedSource="pack://application:,,,/Images/IsLoading.gif"
+                            gif:ImageBehavior.AnimatedSource="/Images/LoadingIcon.gif"
                             Stretch="Uniform"
                             Visibility="{Binding IsShowLoadingChecked}" />
                     </Grid>

@@ -47,7 +47,7 @@ namespace DipesLink.ViewModels
         
         public MainViewModel()
         {
-            
+            InitInstanceIPC();
             ViewModelSharedFunctions.LoadSetting();
             _NumberOfStation = ViewModelSharedValues.Settings.NumberOfStation;
             StationSelectedIndex = _NumberOfStation > 0 ? _NumberOfStation - 1 : StationSelectedIndex;
@@ -57,6 +57,15 @@ namespace DipesLink.ViewModels
 
             InitStations(_NumberOfStation);
 
+        }
+
+        
+        private void InitInstanceIPC()
+        {
+            _ipcDeviceToUISharedMemory_DT = new(JobIndex, "DeviceToUISharedMemory_DT", SharedValues.SIZE_1MB);
+            _ipcUIToDeviceSharedMemory_DT = new(JobIndex, "UIToDeviceSharedMemory_DT", SharedValues.SIZE_1MB);
+            _ipcDeviceToUISharedMemory_DB = new(JobIndex, "DeviceToUISharedMemory_DB", SharedValues.SIZE_200MB);
+            _ipcDeviceToUISharedMemory_RD = new(JobIndex, "DeviceToUISharedMemory_RD", SharedValues.SIZE_100MB);
         }
 
         private void InitDir()
@@ -200,7 +209,7 @@ namespace DipesLink.ViewModels
                     byte[] indexBytes = SharedFunctions.StringToFixedLengthByteArray(stationIndex.ToString(), 1);
                     byte[] actionTypeBytes = SharedFunctions.StringToFixedLengthByteArray(((int)ActionButtonType.Reprint).ToString(), 1);
                     byte[] combineBytes = SharedFunctions.CombineArrays(indexBytes, actionTypeBytes);
-                    MemoryTransfer.SendActionButtonToDevice(stationIndex, combineBytes);
+                    MemoryTransfer.SendActionButtonToDevice(_ipcDeviceToUISharedMemory_DT,stationIndex, combineBytes);
                 }
                 catch (Exception) { }
             }
@@ -350,7 +359,7 @@ namespace DipesLink.ViewModels
         #region  GET PRINTING PARAMS AND STATUS
         private async void ListenProcess(int stationIndex)
         {
-            using IPCSharedHelper ipc = new(stationIndex, "DeviceToUISharedMemory", 1024 * 1024 * 1, isReceiver: true);
+            using IPCSharedHelper ipc = new(stationIndex, "DeviceToUISharedMemory_DT", 1024 * 1024 * 1, isReceiver: true);
             while (true)
             {
                

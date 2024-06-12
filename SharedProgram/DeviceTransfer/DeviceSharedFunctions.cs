@@ -31,6 +31,9 @@ namespace SharedProgram.DeviceTransfer
                 DeviceSharedValues.VPObject.FailedDataSentToPrinter = connectParams.FailedDataSentToPrinter;
                 SharedEvents.RaiseOnVerifyAndPrindSendDataMethod();
 #if DEBUG
+                Console.WriteLine("Camera IP : " + DeviceSharedValues.CameraIP);
+                Console.WriteLine("Printer IP : " + DeviceSharedValues.PrinterIP);
+                Console.WriteLine("Controller IP : " + DeviceSharedValues.ControllerIP);
                 //Console.WriteLine("Basic mode ? : " + DeviceSharedValues.VPObject.VerifyAndPrintBasicSentMethod);
                 //Console.WriteLine("Fail Data: " + DeviceSharedValues.VPObject.FailedDataSentToPrinter);
                 //Console.WriteLine("Print POD List: ");

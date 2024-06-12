@@ -42,14 +42,14 @@ namespace DipesLink.ViewModels
             ActionButtonProcess(index, ActionButtonType.Trigger);
         }
 
-        internal static void ActionButtonProcess(int stationIndex, ActionButtonType buttonType)
+        internal  void ActionButtonProcess(int stationIndex, ActionButtonType buttonType)
         {
             try
             {
                 byte[] indexBytes = SharedFunctions.StringToFixedLengthByteArray(stationIndex.ToString(), 1);
                 byte[] actionTypeBytes = DataConverter.ToByteArray(buttonType); //SharedFunctions.StringToFixedLengthByteArray(((int)buttonType).ToString(), 1);
                 byte[] combineBytes = SharedFunctions.CombineArrays(indexBytes, actionTypeBytes);
-                MemoryTransfer.SendActionButtonToDevice(stationIndex, combineBytes);
+                MemoryTransfer.SendActionButtonToDevice(_ipcDeviceToUISharedMemory_DT,stationIndex, combineBytes);
             }
             catch (Exception) { }
         }

@@ -30,7 +30,7 @@ namespace DipesLink_SDK_Printers
         private readonly byte _EndPackage = 0x03;
         private readonly ConcurrentQueue<int> _PackagesQueue = new();
         private CancellationTokenSource _ThreadReceiveDataCts = new();
-
+        IPCSharedHelper? _ipc;
         private readonly ReceivedType _ReceivedType;
         public enum ReceivedType
         {
@@ -40,9 +40,10 @@ namespace DipesLink_SDK_Printers
         string oldIP = "";
         string oldPort = "";
 
-        public RynanRPrinterTCPClient(int index)
+        public RynanRPrinterTCPClient(int index,IPCSharedHelper? ipc)
         {
             _Index = index;
+            _ipc = ipc;
             MonitorPrinterConnection();
             SharedEventsIpc.PrinterStatusChanged += SharedEvents_PrinterStatusChanged;
         }
@@ -311,7 +312,7 @@ namespace DipesLink_SDK_Printers
                 {
                     printerSts = PrinterStatus.Disconnected;
                 }
-                MemoryTransfer.SendPrinterStatusToUI(_Index, printerSts);
+                MemoryTransfer.SendPrinterStatusToUI(_ipc,_Index, printerSts);
             }
             catch (Exception)
             {

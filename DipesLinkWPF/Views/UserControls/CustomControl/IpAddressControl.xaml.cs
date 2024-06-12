@@ -81,7 +81,7 @@ namespace DipesLink.Views.UserControls.CustomControl
         {
             e.Handled = !int.TryParse(e.Text, out int value);
             var tb = sender as TextBox;
-            if (tb != null && tb.Text.Length >= 3)
+            if (tb != null && (tb.Text.Length >= 3 && tb.SelectionLength == 0) || (tb?.Text.Length == 0 && e.Text == ".") && !(tb.SelectedText.Length == tb.Text.Length) )
             {
                 e.Handled = true;
             }
@@ -92,7 +92,7 @@ namespace DipesLink.Views.UserControls.CustomControl
             var tb = sender as TextBox;
             if (tb != null)
             {
-                if ((e.Key == Key.OemPeriod || e.Key == Key.Decimal) && tb.Text.Length == 3)
+                if ((e.Key == Key.OemPeriod || e.Key == Key.Decimal))
                 {
                     e.Handled = true;
                     Dispatcher.BeginInvoke((Action)(() =>

@@ -433,7 +433,7 @@ namespace DipesLink.ViewModels
                 byte[] indexBytes = SharedFunctions.StringToFixedLengthByteArray(jobIndex.ToString(), 1);
                 byte[] actionTypeBytes = SharedFunctions.StringToFixedLengthByteArray(((int)ActionButtonType.ReloadTemplate).ToString(), 1);
                 byte[] combineBytes = SharedFunctions.CombineArrays(indexBytes, actionTypeBytes);
-                MemoryTransfer.SendActionButtonToDevice(jobIndex, combineBytes);
+                MemoryTransfer.SendActionButtonToDevice(_ipcDeviceToUISharedMemory_DT,jobIndex, combineBytes);
             }
             catch (Exception) { }
         }

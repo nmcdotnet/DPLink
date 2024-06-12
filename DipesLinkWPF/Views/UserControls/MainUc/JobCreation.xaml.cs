@@ -207,6 +207,7 @@ namespace DipesLink.Views.UserControls.MainUc
                     RadioButtonAfterProduction.IsChecked = false;
                     RadioButtonOnProduction.IsChecked = false;
                     RadioButtonVerifyAndPrint.IsChecked = false;
+                    CurrentViewModel<MainViewModel>().CreateNewJob.JobType = SharedProgram.DataTypes.CommonDataType.JobType.StandAlone;
                     break;
                 case "RadioButtonRynanSeries":
                     GroupBoxJobType.IsEnabled = true;

@@ -33,7 +33,7 @@
                 Height="90"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
-                gif:ImageBehavior.AnimatedSource="pack://application:,,,/Images/IsLoading.gif"
+                gif:ImageBehavior.AnimatedSource="pack://application:,,,/Images/LoadingIcon.gif"
                 Stretch="Uniform" />
         </Grid>
     </Grid>

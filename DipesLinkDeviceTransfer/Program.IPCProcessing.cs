@@ -14,14 +14,15 @@ namespace DipesLinkDeviceTransfer
     /// 
     public partial class Program
     {
-        private void ListenConnectionParam(int index)
+        private void ListenConnectionParam()
         {
             Task.Run(async () =>
             {
-                using IPCSharedHelper ipc = new(index, "UIToDeviceSharedMemory", isReceiver: true);
+                _ipcUIToDeviceSharedMemory_DT = new(JobIndex, "UIToDeviceSharedMemory_DT", SharedValues.SIZE_1MB,isReceiver: true);
+                if (_ipcUIToDeviceSharedMemory_DT == null) return;
                 while (true)
                 {
-                    bool isCompleteDequeue = ipc.MessageQueue.TryDequeue(out byte[]? result);
+                    bool isCompleteDequeue = _ipcUIToDeviceSharedMemory_DT.MessageQueue.TryDequeue(out byte[]? result);
                     if (isCompleteDequeue && result != null)
                     {
                         switch (result[0])
@@ -42,7 +43,7 @@ namespace DipesLinkDeviceTransfer
                                 break;
                         }
                     }
-                    await Task.Delay(1);
+                    await Task.Delay(10);
                 }
             });
         }
@@ -109,8 +110,8 @@ namespace DipesLinkDeviceTransfer
                         var fullMess = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + ": " + message + "\n";
                      //   Console.WriteLine("Full mess: " + fullMess);
                         var data = DataConverter.ToByteArray(fullMess);
-                      //  Console.WriteLine(data.Length);
-                        MemoryTransfer.SendControllerResponseMessageToUI(JobIndex, data);
+                        //  Console.WriteLine(data.Length);
+                        MemoryTransfer.SendControllerResponseMessageToUI(_ipcDeviceToUISharedMemory_DT, JobIndex, data);
                     }
                 }
             }
@@ -131,7 +132,7 @@ namespace DipesLinkDeviceTransfer
                 {
                     try
                     {
-                        MemoryTransfer.SendOperationStatusToUI(JobIndex, DataConverter.ToByteArray(SharedValues.OperStatus));
+                        MemoryTransfer.SendOperationStatusToUI(_ipcDeviceToUISharedMemory_DT, JobIndex, DataConverter.ToByteArray(SharedValues.OperStatus));
                         // await Console.Out.WriteLineAsync("ConnecttionPrinter State : " + SharedValues.OperStatus);
                     }
                     catch (Exception) { }
@@ -156,7 +157,7 @@ namespace DipesLinkDeviceTransfer
                         _isLoadFirstDb = true;
                         break;
                     case ActionButtonType.Start:
-                        await Console.Out.WriteLineAsync("sdafasdfsadf");
+                      //  await Console.Out.WriteLineAsync("sdafasdfsadf");
                         _isStopOrPauseAction = false;
                             StartProcessAction(false); // Start without DB Load  
                         break;
@@ -281,9 +282,9 @@ namespace DipesLinkDeviceTransfer
                 await Console.Out.WriteLineAsync(ex.Message);
             }
         }
-        private static void NotificationProcess(NotifyType notifyType)
+        private  void NotificationProcess(NotifyType notifyType)
         {
-            MemoryTransfer.SendMessageJobStatusToUI(JobIndex, DataConverter.ToByteArray(notifyType));
+            MemoryTransfer.SendMessageJobStatusToUI(_ipcDeviceToUISharedMemory_DT, JobIndex, DataConverter.ToByteArray(notifyType));
         }
 
     }

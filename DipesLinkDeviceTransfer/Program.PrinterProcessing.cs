@@ -994,7 +994,13 @@ namespace DipesLinkDeviceTransfer
                             detectModel.ProcessingDateTime = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fff");
 
                             // For Standalone Mode
-                            // Todo
+                            if (isDBStandalone)
+                            {
+                                if (detectModel.CompareResult == ComparisonResult.Valid)
+                                {
+                                   // _Que.Enqueue(detectModel.Text);
+                                }
+                            }
                             // Add result compare to buffer
                             _QueueBufferCameraDataCompared.Enqueue(detectModel);
                            
@@ -1505,7 +1511,7 @@ namespace DipesLinkDeviceTransfer
         /// Get Printer Template by Command 
         /// </summary>
         /// 
-        public static void ObtainPrintProductTemplateList()
+        public  void ObtainPrintProductTemplateList()
         {
             Task requestTemplateTask = Task.Run(async () =>
             {
@@ -1518,10 +1524,10 @@ namespace DipesLinkDeviceTransfer
             });
         }
 
-        private static void SendTemplateListToUI(int index, string[] printerTemplate)
+        private  void SendTemplateListToUI(int index, string[] printerTemplate)
         {
             byte[] byteRes = DataConverter.ToByteArray(printerTemplate);
-            MemoryTransfer.SendPrinterTemplateListToUI(index, byteRes);
+            MemoryTransfer.SendPrinterTemplateListToUI(_ipcDeviceToUISharedMemory_DT, index, byteRes);
         }
 
         private void ReleaseIPCTask()
@@ -1563,7 +1569,7 @@ namespace DipesLinkDeviceTransfer
                         {
                             //   Console.WriteLine($"Sent:  {sentNumber}");
                             sentDataNumberBytes = SharedFunctions.StringToFixedLengthByteArray(_countSentCode.ToString(), 7); // max 2000000
-                            MemoryTransfer.SendCounterSentToUI(JobIndex, sentDataNumberBytes);
+                            MemoryTransfer.SendCounterSentToUI(_ipcDeviceToUISharedMemory_DT, JobIndex, sentDataNumberBytes);
                         }
 
                         // Received POD Number
@@ -1571,7 +1577,8 @@ namespace DipesLinkDeviceTransfer
                         {
                             // Console.WriteLine($"Received: {receivedNumber}");
                             receivedDataNumberBytes = SharedFunctions.StringToFixedLengthByteArray(_countReceivedCode.ToString(), 7); // max 2000000
-                            MemoryTransfer.SendCounterReceivedToUI(JobIndex, receivedDataNumberBytes);
+                                                                                                                                      //MemoryTransfer.SendCounterReceivedToUI(JobIndex, receivedDataNumberBytes);
+                            MemoryTransfer.SendCounterReceivedToUI(_ipcDeviceToUISharedMemory_DT, JobIndex, receivedDataNumberBytes);
                         }
 
                         // Printed Number
@@ -1580,14 +1587,16 @@ namespace DipesLinkDeviceTransfer
                             //  Console.WriteLine($"Printed:  {printedNumber}");
 
                             printedDataNumberBytes = SharedFunctions.StringToFixedLengthByteArray(printedNumber.ToString(), 7);
-                            MemoryTransfer.SendCounterPrintedToUI(JobIndex, printedDataNumberBytes);
+                            //MemoryTransfer.SendCounterPrintedToUI(JobIndex, printedDataNumberBytes);
+                            MemoryTransfer.SendCounterPrintedToUI(_ipcDeviceToUISharedMemory_DT, JobIndex, printedDataNumberBytes);
                         }
 
                         //Current position (index and page)
                         if (_QueueCurrentPositionInDatabase.TryDequeue(out byte[]? currentPos)) // Current Pos in Databse (index and page)
                         {
                             //await Console.Out.WriteLineAsync("Current Pos: " + currentPos.ToString());
-                            MemoryTransfer.SendCurrentPosDatabaseToUI(JobIndex, currentPos);
+                            //MemoryTransfer.SendCurrentPosDatabaseToUI(JobIndex, currentPos);
+                            MemoryTransfer.SendCurrentPosDatabaseToUI(_ipcDeviceToUISharedMemory_DT, JobIndex, currentPos);
                         }
                         await Task.Delay(1);
                     }
@@ -1654,7 +1663,8 @@ namespace DipesLinkDeviceTransfer
                         if (triggerData)
                         {
                             byte[] combineBytes = SharedFunctions.CombineArrays(totalCheckedNumberBytes, totalPassedNumberBytes, totalFailedNumberBytes);
-                            MemoryTransfer.SendCheckedStatisticsToUI(JobIndex, combineBytes);
+                            //MemoryTransfer.SendCheckedStatisticsToUI(JobIndex, combineBytes);
+                            MemoryTransfer.SendCheckedStatisticsToUI(_ipcDeviceToUISharedMemory_DT, JobIndex, combineBytes);
                         }
 
                         await Task.Delay(10);
@@ -1695,22 +1705,25 @@ namespace DipesLinkDeviceTransfer
                             //Printed Code
                             if (_QueuePrintedCode.TryDequeue(out string[]? data))
                             {
-                                MemoryTransfer.SendPrintedCodeRawToUI(JobIndex, DataConverter.ToByteArray(data));
+                                //  MemoryTransfer.SendPrintedCodeRawToUI(JobIndex, DataConverter.ToByteArray(data));
+                                MemoryTransfer.SendPrintedCodeRawToUI(_ipcDeviceToUISharedMemory_DT, JobIndex, DataConverter.ToByteArray(data));
                             }
 
                             //Detect Model Data
                             if (_QueueCheckedResultForUpdateUI.TryDequeue(out DetectModel? detectModel))
                             {
                                 var detectModelBytes = DataConverter.ToByteArray(detectModel);
-                                MemoryTransfer.SendDetectModelToUI(JobIndex, detectModelBytes);
+                                // MemoryTransfer.SendDetectModelToUI(JobIndex, detectModelBytes);
+                                MemoryTransfer.SendDetectModelToUI(_ipcDeviceToUISharedMemory_RD, JobIndex, detectModelBytes);
                             }
 
                             // Current Checked Result
                             if (_QueueCheckedResult.TryDequeue(out string[]? checkedResult))
                             {
                                 var checkedResultBytes = DataConverter.ToByteArray(checkedResult);
-                                MemoryTransfer.SendCheckedResultRawToUI(JobIndex, checkedResultBytes);
-                             //   await Console.Out.WriteLineAsync("Checked code: "+ checkedResultBytes.Count());
+                                //  MemoryTransfer.SendCheckedResultRawToUI(JobIndex, checkedResultBytes);
+                                MemoryTransfer.SendCheckedResultRawToUI(_ipcDeviceToUISharedMemory_RD, JobIndex, checkedResultBytes);
+                                //   await Console.Out.WriteLineAsync("Checked code: "+ checkedResultBytes.Count());
                             }
                         }
                         catch (Exception)
