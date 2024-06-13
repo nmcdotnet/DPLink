@@ -1,19 +1,14 @@
 ﻿using DipesLink.Extensions;
 using DipesLink.Models;
 using DipesLink.ViewModels;
-using DipesLink.Views.CustomDialogs;
 using DipesLink.Views.Extension;
 using DipesLink.Views.SubWindows;
 using DipesLink.Views.UserControls.MainUc;
-using System.Configuration;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Forms;
 using Application = System.Windows.Application;
-using Button = System.Windows.Controls.Button;
-using MessageBox = System.Windows.MessageBox;
 
 namespace DipesLink.Views
 {
@@ -156,7 +151,7 @@ namespace DipesLink.Views
             CallbackCommand(vm => vm.ChangeJobByDeviceStatSymbol(index));
         }
 
-        public void ComboBoxStationNum_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void ComboBoxStationNum_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             CurrentViewModel<MainViewModel>().CheckStationChange();
         }
@@ -234,15 +229,7 @@ namespace DipesLink.Views
 
         private void ToggleButton_Click(object sender, RoutedEventArgs e)
         {
-            var cbb = (ToggleButton)sender;
-            if (ListBoxMenu.SelectedIndex != -1)
-            {
-                ListBoxMenu.SelectedIndex = -1;
-            }
-            else
-            {
-                ListBoxMenu.SelectedIndex = 0;
-            }
+            ListBoxMenu.SelectedIndex = ListBoxMenu.SelectedIndex != -1 ? -1 : 0;
         }
     }
 }

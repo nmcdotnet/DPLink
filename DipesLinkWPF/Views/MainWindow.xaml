@@ -17,12 +17,8 @@
     d:Width="1920"
     WindowState="Maximized"
     mc:Ignorable="d">
-    <!--<Window.DataContext>
-        <vm:MainViewModel />
-    </Window.DataContext>-->
     <Window.Resources>
         <ResourceDictionary>
-
             <converter:OptToVis x:Key="OptToVis" />
 
             <!--  Common Var  -->
@@ -31,7 +27,6 @@
             <system:Double x:Key="MenuItemHeight">100</system:Double>
             <system:Double x:Key="MenuIconSize">30</system:Double>
             <system:Double x:Key="MenuItemSize">50</system:Double>
-
 
             <!--  Style for the ToggleButton  -->
             <Style x:Key="ViewToggleButtonStyle" TargetType="ToggleButton">
@@ -66,26 +61,13 @@
 
             <!--  Resource File  -->
             <ResourceDictionary.MergedDictionaries>
-
-
-
                 <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/ResourceDictionary.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/ComboBoxResDict.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/ButtonResDict.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/ListBoxResDict.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/ContextMenuResDict.xaml" />
-
-
-
             </ResourceDictionary.MergedDictionaries>
-
-            <!--  Add your icon resources  -->
-
-
-
-
         </ResourceDictionary>
-
     </Window.Resources>
 
     <Grid>
@@ -145,10 +127,6 @@
                             VerticalAlignment="Center"
                             Foreground="{StaticResource ColorMenuItem}"
                             Icon="Home" />
-                        <!--<TextBlock
-                            HorizontalAlignment="Center"
-                            Foreground="{StaticResource ColorMenuItem}"
-                            Text="Home" />-->
                     </StackPanel>
                 </ListBoxItem>
                 <ListBoxItem Height="{StaticResource MenuItemHeight}">
@@ -164,10 +142,6 @@
                             VerticalAlignment="Center"
                             Foreground="{StaticResource ColorMenuItem}"
                             Icon="FileCircleCheck" />
-                        <!--<TextBlock
-                            HorizontalAlignment="Center"
-                            Foreground="{StaticResource ColorMenuItem}"
-                            Text="Jobs" />-->
                     </StackPanel>
                 </ListBoxItem>
                 <ListBoxItem Height="{StaticResource MenuItemHeight}">
@@ -183,10 +157,6 @@
                             VerticalAlignment="Center"
                             Foreground="{StaticResource ColorMenuItem}"
                             Icon="Sliders" />
-                        <!--<TextBlock
-                            HorizontalAlignment="Center"
-                            Foreground="{StaticResource ColorMenuItem}"
-                            Text="Setting" />-->
                     </StackPanel>
                 </ListBoxItem>
                 <ListBoxItem Height="{StaticResource MenuItemHeight}">
@@ -202,10 +172,6 @@
                             VerticalAlignment="Center"
                             Foreground="{StaticResource ColorMenuItem}"
                             Icon="History" />
-                        <!--<TextBlock
-                            HorizontalAlignment="Center"
-                            Foreground="{StaticResource ColorMenuItem}"
-                            Text="Logs" />-->
                     </StackPanel>
                 </ListBoxItem>
             </ListBox>
@@ -313,14 +279,17 @@
 
             <Grid Grid.Row="1" Background="Transparent">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="43*"/>
-                    <ColumnDefinition Width="321*"/>
+                    <ColumnDefinition Width="43*" />
+                    <ColumnDefinition Width="321*" />
                 </Grid.ColumnDefinitions>
-                <uc:AllStationUc Margin="20,20,20,20" Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=-1}" Grid.ColumnSpan="2" />
-                <uc:HomeUc Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=0}" Grid.ColumnSpan="2" />
-                <uc:JobSettings Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=2}" Grid.ColumnSpan="2" />
-                <uc:JobCreation Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=1}" Grid.ColumnSpan="2" />
-                <uc:JobEventsLog Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=3}" Grid.ColumnSpan="2" />
+                <uc:AllStationUc
+                    Grid.ColumnSpan="2"
+                    Margin="20,20,20,20"
+                    Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=-1}" />
+                <uc:HomeUc Grid.ColumnSpan="2" Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=0}" />
+                <uc:JobSettings Grid.ColumnSpan="2" Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=2}" />
+                <uc:JobCreation Grid.ColumnSpan="2" Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=1}" />
+                <uc:JobEventsLog Grid.ColumnSpan="2" Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=3}" />
             </Grid>
 
             <!--  Device Status  -->
@@ -344,7 +313,7 @@
                     </ListBox.ItemsPanel>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Margin="0 0 15 0" Orientation="Horizontal">
+                            <StackPanel Margin="0,0,15,0" Orientation="Horizontal">
                                 <fa:IconImage
                                     Width="15"
                                     Height="15"
