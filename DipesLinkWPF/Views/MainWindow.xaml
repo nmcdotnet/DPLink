@@ -22,6 +22,7 @@
     </Window.DataContext>-->
     <Window.Resources>
         <ResourceDictionary>
+
             <converter:OptToVis x:Key="OptToVis" />
 
             <!--  Common Var  -->
@@ -31,15 +32,60 @@
             <system:Double x:Key="MenuIconSize">30</system:Double>
             <system:Double x:Key="MenuItemSize">50</system:Double>
 
+
+            <!--  Style for the ToggleButton  -->
+            <Style x:Key="ViewToggleButtonStyle" TargetType="ToggleButton">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ToggleButton">
+                            <Border>
+                                <StackPanel
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Orientation="Horizontal">
+                                    <Image
+                                        x:Name="icon"
+                                        Width="32"
+                                        Height="32"
+                                        Margin="0,0,0,5" />
+                                </StackPanel>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter TargetName="icon" Property="Source" Value="{StaticResource OverviewIcon}" />
+                                </Trigger>
+                                <Trigger Property="IsChecked" Value="False">
+                                    <Setter TargetName="icon" Property="Source" Value="{StaticResource DetailViewIcon}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+
             <!--  Resource File  -->
             <ResourceDictionary.MergedDictionaries>
+
+
+
                 <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/ResourceDictionary.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/ComboBoxResDict.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/ButtonResDict.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/ListBoxResDict.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/ContextMenuResDict.xaml" />
+
+
+
             </ResourceDictionary.MergedDictionaries>
+
+            <!--  Add your icon resources  -->
+
+
+
+
         </ResourceDictionary>
+
     </Window.Resources>
 
     <Grid>
@@ -63,13 +109,14 @@
                 BorderThickness="0"
                 IsTabStop="False"
                 Style="{DynamicResource ButtonStyleExit}">
-                <Border PreviewMouseDown="BorderUser_MouseDown"
+                <Border
                     Width="50"
                     Height="50"
                     Background="White"
                     BorderBrush="#00ABE6"
                     BorderThickness="1"
-                    CornerRadius="30">
+                    CornerRadius="30"
+                    PreviewMouseDown="BorderUser_MouseDown">
                     <fa:IconImage
                         Width="{StaticResource MenuIconSize}"
                         Height="{StaticResource MenuIconSize}"
@@ -85,17 +132,17 @@
                 ItemContainerStyle="{DynamicResource ListBoxItemStyleMenu}"
                 SelectedIndex="0"
                 Style="{DynamicResource ListBoxStyleMenu}">
-                <ListBoxItem Height="{StaticResource MenuItemHeight}" 
-                             IsTabStop="False">
+                <ListBoxItem Height="{StaticResource MenuItemHeight}" IsTabStop="False">
                     <StackPanel
                         Width="{StaticResource MenuItemSize}"
                         Height="{StaticResource MenuItemSize}"
                         Margin="{StaticResource CommonMenuMargin}"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center">
-                        <fa:IconImage  VerticalAlignment="Center"
+                        <fa:IconImage
                             Width="{StaticResource MenuIconSize}"
                             Height="{StaticResource MenuIconSize}"
+                            VerticalAlignment="Center"
                             Foreground="{StaticResource ColorMenuItem}"
                             Icon="Home" />
                         <!--<TextBlock
@@ -111,9 +158,10 @@
                         Margin="{StaticResource CommonMenuMargin}"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center">
-                        <fa:IconImage VerticalAlignment="Center"
+                        <fa:IconImage
                             Width="{StaticResource MenuIconSize}"
                             Height="{StaticResource MenuIconSize}"
+                            VerticalAlignment="Center"
                             Foreground="{StaticResource ColorMenuItem}"
                             Icon="FileCircleCheck" />
                         <!--<TextBlock
@@ -129,9 +177,10 @@
                         Margin="{StaticResource CommonMenuMargin}"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center">
-                        <fa:IconImage VerticalAlignment="Center"
+                        <fa:IconImage
                             Width="{StaticResource MenuIconSize}"
                             Height="{StaticResource MenuIconSize}"
+                            VerticalAlignment="Center"
                             Foreground="{StaticResource ColorMenuItem}"
                             Icon="Sliders" />
                         <!--<TextBlock
@@ -147,9 +196,10 @@
                         Margin="{StaticResource CommonMenuMargin}"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center">
-                        <fa:IconImage VerticalAlignment="Center"
+                        <fa:IconImage
                             Width="{StaticResource MenuIconSize}"
                             Height="{StaticResource MenuIconSize}"
+                            VerticalAlignment="Center"
                             Foreground="{StaticResource ColorMenuItem}"
                             Icon="History" />
                         <!--<TextBlock
@@ -189,9 +239,9 @@
 
         <Grid Grid.Column="1" Background="AliceBlue">
             <Grid.RowDefinitions>
-                <RowDefinition Height="30" />
+                <RowDefinition Height="35" />
                 <RowDefinition />
-                <RowDefinition Height="30" />
+                <RowDefinition Height="40" />
             </Grid.RowDefinitions>
             <Grid Grid.Row="0" Background="WhiteSmoke">
                 <!--<TextBlock Text="{Binding ActualWidthMainWindow}" />-->
@@ -211,7 +261,8 @@
                     Grid.Column="2"
                     Margin="0,0,10,0"
                     HorizontalAlignment="Right"
-                    Orientation="Horizontal">
+                    Orientation="Horizontal"
+                    Visibility="Collapsed">
                     <TextBlock
                         Margin="0,0,10,0"
                         VerticalAlignment="Center"
@@ -229,6 +280,7 @@
                         <ComboBoxItem>4</ComboBoxItem>
                     </ComboBox>
 
+
                     <TextBlock
                         Margin="20,0,10,0"
                         VerticalAlignment="Center"
@@ -243,16 +295,32 @@
                         <ComboBoxItem>Detail</ComboBoxItem>
                         <ComboBoxItem>Overview</ComboBoxItem>
                     </ComboBox>
+                </StackPanel>
 
+                <StackPanel
+                    Grid.Column="2"
+                    Margin="0,0,10,0"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+                    <ToggleButton
+                        Width="45"
+                        Height="45"
+                        Margin="0,0,10,0"
+                        Click="ToggleButton_Click"
+                        Style="{StaticResource ViewToggleButtonStyle}" />
                 </StackPanel>
             </Grid>
 
             <Grid Grid.Row="1" Background="Transparent">
-                <uc:AllStationUc Margin="20" Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=-1}" />
-                <uc:HomeUc Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=0}" />
-                <uc:JobSettings Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=2}" />
-                <uc:JobCreation Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=1}" />
-                <uc:JobEventsLog Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=3}" />
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="43*"/>
+                    <ColumnDefinition Width="321*"/>
+                </Grid.ColumnDefinitions>
+                <uc:AllStationUc Margin="20,20,20,20" Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=-1}" Grid.ColumnSpan="2" />
+                <uc:HomeUc Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=0}" Grid.ColumnSpan="2" />
+                <uc:JobSettings Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=2}" Grid.ColumnSpan="2" />
+                <uc:JobCreation Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=1}" Grid.ColumnSpan="2" />
+                <uc:JobEventsLog Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=3}" Grid.ColumnSpan="2" />
             </Grid>
 
             <!--  Device Status  -->
@@ -276,23 +344,29 @@
                     </ListBox.ItemsPanel>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
+                            <StackPanel Margin="0 0 15 0" Orientation="Horizontal">
                                 <fa:IconImage
                                     Width="15"
                                     Height="15"
+                                    Margin="1"
                                     Foreground="{Binding CameraStatusColor}"
                                     Icon="Camera" />
                                 <fa:IconImage
                                     Width="15"
                                     Height="15"
+                                    Margin="1"
                                     Foreground="{Binding PrinterStatusColor}"
                                     Icon="Print" />
                                 <fa:IconImage
                                     Width="15"
                                     Height="15"
+                                    Margin="1"
                                     Foreground="{Binding ControllerStatusColor}"
                                     Icon="SignalPerfect" />
-                                <TextBlock Margin="5,0,0,0" Text="{Binding Name}" />
+                                <TextBlock
+                                    Margin="5,0,0,0"
+                                    Text="{Binding Name}"
+                                    Visibility="Collapsed" />
                             </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
@@ -322,7 +396,6 @@
                                     </StackPanel>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
-
                         </ListBox>
                     </StackPanel>
                 </Grid>

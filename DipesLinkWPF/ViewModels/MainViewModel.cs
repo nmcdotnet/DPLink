@@ -123,7 +123,7 @@ namespace DipesLink.ViewModels
         private void CreateMultiObjects(int i)
         {
             int deviceTransferIDProc = ViewModelSharedFunctions.InitDeviceTransfer(i);
-            JobList.Add(new JobOverview() { DeviceTransferID = deviceTransferIDProc, Index = i, JobTitleName = $"Job {i + 1}" }); // Job List Creation
+            JobList.Add(new JobOverview() { DeviceTransferID = deviceTransferIDProc, Index = i, JobTitleName = $"Station {i + 1}" }); // Job List Creation
             JobDeviceStatusList.Add(new JobDeviceStatus() { Index = i, Name = $"Devices{i + 1}" }); // Device Status List Creation
             PrinterStateList.Add(new PrinterState() { Name = $"Printer {i}", State = "" }); // Printer State List Creation
 

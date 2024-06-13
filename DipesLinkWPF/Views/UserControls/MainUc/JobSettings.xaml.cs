@@ -31,11 +31,18 @@ namespace DipesLink.Views.UserControls.MainUc
 
         private void SettingsUc_Loaded(object sender, RoutedEventArgs e)
         {
-            IsInitializing = false;
-            var vm = CurrentViewModel<MainViewModel>();
-            vm?.SaveConnectionSetting();
-           
-            RadBasic.IsChecked = vm?.ConnectParamsList[CurrentIndex()].VerifyAndPrintBasicSentMethod;
+            try
+            {
+                IsInitializing = false;
+                var vm = CurrentViewModel<MainViewModel>();
+                vm?.SaveConnectionSetting();
+                ComboBoxStationNum.SelectedIndex = vm.StationSelectedIndex;
+                RadBasic.IsChecked = vm?.ConnectParamsList[CurrentIndex()].VerifyAndPrintBasicSentMethod;
+            }
+            catch (Exception)
+            {
+            }
+         
         }
 
        
@@ -346,6 +353,15 @@ namespace DipesLink.Views.UserControls.MainUc
             if(vm is null) return;
             vm.ConnectParamsList[CurrentIndex()].FailedDataSentToPrinter = "Failure";    
 
+        }
+
+        private void ComboBoxStationNum_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var cbb = sender as ComboBox;
+            var vm = CurrentViewModel<MainViewModel>();
+            if (vm is null) return;
+            vm.StationSelectedIndex = cbb.SelectedIndex;
+            vm.CheckStationChange();
         }
     }
 }

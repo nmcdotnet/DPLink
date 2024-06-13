@@ -10,6 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\detailOff.png" />
+    <None Remove="Images\detailOn.png" />
     <None Remove="Images\Duplicated_res.png" />
     <None Remove="Images\Error_Event.png" />
     <None Remove="Images\Image_Not_Found.jpg" />
@@ -19,7 +21,12 @@
     <None Remove="Images\LoadingIcon.gif" />
     <None Remove="Images\Missed_res.png" />
     <None Remove="Images\Null_res.png" />
+    <None Remove="Images\off.png" />
+    <None Remove="Images\on.png" />
+    <None Remove="Images\overview.png" />
     <None Remove="Images\printed.png" />
+    <None Remove="Images\statistic_1.png" />
+    <None Remove="Images\statistic_2.png" />
     <None Remove="Images\Valid_res.png" />
     <None Remove="Images\waiting.png" />
     <None Remove="Images\Warning_Event.png" />
@@ -61,6 +68,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Images\detailOff.png" />
+    <Resource Include="Images\detailOn.png" />
     <Resource Include="Images\Duplicated_res.png" />
     <Resource Include="Images\Error_Event.png" />
     <Resource Include="Images\Image_Not_Found.jpg" />
@@ -71,7 +80,12 @@
     </Resource>-->
     <Resource Include="Images\Missed_res.png" />
     <Resource Include="Images\Null_res.png" />
+    <Resource Include="Images\off.png" />
+    <Resource Include="Images\on.png" />
+    <Resource Include="Images\overview.png" />
     <Resource Include="Images\printed.png" />
+    <Resource Include="Images\statistic_1.png" />
+    <Resource Include="Images\statistic_2.png" />
     <Resource Include="Images\Valid_res.png" />
     <Resource Include="Images\waiting.png" />
     <Resource Include="Images\Warning_Event.png" />

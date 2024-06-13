@@ -23,9 +23,11 @@
                 <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/TextBoxResDict.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/ButtonResDict.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/RadioButtonResDict.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/ComboBoxResDict.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <converter:RadioButtonToBool x:Key="CoupRadToBol" />
             <converter:BoolToRadioButtonConverter x:Key="BoolToRadioButtonConverter" />
+
             <Style
                 x:Key="DefaultGroupBox"
                 BasedOn="{x:Null}"
@@ -296,7 +298,7 @@
                                                 VerticalAlignment="Center"
                                                 Text="Port: " />
                                             <TextBox
-                                                x:Name="TextBoxPrinterPort" 
+                                                x:Name="TextBoxPrinterPort"
                                                 Width="80"
                                                 Height="30"
                                                 Padding="0,3,0,0"
@@ -462,7 +464,7 @@
                                                     Width="170"
                                                     VerticalAlignment="Center"
                                                     Text="Enable Controller: " />
-                                                <ToggleButton 
+                                                <ToggleButton
                                                     Width="100"
                                                     Height="45"
                                                     HorizontalAlignment="Center"
@@ -583,6 +585,7 @@
                                                     Maximum="1000"
                                                     Minimum="0"
                                                     ValueChanged="Integer_ValueChanged"
+                                                    
                                                     Value="{Binding DelaySensor}" />
                                             </StackPanel>
 
@@ -650,9 +653,10 @@
                                                     HorizontalAlignment="Left"
                                                     VerticalAlignment="Center"
                                                     Text="Response:" />
-                                                <ListView BorderBrush="LightBlue"
+                                                <ListView
                                                     Height="100"
                                                     Margin="10,10,0,0"
+                                                    BorderBrush="LightBlue"
                                                     ItemsSource="{Binding ResponseMessList}" />
                                                 <Button
                                                     x:Name="ButtonClear"
@@ -666,90 +670,118 @@
                                             </StackPanel>
                                         </StackPanel>
                                     </GroupBox>
+                                    <StackPanel Grid.Column="1" Orientation="Vertical">
+                                        <GroupBox Grid.Column="1">
+                                            <GroupBox.Header>
+                                                <TextBlock FontWeight="Bold" Text="Verify and Print POD send mode" />
+                                            </GroupBox.Header>
+                                            <StackPanel
+                                                Grid.Row="1"
+                                                Margin="0,10,0,0"
+                                                VerticalAlignment="Top"
+                                                Orientation="Vertical">
 
-                                    <GroupBox Grid.Column="1">
-                                        <GroupBox.Header>
-                                            <TextBlock FontWeight="Bold" Text="Verify and Print POD send mode" />
-                                        </GroupBox.Header>
-                                        <StackPanel
-                                            Grid.Row="1"
-                                            Margin="0,10,0,0"
-                                            VerticalAlignment="Top"
-                                            Orientation="Vertical">
+                                                <!--  Gr Mode  -->
+                                                <GroupBox Width="auto" Height="70">
+                                                    <GroupBox.Header>
+                                                        <TextBlock FontWeight="Bold" Text="Mode" />
+                                                    </GroupBox.Header>
+                                                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                                        <RadioButton
+                                                            x:Name="RadBasic"
+                                                            Width="100"
+                                                            HorizontalAlignment="Center"
+                                                            Checked="ModeSendCheckedChange"
+                                                            Content="Basic"
+                                                            FontSize="16"
+                                                            GroupName="PrinterSeriesGr"
+                                                            IsChecked="{Binding Path=VerifyAndPrintBasicSentMethod_UI, Converter={StaticResource BoolToRadioButtonConverter}, Mode=TwoWay, ConverterParameter=True}"
+                                                            Style="{StaticResource RadioButtonStyle1}" />
 
-                                            <!--  Gr Mode  -->
-                                            <GroupBox Width="auto" Height="70">
-                                                <GroupBox.Header>
-                                                    <TextBlock FontWeight="Bold" Text="Mode" />
-                                                </GroupBox.Header>
-                                                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                                    <RadioButton
-                                                        x:Name="RadBasic"
-                                                        Width="100"
-                                                        HorizontalAlignment="Center"
-                                                        Checked="ModeSendCheckedChange"
-                                                        Content="Basic"
-                                                        FontSize="16"
-                                                        GroupName="PrinterSeriesGr"
-                                                        IsChecked="{Binding Path=VerifyAndPrintBasicSentMethod_UI, Converter={StaticResource BoolToRadioButtonConverter}, Mode=TwoWay, ConverterParameter=True}"
-                                                        Style="{StaticResource RadioButtonStyle1}" />
+                                                        <RadioButton
+                                                            x:Name="RadCompare"
+                                                            Width="150"
+                                                            Margin="10,0,0,0"
+                                                            Checked="ModeSendCheckedChange"
+                                                            Content="Compare"
+                                                            FontSize="16"
+                                                            GroupName="PrinterSeriesGr"
+                                                            IsChecked="{Binding Path=VerifyAndPrintBasicSentMethod_UI, Converter={StaticResource BoolToRadioButtonConverter}, Mode=TwoWay, ConverterParameter=False}"
+                                                            Style="{StaticResource RadioButtonStyle1}" />
+                                                        <!--  IsChecked="{Binding VerifyAndPrintBasicSentMethod, Converter={StaticResource CoupRadToBol}, ConverterParameter=0}"  -->
+                                                    </StackPanel>
+                                                </GroupBox>
 
-                                                    <RadioButton
-                                                        x:Name="RadCompare"
-                                                        Width="150"
-                                                        Margin="10,0,0,0"
-                                                        Checked="ModeSendCheckedChange"
-                                                        Content="Compare"
-                                                        FontSize="16"
-                                                        GroupName="PrinterSeriesGr"
-                                                        IsChecked="{Binding Path=VerifyAndPrintBasicSentMethod_UI, Converter={StaticResource BoolToRadioButtonConverter}, Mode=TwoWay, ConverterParameter=False}"
-                                                        Style="{StaticResource RadioButtonStyle1}" />
-                                                    <!--  IsChecked="{Binding VerifyAndPrintBasicSentMethod, Converter={StaticResource CoupRadToBol}, ConverterParameter=0}"  -->
+                                                <!--  Print Fields  -->
+                                                <StackPanel Margin="0,10,0,10" Orientation="Horizontal">
+                                                    <TextBlock Width="100" Text="Print Fields" />
+                                                    <TextBox
+                                                        x:Name="TextBoxPOD"
+                                                        Width="200"
+                                                        Height="30"
+                                                        Margin="0,0,10,0"
+                                                        BorderBrush="LightBlue"
+                                                        Text="{Binding FormatedPOD}" />
+                                                    <Button
+                                                        Width="70"
+                                                        Height="30"
+                                                        HorizontalAlignment="Right"
+                                                        Click="SelectPrintField"
+                                                        Content="Select"
+                                                        Style="{StaticResource ModernButton2}" />
                                                 </StackPanel>
-                                            </GroupBox>
 
-                                            <!--  Print Fields  -->
-                                            <StackPanel Margin="0,10,0,10" Orientation="Horizontal">
-                                                <TextBlock Width="100" Text="Print Fields" />
-                                                <TextBox
-                                                    x:Name="TextBoxPOD"
-                                                    Width="200"
-                                                    Height="30"
-                                                    Margin="0,0,10,0"
-                                                    BorderBrush="LightBlue"
-                                                    Text="{Binding FormatedPOD}" />
-                                                <Button
-                                                    Width="70"
-                                                    Height="30"
-                                                    HorizontalAlignment="Right"
-                                                    Click="SelectPrintField"
-                                                    Content="Select"
-                                                    Style="{StaticResource ModernButton2}" />
+                                                <!--  Error Print Fields  -->
+                                                <StackPanel Margin="0,10,0,10" Orientation="Horizontal">
+                                                    <TextBlock Width="100" Text="Error Field" />
+                                                    <TextBox
+                                                        x:Name="TextBoxErrorField"
+                                                        Width="200"
+                                                        Height="30"
+                                                        Margin="0,0,10,0"
+                                                        BorderBrush="LightBlue"
+                                                        Text="{Binding FailedDataSentToPrinter}"
+                                                        TextChanged="TextBox_ParamsChanged" />
+                                                    <Button
+                                                        Width="70"
+                                                        Height="30"
+                                                        HorizontalAlignment="Right"
+                                                        Click="DefaultClick"
+                                                        Content="Default"
+                                                        Style="{StaticResource ModernButton2}" />
+                                                </StackPanel>
+
+
+
                                             </StackPanel>
+                                        </GroupBox>
 
-                                            <!--  Error Print Fields  -->
-                                            <StackPanel Margin="0,10,0,10" Orientation="Horizontal">
-                                                <TextBlock Width="100" Text="Error Field" />
-                                                <TextBox
-                                                    x:Name="TextBoxErrorField"
-                                                    Width="200"
-                                                    Height="30"
-                                                    Margin="0,0,10,0"
-                                                    BorderBrush="LightBlue"
-                                                    Text="{Binding FailedDataSentToPrinter}"
-                                                    TextChanged="TextBox_ParamsChanged" />
-                                                <Button
-                                                    Width="70"
-                                                    Height="30"
-                                                    HorizontalAlignment="Right"
-                                                    Click="DefaultClick"
-                                                    Content="Default"
-                                                    Style="{StaticResource ModernButton2}" />
+                                        <GroupBox Grid.Column="1" Height="256">
+                                            <GroupBox.Header>
+                                                <TextBlock FontWeight="Bold" Text="Select Number of stations" />
+                                            </GroupBox.Header>
+                                            <StackPanel Orientation="Vertical">
+                                                <StackPanel Margin="0,10,10,0" Orientation="Horizontal">
+                                                    <TextBlock
+                                                        Margin="0,0,10,0"
+                                                        VerticalAlignment="Center"
+                                                        Text="Number of Stations:" />
+                                                    <ComboBox
+                                                        x:Name="ComboBoxStationNum"
+                                                        Width="230"
+                                                        Height="30"
+                                                        SelectionChanged="ComboBoxStationNum_SelectionChanged"
+                                                        Style="{StaticResource ComboBoxStyle2}">
+                                                        <ComboBoxItem>1</ComboBoxItem>
+                                                        <ComboBoxItem>2</ComboBoxItem>
+                                                        <ComboBoxItem>3</ComboBoxItem>
+                                                        <ComboBoxItem>4</ComboBoxItem>
+
+                                                    </ComboBox>
+                                                </StackPanel>
                                             </StackPanel>
-
-                                        </StackPanel>
-                                    </GroupBox>
-
+                                        </GroupBox>
+                                    </StackPanel>
                                 </Grid>
                             </Grid>
                         </Grid>

@@ -77,7 +77,7 @@
             <!--  Title  -->
             <TabControl.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Header}" />
+                    <TextBlock  Text="{Binding Header}" />
                 </DataTemplate>
             </TabControl.ItemTemplate>
 
