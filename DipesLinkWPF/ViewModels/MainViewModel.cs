@@ -64,7 +64,7 @@ namespace DipesLink.ViewModels
         {
             _ipcDeviceToUISharedMemory_DT = new(JobIndex, "DeviceToUISharedMemory_DT", SharedValues.SIZE_1MB);
             _ipcUIToDeviceSharedMemory_DT = new(JobIndex, "UIToDeviceSharedMemory_DT", SharedValues.SIZE_1MB);
-            _ipcDeviceToUISharedMemory_DB = new(JobIndex, "DeviceToUISharedMemory_DB", SharedValues.SIZE_200MB);
+            //_ipcDeviceToUISharedMemory_DB = new(JobIndex, "DeviceToUISharedMemory_DB", SharedValues.SIZE_200MB);
             _ipcDeviceToUISharedMemory_RD = new(JobIndex, "DeviceToUISharedMemory_RD", SharedValues.SIZE_100MB);
         }
 
@@ -245,10 +245,11 @@ namespace DipesLink.ViewModels
         /// <param name="stationIndex"></param>
         private async void ListenDatabase(int stationIndex)
         {
-            using IPCSharedHelper ipc = new(stationIndex, "DeviceToUISharedMemory_DB", capacity: 1024 * 1024 * 200, isReceiver: true);
+            _ipcDeviceToUISharedMemory_DB = new(JobIndex, "DeviceToUISharedMemory_DB", SharedValues.SIZE_200MB);
+            //using IPCSharedHelper ipc = new(stationIndex, "DeviceToUISharedMemory_DB", capacity: 1024 * 1024 * 200, isReceiver: true);
             while (true)
             {
-                bool isCompleteDequeue = ipc.MessageQueue.TryDequeue(out byte[]? result);
+                bool isCompleteDequeue = _ipcDeviceToUISharedMemory_DB.MessageQueue.TryDequeue(out byte[]? result);
                 if (result != null && isCompleteDequeue)
                 {
                     switch (result[0])
@@ -313,10 +314,11 @@ namespace DipesLink.ViewModels
         /// <param name="stationIndex"></param>
         private async void ListenCheckedResultDatabase(int stationIndex)
         {
-            using IPCSharedHelper ipc = new(stationIndex, "DeviceToUISharedMemory_CheckedDB", capacity: 1024 * 1024 * 200, isReceiver: true);
+            _ipcDeviceToUISharedMemory_DB = new(JobIndex, "DeviceToUISharedMemory_DB", SharedValues.SIZE_200MB,isReceiver:true);
+            //using IPCSharedHelper ipc = new(stationIndex, "DeviceToUISharedMemory_CheckedDB", capacity: 1024 * 1024 * 200, isReceiver: true);
             while (true)
             {
-                bool isCompleteDequeue = ipc.MessageQueue.TryDequeue(out byte[]? result);
+                bool isCompleteDequeue = _ipcDeviceToUISharedMemory_DB.MessageQueue.TryDequeue(out byte[]? result);
                 if (result != null && isCompleteDequeue)
                 {
                     switch (result[0])

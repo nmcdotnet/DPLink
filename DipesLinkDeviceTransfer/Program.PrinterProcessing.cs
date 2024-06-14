@@ -6,7 +6,6 @@ using SharedProgram.Shared;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Drawing;
-using System.Windows.Shapes;
 using static SharedProgram.DataTypes.CommonDataType;
 using PrinterStatus = SharedProgram.DataTypes.CommonDataType.PrinterStatus;
 namespace DipesLinkDeviceTransfer
@@ -993,12 +992,12 @@ namespace DipesLinkDeviceTransfer
                             detectModel.CompareTime = measureTime.ElapsedMilliseconds;
                             detectModel.ProcessingDateTime = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss.fff");
 
-                            // For Standalone Mode
+                            // For Standalone Mode:  instead Enqueue in RSFP feedback
                             if (isDBStandalone)
                             {
                                 if (detectModel.CompareResult == ComparisonResult.Valid)
                                 {
-                                   // _Que.Enqueue(detectModel.Text);
+                                    _QueueBufferPODDataCompared.Enqueue(detectModel.Text);
                                 }
                             }
                             // Add result compare to buffer
