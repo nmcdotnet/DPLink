@@ -140,7 +140,6 @@ namespace DipesLink.ViewModels
             }
         }
 
-
         private List<ConnectParamsModel> _ConnectParamsList = new();
         public List<ConnectParamsModel> ConnectParamsList
         {

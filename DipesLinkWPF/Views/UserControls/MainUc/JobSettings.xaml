@@ -585,7 +585,6 @@
                                                     Maximum="1000"
                                                     Minimum="0"
                                                     ValueChanged="Integer_ValueChanged"
-                                                    
                                                     Value="{Binding DelaySensor}" />
                                             </StackPanel>
 

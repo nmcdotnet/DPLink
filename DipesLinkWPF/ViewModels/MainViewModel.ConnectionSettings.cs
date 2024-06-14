@@ -77,8 +77,9 @@ namespace DipesLink.ViewModels
             ConnectParamsList[index].PrintFieldForVerifyAndPrint = CurrentConnectParams.PrintFieldForVerifyAndPrint;
             ConnectParamsList[index].FailedDataSentToPrinter = CurrentConnectParams.FailedDataSentToPrinter;
             ConnectParamsList[index].VerifyAndPrintBasicSentMethod = CurrentConnectParams.VerifyAndPrintBasicSentMethod;
-
+            CurrentConnectParams = ConnectParamsList[index];
             SaveConnectionSetting();
+
         }
 
         internal void SelectionChangeSystemSettings(int index)
