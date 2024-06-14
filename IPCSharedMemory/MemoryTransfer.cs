@@ -74,8 +74,6 @@ namespace IPCSharedMemory
 
         #endregion IPC UI -> Device Transfer
 
-
-
         #region IPC Device Transfer -> UI
 
         public static void SendDatabaseToUIFirstTime(IPCSharedHelper? ipc,int index, byte[] data)
