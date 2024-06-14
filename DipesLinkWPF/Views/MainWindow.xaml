@@ -239,7 +239,7 @@
 
         <Grid Grid.Column="1" Background="AliceBlue">
             <Grid.RowDefinitions>
-                <RowDefinition Height="35" />
+                <RowDefinition Height="40" />
                 <RowDefinition />
                 <RowDefinition Height="40" />
             </Grid.RowDefinitions>
@@ -313,14 +313,17 @@
 
             <Grid Grid.Row="1" Background="Transparent">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="43*"/>
-                    <ColumnDefinition Width="321*"/>
+                    <ColumnDefinition Width="43*" />
+                    <ColumnDefinition Width="321*" />
                 </Grid.ColumnDefinitions>
-                <uc:AllStationUc Margin="20,20,20,20" Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=-1}" Grid.ColumnSpan="2" />
-                <uc:HomeUc Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=0}" Grid.ColumnSpan="2" />
-                <uc:JobSettings Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=2}" Grid.ColumnSpan="2" />
-                <uc:JobCreation Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=1}" Grid.ColumnSpan="2" />
-                <uc:JobEventsLog Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=3}" Grid.ColumnSpan="2" />
+                <uc:AllStationUc
+                    Grid.ColumnSpan="2"
+                    Margin="20,20,20,20"
+                    Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=-1}" />
+                <uc:HomeUc Grid.ColumnSpan="2" Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=0}" />
+                <uc:JobSettings Grid.ColumnSpan="2" Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=2}" />
+                <uc:JobCreation Grid.ColumnSpan="2" Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=1}" />
+                <uc:JobEventsLog Grid.ColumnSpan="2" Visibility="{Binding ElementName=ListBoxMenu, Path=SelectedIndex, Converter={StaticResource OptToVis}, ConverterParameter=3}" />
             </Grid>
 
             <!--  Device Status  -->
@@ -344,7 +347,7 @@
                     </ListBox.ItemsPanel>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Margin="0 0 15 0" Orientation="Horizontal">
+                            <StackPanel Margin="0,0,15,0" Orientation="Horizontal">
                                 <fa:IconImage
                                     Width="15"
                                     Height="15"

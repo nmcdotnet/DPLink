@@ -23,12 +23,9 @@
             </ResourceDictionary.MergedDictionaries>
 
             <converter:AddOne x:Key="AddOneConverter" />
-
             <Color x:Key="DataTagColorGraTop">AliceBlue</Color>
             <Color x:Key="DataTagColorGraMid">WhiteSmoke</Color>
             <Color x:Key="DataTagColorGraBot">White</Color>
-
-
         </ResourceDictionary>
 
     </UserControl.Resources>
@@ -310,8 +307,8 @@
                 <Button
                     x:Name="ButtonStart"
                     Grid.Column="0"
-                    Height="75"
                     Width="85"
+                    Height="75"
                     Margin="5"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
@@ -337,8 +334,8 @@
                 <Button
                     x:Name="ButtonStop"
                     Grid.Column="1"
-                    Height="75"
                     Width="85"
+                    Height="75"
                     Margin="5"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
@@ -351,8 +348,8 @@
                 <Button
                     x:Name="ButtonTrigger"
                     Grid.Column="2"
-                    Height="75"
                     Width="85"
+                    Height="75"
                     Margin="5"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
@@ -395,7 +392,7 @@
                             Text="VERIFICATION INFO" />
                     </Border>
 
-                    <Grid 
+                    <Grid
                         x:Name="GridChartInfo"
                         Grid.Row="1"
                         Background="Transparent">
@@ -403,7 +400,7 @@
                             <RowDefinition Height="8*" />
                             <RowDefinition Height="300" />
                         </Grid.RowDefinitions>
-                        
+
                         <Grid Background="Transparent">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
@@ -433,10 +430,11 @@
                                     Series="{Binding CircleChart.Series}" />
                             </Border>
                         </Grid>
-                        
-                        
+
+
                         <Grid
-                            Grid.Row="1"  Height="300"
+                            Grid.Row="1"
+                            Height="300"
                             Margin="1"
                             VerticalAlignment="Bottom"
                             Background="Transparent">
@@ -466,7 +464,7 @@
                                     <TextBlock
                                         x:Name="TextBlockTotalChecked"
                                         Grid.Row="1"
-                                        Margin="10"
+                                        Margin="0,0,10,10"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Top"
                                         FontSize="40"
@@ -496,7 +494,7 @@
                                     <TextBlock
                                         x:Name="TextBlockTotalPassed"
                                         Grid.Row="1"
-                                        Margin="10"
+                                        Margin="0,0,10,10"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Top"
                                         FontSize="40"
@@ -524,7 +522,7 @@
                                     <TextBlock
                                         x:Name="TextBlockTotalFailed"
                                         Grid.Row="1"
-                                        Margin="10"
+                                        Margin="0,0,10,10"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Top"
                                         FontSize="40"
