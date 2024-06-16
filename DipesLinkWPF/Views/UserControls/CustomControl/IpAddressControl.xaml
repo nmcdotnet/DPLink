@@ -35,9 +35,9 @@
                 BorderThickness="0"
                 TextAlignment="Center" />
             <TextBlock
-                Grid.Column="1" VerticalAlignment="Bottom"
+                Grid.Column="1"
                 HorizontalAlignment="Center"
-               
+                VerticalAlignment="Bottom"
                 Text="." />
             <TextBox
                 x:Name="TextBoxPart2"

@@ -108,8 +108,9 @@ namespace IPCSharedMemory
                 Array.Copy(command, 0, newCommand, 0, command.Length); // copy array 1 to new array
                 Array.Copy(data, 0, newCommand, command.Length, data.Length); // copy array 2 to new array start from length array 1
                 SendDatabaseCommandToUI(ipc, newCommand);
+               // Console.WriteLine("Send Checked DB:" + newCommand.Length);
             }
-            catch (Exception) { }
+            catch (Exception ex) { Console.WriteLine(ex.Message); }
         }
 
         public static void SendPrinterStatusToUI(IPCSharedHelper? ipc, int index, PrinterStatus printerStatus)

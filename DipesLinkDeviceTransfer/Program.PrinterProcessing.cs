@@ -1663,7 +1663,7 @@ namespace DipesLinkDeviceTransfer
                         {
                             byte[] combineBytes = SharedFunctions.CombineArrays(totalCheckedNumberBytes, totalPassedNumberBytes, totalFailedNumberBytes);
                             //MemoryTransfer.SendCheckedStatisticsToUI(JobIndex, combineBytes);
-                            MemoryTransfer.SendCheckedStatisticsToUI(_ipcDeviceToUISharedMemory_DT, JobIndex, combineBytes);
+                            MemoryTransfer.SendCheckedStatisticsToUI(_ipcDeviceToUISharedMemory_RD, JobIndex, combineBytes);
                         }
 
                         await Task.Delay(10);

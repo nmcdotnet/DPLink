@@ -637,6 +637,7 @@
                         <Border
                             Grid.Column="2"
                             Margin="5"
+                            PreviewMouseDown ="PrintedData_PreviewMouseDown"
                             BorderBrush="LightGray"
                             BorderThickness="1,1,0,0"
                             CornerRadius="5">
