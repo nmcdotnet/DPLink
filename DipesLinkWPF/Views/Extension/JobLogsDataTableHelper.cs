@@ -9,9 +9,12 @@ using System.Windows.Input;
 
 namespace DipesLink.Views.Extension
 {
-    public class JobLogsDataTableHelper
+    public class JobLogsDataTableHelper : IDisposable
     {
-        public enum FilteredKeyword { All, Valid, Invalided, Duplicated, Null, Missed, Failed }
+        public enum FilteredKeyword { All, Valid, Invalided, Duplicated, Null, Missed, Failed,
+            Printed,
+            Waiting
+        }
         public Paginator? Paginator { get; set; }
         private DataTable? _miniDataTable;
         private DataTable? _originalDataTable;
@@ -23,6 +26,35 @@ namespace DipesLink.Views.Extension
             _originalDataTable = dataTable; // saved original DB
             ProcessMiniPage(dataGrid, dataTable);
         }
+
+
+        public void DatabaseSearchForPrintStatus(DataGrid dataGrid, string keyword)
+        {
+            try
+            {
+                // Creates a list containing filter condition strings
+                List<string> filterConditions = new List<string>();
+
+                //Browse through all columns in the DataTable
+                foreach (DataColumn column in _originalDataTable.Columns)
+                {
+                    string columnName = column.ColumnName;
+                    filterConditions.Add($"[{columnName}] LIKE '%{keyword}%'"); // special symbol must put it in []
+                }
+                // Combine all filter conditions into a single string
+                string filterString = string.Join(" OR ", filterConditions);
+                if (keyword == "") filterString = ""; // Refresh button
+                DataView dataView = new(_originalDataTable)
+                {
+                    RowFilter = filterString
+                };
+                DataTable searchTable = dataView.ToTable();
+                dataGrid.Columns.Clear();
+                ProcessMiniPage(dataGrid, searchTable);
+            }
+            catch (Exception) { }
+        }
+
 
         public void DatabaseSearch(DataGrid dataGrid,string keyword)
         { 
@@ -40,6 +72,50 @@ namespace DipesLink.Views.Extension
             }
             catch (Exception){ }
         }
+
+        public async Task DatabaseFilteredForPrintStatusAsync(DataGrid dataGrid, FilteredKeyword keyword)
+        {
+           await Task.Run(() => { 
+
+            try
+            {
+                string key = "";
+                switch (keyword)
+                {
+                    case FilteredKeyword.All:
+                        key = ""; // No filter 
+                        break;
+                    case FilteredKeyword.Printed:
+                        key = "Printed";
+                        break;
+                    case FilteredKeyword.Waiting:
+                        key = "Waiting";
+                        break;
+
+                    default:
+                        break;
+                }
+                DataView dataView = new(_originalDataTable)
+                {
+                    RowFilter = $"Status = '{key}'"
+                };
+                if (key == "") // No Filter
+                {
+                    dataView.RowFilter = key;
+                }
+ 
+                DataTable filteredTable = dataView.ToTable();
+                   Application.Current.Dispatcher.Invoke(() =>
+                   {
+                       dataGrid.Columns.Clear();
+                       ProcessMiniPage(dataGrid, filteredTable);
+                   });
+               }
+            catch (Exception) { }
+
+            });
+        }
+
         public void DatabaseFiltered(DataGrid dataGrid, FilteredKeyword keyword)
         {
             try
@@ -94,6 +170,8 @@ namespace DipesLink.Views.Extension
             catch (Exception) { }
         }
 
+
+
         public void ProcessMiniPage(DataGrid dataGrid, DataTable dataTable)
         {
             Paginator = new Paginator(dataTable);
@@ -101,12 +179,21 @@ namespace DipesLink.Views.Extension
             // Paginator.CurrentPage = 0;
             foreach (DataColumn column in Paginator.GetPage(Paginator.CurrentPage).Columns)
             {
-                if (column.ColumnName == "Result")
+                if (column.ColumnName == "Result" || column.ColumnName == "Status")
                 {
                     DataGridTemplateColumn templateColumn = new() { Header = column.ColumnName, Width = DataGridLength.Auto };
                     DataTemplate template = new();
                     FrameworkElementFactory factory = new(typeof(Image)); // Create Image UI by Code behind instead XAML
-                    Binding binding = new(column.ColumnName) { Converter = new ResultCheckedImgConverter() };
+                    Binding binding = new();
+                    if (column.ColumnName == "Result")
+                    {
+                       binding = new(column.ColumnName) { Converter = new ResultCheckedImgConverter() };
+                    }
+                    else if(column.ColumnName == "Status")
+                    {
+                        binding = new(column.ColumnName) { Converter = new StatusToIconConverter() };
+                    }
+                  
 
                     factory.SetValue(Image.SourceProperty, binding); // Set binding for Image.
                     factory.SetValue(Image.HeightProperty, 20.0); // Image Height
@@ -152,6 +239,27 @@ namespace DipesLink.Views.Extension
             }
         }
 
+        private bool disposedValue = false;
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // Giải phóng các tài nguyên được quản lý (managed resources) ở đây.
+                }
+
+                // Giải phóng các tài nguyên không được quản lý (unmanaged resources) ở đây.
+
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
     }
 }

@@ -348,8 +348,7 @@ namespace DipesLink.Views.SubWindows
                 DataGridCell cell = GetCell(dg, row, 0); // 0 for the first column
                 if (cell != null)
                 {
-                    var cellContent = cell.Content as TextBlock;
-                    if (cellContent != null)
+                    if (cell.Content is TextBlock cellContent)
                     {
                         return cellContent.Text.Trim();
                     }
@@ -357,6 +356,7 @@ namespace DipesLink.Views.SubWindows
             }
             return "";
         }
+
         public DataGridCell GetCell(DataGrid dataGrid, DataGridRow row, int column)
         {
             if (row != null)
@@ -405,10 +405,7 @@ namespace DipesLink.Views.SubWindows
         private void ButtonRePrint_Click(object sender, RoutedEventArgs e)
         {
             var currentJob = CurrentViewModel<JobOverview>();
-            if (currentJob != null)
-            {
-                currentJob.RaiseReprint(currentJob.Index);
-            }
+            currentJob?.RaiseReprint(currentJob.Index);
         }
     }
 }
