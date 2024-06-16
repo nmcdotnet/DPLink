@@ -126,7 +126,7 @@ namespace SharedProgram.Shared
                 {
                     image.Save(memoryStream, image.RawFormat);
                     memoryStream.Position = 0;
-                    BitmapImage bitmapImage = new BitmapImage();
+                    BitmapImage bitmapImage = new();
                     bitmapImage.BeginInit();
                     bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
                     bitmapImage.StreamSource = memoryStream;
@@ -150,11 +150,15 @@ namespace SharedProgram.Shared
                 {
                     FileName = fullPath,
                     WindowStyle = ProcessWindowStyle.Hidden,
-                    Verb = "runas",
-                    Arguments = arguments
+                    // Comment out this line if admin privileges are not necessary
+                    // Verb = "runas",
+                    Arguments = arguments,
+                    CreateNoWindow = true, // Ensures no window is created
+                    UseShellExecute = false // Ensure using shell execute is disabled
                 };
 #if DEBUG
                 startInfo.WindowStyle = ProcessWindowStyle.Normal;
+                startInfo.CreateNoWindow = false;
 #endif
                 if (startInfo != null)
                 {

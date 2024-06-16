@@ -300,9 +300,9 @@
             <!--  Device Status  -->
             <Grid Grid.Row="2" Background="WhiteSmoke">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="3*" />
-                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="300" />
+                    <ColumnDefinition Width="470"/>
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <ListBox
                     x:Name="DeviceStatListBox"
@@ -349,13 +349,13 @@
 
                     <StackPanel Orientation="Horizontal">
 
-                        <StackPanel Margin="10" Orientation="Horizontal">
+                        <StackPanel Margin="30 0 0 0" Orientation="Horizontal">
                             <TextBlock
                                 Width="70"
                                 VerticalAlignment="Center"
                                 FontSize="14"
                                 Foreground="LightSlateGray"
-                                Text="IP Printer: " />
+                                Text="Printer IP: " />
                             <TextBlock
                                 x:Name="TextBlockPrinterIP"
                                 VerticalAlignment="Center"
@@ -369,7 +369,7 @@
                                 VerticalAlignment="Center"
                                 FontSize="14"
                                 Foreground="LightSlateGray"
-                                Text="IP Camera: " />
+                                Text="Camera IP: " />
                             <TextBlock
                                 x:Name="TextBlockCamIP"
                                 VerticalAlignment="Center"
@@ -384,11 +384,11 @@
                         </StackPanel>
                         <StackPanel Margin="10" Orientation="Horizontal">
                             <TextBlock
-                                Width="70"
+                                Width="85"
                                 VerticalAlignment="Center"
                                 FontSize="14"
                                 Foreground="LightSlateGray"
-                                Text="IP Camera: " />
+                                Text="Controller IP: " />
                             <TextBlock
                                 x:Name="TextBlockControllerIP"
                                 VerticalAlignment="Center"
@@ -399,7 +399,7 @@
                     </StackPanel>
                 </Grid>
                 <!--  Printer Status  -->
-                <Grid Grid.Column="2" Background="WhiteSmoke">
+                <Grid Grid.Column="2" Background="White">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock
                             Margin="5,0,0,0"

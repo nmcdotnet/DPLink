@@ -123,7 +123,7 @@ namespace DipesLink.ViewModels
             int deviceTransferIDProc = ViewModelSharedFunctions.InitDeviceTransfer(i);
             JobList.Add(new JobOverview() { DeviceTransferID = deviceTransferIDProc, Index = i, JobTitleName = $"Station {i + 1}" }); // Job List Creation
             JobDeviceStatusList.Add(new JobDeviceStatus() { Index = i, Name = $"Devices{i + 1}" }); // Device Status List Creation
-            PrinterStateList.Add(new PrinterState() { Name = $"Printer {i}", State = "" }); // Printer State List Creation
+            PrinterStateList.Add(new PrinterState() { Name = $"{i+1}:", State = "" }); // Printer State List Creation
 
         }
 
@@ -131,8 +131,6 @@ namespace DipesLink.ViewModels
         {
             var userControl = new JobDetails() { DataContext = JobList[stationIndex] };
             TabStation.Add(new TabItemModel() { Header = $"Station {stationIndex + 1}", Content = userControl });
-            
-
         }
 
         private bool CheckJobExisting(int index, out JobModel? job)
