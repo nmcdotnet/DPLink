@@ -2,7 +2,6 @@
 using DipesLink.Models;
 using DipesLink.Views.Extension;
 using DipesLink.Views.Models;
-using DipesLink.Views.SubWindows;
 using DipesLink.Views.UserControls.MainUc;
 using IPCSharedMemory;
 using SharedProgram.Models;
@@ -14,12 +13,10 @@ using System.Reflection;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
-using TAlex.WPF.Helpers;
 using static DipesLink.Views.Enums.ViewEnums;
 using static IPCSharedMemory.Datatypes.Enums;
 using static SharedProgram.DataTypes.CommonDataType;
 using Application = System.Windows.Application;
-using MessageBox = System.Windows.MessageBox;
 
 namespace DipesLink.ViewModels
 {
@@ -46,7 +43,7 @@ namespace DipesLink.ViewModels
         }
         #endregion
 
-        
+
         public MainViewModel()
         {
             InitInstanceIPC();
@@ -61,13 +58,13 @@ namespace DipesLink.ViewModels
 
         }
 
-        
+
         private void InitInstanceIPC()
         {
             _ipcDeviceToUISharedMemory_DT = new(JobIndex, "DeviceToUISharedMemory_DT", SharedValues.SIZE_1MB);
             _ipcUIToDeviceSharedMemory_DT = new(JobIndex, "UIToDeviceSharedMemory_DT", SharedValues.SIZE_1MB);
-            _ipcDeviceToUISharedMemory_DB = new(JobIndex, "DeviceToUISharedMemory_DB", SharedValues.SIZE_200MB);
-            _ipcDeviceToUISharedMemory_RD = new(JobIndex, "DeviceToUISharedMemory_RD", SharedValues.SIZE_100MB);
+            //_ipcDeviceToUISharedMemory_DB = new(JobIndex, "DeviceToUISharedMemory_DB", SharedValues.SIZE_200MB);
+            //_ipcDeviceToUISharedMemory_RD = new(JobIndex, "DeviceToUISharedMemory_RD", SharedValues.SIZE_100MB);
         }
 
         private void InitDir()
@@ -101,7 +98,7 @@ namespace DipesLink.ViewModels
             
             Task.Run(() => { ListenDatabase(stationIndex); });
 
-            Task.Run(() => { ListenCheckedResultDatabase(stationIndex); });
+           // Task.Run(() => { ListenCheckedResultDatabase(stationIndex); });
 
             Task.Run(() => { ListenProcess(stationIndex); });
 
@@ -155,13 +152,10 @@ namespace DipesLink.ViewModels
         internal void GetCurrentJobDetail(int index)
         {
             JobModel? jobModel;
-            
-            if (!CheckJobExisting(index,out jobModel))
+            if (!CheckJobExisting(index, out jobModel))
             {
                 jobModel = new();
             }
-
-            
             JobList[index].Name = jobModel.Name;
             JobList[index].PrinterSeries = jobModel.PrinterSeries;
             JobList[index].JobType = jobModel.JobType;
@@ -198,10 +192,10 @@ namespace DipesLink.ViewModels
 
         private void LoadDbEventHandler(object? sender, EventArgs e)
         {
-            if(sender is int index)
+            if (sender is int index)
             {
                 ActionButtonProcess(index, ActionButtonType.LoadDB);
-              //  Debug.WriteLine("Load DB for Job " + index);
+                //  Debug.WriteLine("Load DB for Job " + index);
             }
         }
 
@@ -214,7 +208,7 @@ namespace DipesLink.ViewModels
                     byte[] indexBytes = SharedFunctions.StringToFixedLengthByteArray(stationIndex.ToString(), 1);
                     byte[] actionTypeBytes = SharedFunctions.StringToFixedLengthByteArray(((int)ActionButtonType.Reprint).ToString(), 1);
                     byte[] combineBytes = SharedFunctions.CombineArrays(indexBytes, actionTypeBytes);
-                    MemoryTransfer.SendActionButtonToDevice(_ipcDeviceToUISharedMemory_DT,stationIndex, combineBytes);
+                    MemoryTransfer.SendActionButtonToDevice(_ipcDeviceToUISharedMemory_DT, stationIndex, combineBytes);
                 }
                 catch (Exception) { }
             }
@@ -250,10 +244,12 @@ namespace DipesLink.ViewModels
         /// <param name="stationIndex"></param>
         private async void ListenDatabase(int stationIndex)
         {
-            using IPCSharedHelper ipc = new(stationIndex, "DeviceToUISharedMemory_DB", capacity: 1024 * 1024 * 200, isReceiver: true);
+            if (_ipcDeviceToUISharedMemory_DB is null)
+                _ipcDeviceToUISharedMemory_DB = new(JobIndex, "DeviceToUISharedMemory_DB", SharedValues.SIZE_200MB, isReceiver: true);
+            //using IPCSharedHelper ipc = new(stationIndex, "DeviceToUISharedMemory_DB", capacity: 1024 * 1024 * 200, isReceiver: true);
             while (true)
             {
-                bool isCompleteDequeue = ipc.MessageQueue.TryDequeue(out byte[]? result);
+                bool isCompleteDequeue = _ipcDeviceToUISharedMemory_DB.MessageQueue.TryDequeue(out byte[]? result);
                 if (result != null && isCompleteDequeue)
                 {
                     switch (result[0])
@@ -263,9 +259,9 @@ namespace DipesLink.ViewModels
                             {
                                 case (byte)SharedMemoryType.DatabaseList:
                                     GetDatabaseList(stationIndex, result);
-                                    // Debug.WriteLine("Reload Database !");
-                                  
-                                  
+                                    break;
+                                case (byte)SharedMemoryType.CheckedList:
+                                    GetCheckedList(stationIndex, result);
                                     break;
                             }
                             break;
@@ -279,11 +275,11 @@ namespace DipesLink.ViewModels
         {
             try
             {
-                if (JobList[stationIndex].IsDBExist) 
+                if (JobList[stationIndex].IsDBExist)
                 {
                     Debug.WriteLine("Dont Reload Database for job: " + +stationIndex);
-                    JobList[stationIndex].IsShowLoadingDB = Visibility.Collapsed; 
-                    return; 
+                    JobList[stationIndex].IsShowLoadingDB = Visibility.Collapsed;
+                    return;
                 };
                 Debug.WriteLine("Reload Database for job: " + stationIndex);
                 JobList[stationIndex].IsShowLoadingDB = Visibility.Visible;
@@ -304,7 +300,7 @@ namespace DipesLink.ViewModels
                     JobList[stationIndex].IsDBExist = true;
                 }
             }
-            catch (Exception) 
+            catch (Exception)
             {
 #if DEBUG
                 Console.WriteLine("Get Db Error !");
@@ -318,26 +314,28 @@ namespace DipesLink.ViewModels
         /// <param name="stationIndex"></param>
         private async void ListenCheckedResultDatabase(int stationIndex)
         {
-            using IPCSharedHelper ipc = new(stationIndex, "DeviceToUISharedMemory_CheckedDB", capacity: 1024 * 1024 * 200, isReceiver: true);
-            while (true)
-            {
-                bool isCompleteDequeue = ipc.MessageQueue.TryDequeue(out byte[]? result);
-                if (result != null && isCompleteDequeue)
-                {
-                    switch (result[0])
-                    {
-                        case (byte)SharedMemoryCommandType.DeviceCommand:
-                            switch (result[2])
-                            {
-                                case (byte)SharedMemoryType.CheckedList:
-                                    GetCheckedList(stationIndex, result);
-                                    break;
-                            }
-                            break;
-                    }
-                }
-                await Task.Delay(1000);
-            }
+            //if (_ipcDeviceToUISharedMemory_DB is null)
+            //    _ipcDeviceToUISharedMemory_DB = new(JobIndex, "DeviceToUISharedMemory_DB", SharedValues.SIZE_200MB, isReceiver: true);
+            ////using IPCSharedHelper ipc = new(stationIndex, "DeviceToUISharedMemory_CheckedDB", capacity: 1024 * 1024 * 200, isReceiver: true);
+            //while (true)
+            //{
+            //    bool isCompleteDequeue = _ipcDeviceToUISharedMemory_DB.MessageQueue.TryDequeue(out byte[]? result);
+            //    if (result != null && isCompleteDequeue)
+            //    {
+            //        switch (result[0])
+            //        {
+            //            case (byte)SharedMemoryCommandType.DeviceCommand:
+            //                switch (result[2])
+            //                {
+            //                    case (byte)SharedMemoryType.CheckedList:
+            //                        GetCheckedList(stationIndex, result);
+            //                        break;
+            //                }
+            //                break;
+            //        }
+            //    }
+            //    await Task.Delay(100);
+            //}
         }
 
         private void GetCheckedList(int stationIndex, byte[] result)
@@ -367,11 +365,11 @@ namespace DipesLink.ViewModels
             using IPCSharedHelper ipc = new(stationIndex, "DeviceToUISharedMemory_DT", 1024 * 1024 * 1, isReceiver: true);
             while (true)
             {
-               
+
                 bool isCompleteDequeue = ipc.MessageQueue.TryDequeue(out byte[]? result);
                 if (stationIndex == 0)
                 {
-                   // Debug.WriteLine(ipc.countRec);
+                    // Debug.WriteLine(ipc.countRec);
                 }
                 if (isCompleteDequeue && result != null)
                 {
@@ -512,7 +510,7 @@ namespace DipesLink.ViewModels
 
                         if (camStsBytes == (byte)CameraStatus.Connected) // Camera Status Change
                         {
-                            if(JobDeviceStatusList[stationIndex].CameraStatusColor.Color != Colors.Green)
+                            if (JobDeviceStatusList[stationIndex].CameraStatusColor.Color != Colors.Green)
                             {
                                 JobDeviceStatusList[stationIndex].CameraStatusColor = new SolidColorBrush(Colors.Green); // Camera online
                                 JobDeviceStatusList[stationIndex].IsCamConnected = true;
@@ -538,14 +536,14 @@ namespace DipesLink.ViewModels
                             JobDeviceStatusList[stationIndex].IsPrinterConnected = false;
                         }
 
-                        if(controllerStsBytes == (byte)ControllerStatus.Connected) // Controller Status Change
+                        if (controllerStsBytes == (byte)ControllerStatus.Connected) // Controller Status Change
                         {
 
                             if (JobList[stationIndex].StatusStartButton)
                             {
                                 SaveConnectionSetting(); // send connection setting until run job
                             }
-                            
+
                             if (JobDeviceStatusList[stationIndex].ControllerStatusColor.Color != Colors.Green)
                             {
                                 JobDeviceStatusList[stationIndex].ControllerStatusColor = new SolidColorBrush(Colors.Green); //Controller online
@@ -557,7 +555,7 @@ namespace DipesLink.ViewModels
                         }
                         await Task.Delay(2000);
                     }
-                    catch (Exception) 
+                    catch (Exception)
                     {
                         Debug.WriteLine("DevicesStatusChange Failed !");
                     }
@@ -574,7 +572,7 @@ namespace DipesLink.ViewModels
                 CreateNewJob.TemplateListFirstFound = resString?.ToList();
                 CreateNewJob.TemplateList = CreateNewJob.TemplateListFirstFound; // Update to Listview
             }
-            catch (Exception) 
+            catch (Exception)
             {
 #if DEBUG
                 Debug.WriteLine("GetPrinterTemplateName Error!");
@@ -652,7 +650,7 @@ namespace DipesLink.ViewModels
 
                 //Debug.WriteLine($"\nPage: {JobList[stationIndex].CurrentIndex} and Index: {JobList[stationIndex].CurrentPage}");
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
 #if DEBUG
                 Debug.WriteLine("Get Cur Pos DB Error" + ex.Message);
@@ -666,7 +664,7 @@ namespace DipesLink.ViewModels
             {
                 if (JobList[stationIndex].QueueCurrentPrintedCode.TryDequeue(out byte[]? result))
                 {
-                   // Debug.WriteLine("Ket qua Printed: "+result.Count());
+                    // Debug.WriteLine("Ket qua Printed: "+result.Count());
                     if (result != null)
                     {
                         try
@@ -742,7 +740,7 @@ namespace DipesLink.ViewModels
                     break;
                 case NotifyType.NotConnectCamera:
                     // CusMsgBox.Show("Camera not connected !", "Notification", ButtonStyleMessageBox.OK, ImageStyleMessageBox.Error);
-                    CusAlert.Show($"Station {stationIndex+1}: Camera  not connected!", ImageStyleMessageBox.Warning);
+                    CusAlert.Show($"Station {stationIndex + 1}: Camera  not connected!", ImageStyleMessageBox.Warning);
                     break;
                 case NotifyType.MissingParameter:
                     CusMsgBox.Show("Missing params !", "Notification", ButtonStyleMessageBox.OK, ImageStyleMessageBox.Error);
@@ -760,7 +758,7 @@ namespace DipesLink.ViewModels
                     break;
                 case NotifyType.ProcessCompleted:
                     CusAlert.Show($"Station {stationIndex + 1}: Process is completed!", ImageStyleMessageBox.Info);
-                   // CusMsgBox.Show("Process is completed!", "Notification", ButtonStyleMessageBox.OK, ImageStyleMessageBox.Info);
+                    // CusMsgBox.Show("Process is completed!", "Notification", ButtonStyleMessageBox.OK, ImageStyleMessageBox.Info);
                     break;
                 case NotifyType.CannotCreatePodDataList:
                     break;
@@ -773,7 +771,7 @@ namespace DipesLink.ViewModels
                 case NotifyType.CreatingWarehouseInputReceipt:
                     break;
                 case NotifyType.PauseSystem:
-                   // JobList[stationIndex].IsDBExist = true;
+                    // JobList[stationIndex].IsDBExist = true;
                     break;
                 case NotifyType.DeviceDBLoaded:
                     //JobList[stationIndex].IsDBExist = true;
@@ -782,7 +780,7 @@ namespace DipesLink.ViewModels
                     //JobList[stationIndex].IsDBExist = false;
                     break;
                 case NotifyType.PrinterSuddenlyStop:
-                    CusAlert.Show($"Station {stationIndex+1}: Printer suddenly Stop", ImageStyleMessageBox.Warning);
+                    CusAlert.Show($"Station {stationIndex + 1}: Printer suddenly Stop", ImageStyleMessageBox.Warning);
                     break;
                 case NotifyType.StartEndPageInvalid:
                     CusAlert.Show($"Station {stationIndex + 1}: Printer Start/End Page Invalid", ImageStyleMessageBox.Warning);
@@ -845,7 +843,7 @@ namespace DipesLink.ViewModels
                             case OperationStatus.Stopped:
                                 JobList[stationIndex].StatusStartButton = true;
                                 JobList[stationIndex].StatusStopButton = false;
-                              
+
                                 isRunningCmp = false;
                                 break;
                         }
@@ -877,10 +875,12 @@ namespace DipesLink.ViewModels
         {
             try
             {
-                using IPCSharedHelper ipc = new(stationIndex, "DeviceToUISharedMemory_RD", 1024 * 1024 * 100, isReceiver: true);
+                if(_ipcDeviceToUISharedMemory_RD is null)
+                    _ipcDeviceToUISharedMemory_RD = new(JobIndex, "DeviceToUISharedMemory_RD", SharedValues.SIZE_100MB, isReceiver:true);
+                //using IPCSharedHelper ipc = new(stationIndex, "DeviceToUISharedMemory_RD", 1024 * 1024 * 100, isReceiver: true);
                 while (true)
                 {
-                    bool isCompleteDequeue = ipc.MessageQueue.TryDequeue(out byte[]? result);
+                    bool isCompleteDequeue = _ipcDeviceToUISharedMemory_RD.MessageQueue.TryDequeue(out byte[]? result);
                     if (!isCompleteDequeue)
                     {
                         await Task.Delay(1); continue;
@@ -948,7 +948,7 @@ namespace DipesLink.ViewModels
                             Debug.WriteLine("GetCheckedCodeAsync Error !");
 #endif  
                         }
-                        
+
                     }
                 }
                 await Task.Delay(1);
@@ -987,7 +987,7 @@ namespace DipesLink.ViewModels
                             }
                         }
                     }
-                    catch (Exception) 
+                    catch (Exception)
                     {
 #if DEBUG
                         Debug.WriteLine("Get Image Failed !");
@@ -1032,7 +1032,7 @@ namespace DipesLink.ViewModels
                         await Task.Delay(100);
                     }
                 }
-                catch (Exception ex) 
+                catch (Exception ex)
                 {
 #if DEBUG
                     Debug.WriteLine("GetCheckedStatistics Error" + ex.Message);

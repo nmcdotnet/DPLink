@@ -11,6 +11,7 @@ namespace DipesLinkDeviceTransfer
     {
 
         private readonly string _DateTimeFormat = "yyMMddHHmmss";
+      
 
         private async void ExportCheckedResultToFileAsync()
         {
@@ -39,7 +40,7 @@ namespace DipesLinkDeviceTransfer
                     }
                     //Save Job
                     _SelectedJob.CheckedResultPath = fileNameCheckedRes + ".csv";
-
+                  
                     _SelectedJob.SaveJobFile(jobPath);
                     _SelectedJob.SaveJobFile(selectedJobPath);
                 }
@@ -100,7 +101,10 @@ namespace DipesLinkDeviceTransfer
                         streamWriter.WriteLine(string.Join(",", _DatabaseColunms));
                     }
                     _SelectedJob.PrintedResponePath = fileNamePrintedResponse + ".csv";
-
+                   SharedFunctions.SaveStringOfPrintedResponePath(
+                         SharedPaths.PathSubJobsApp + $"{JobIndex + 1}\\",
+                         "printedPathString",
+                         _SelectedJob.PrintedResponePath);
                     _SelectedJob.SaveJobFile(jobPath);
                     _SelectedJob.SaveJobFile(selectedJobPath);
                 }

@@ -15,11 +15,12 @@ namespace DipesLink.Views.Extension
         public int PrintedNumber { get; set; }
         private int _rowIndex;
         public event EventHandler? OnDetectMissPrintedCode;
-
+        public DataTable? PrintedDataTable { get; private set; }
         public void RaiseDetectMissPrintedCode()
         {
             OnDetectMissPrintedCode?.Invoke(CurrentViewModel?.Index, EventArgs.Empty);
         }
+
         /// <summary>
         /// Load DB to DataGrid and Limit Row
         /// </summary>
@@ -29,19 +30,21 @@ namespace DipesLink.Views.Extension
         /// <param name="currentViewModel"></param>
         public async Task InitDatabaseAsync(List<string[]> dbList, DataGrid dataGrid, int currentPage, JobOverview? currentViewModel)
         {
-            DataTable dataTable = new();
+            PrintedDataTable = new();
+            //DataTable dataTable = new();
             await Task.Run(() =>
             {
                 foreach (var header in dbList[0]) // add column
                 {
-                    dataTable.Columns.Add(header);
+                    PrintedDataTable.Columns.Add(header);
                 }
                 for (int i = 1; i < dbList.Count; i++) // add Row data
                 {
-                    dataTable.Rows.Add(dbList[i]);
+                    PrintedDataTable.Rows.Add(dbList[i]);
                 }
                 _orgDBList = dbList;
-                CounterPrintedFirstLoad(dataTable);
+                CounterPrintedFirstLoad(PrintedDataTable);
+               
             });
 
             // Update UI after datatable loaded
@@ -50,11 +53,11 @@ namespace DipesLink.Views.Extension
                 if (currentViewModel == null) return;
                 CurrentViewModel = currentViewModel;
                 dataGrid.Columns.Clear();
-                ProcessMiniPage(dataGrid, dataTable, currentPage);
+                ProcessMiniPage(dataGrid, PrintedDataTable, currentPage);
                 currentViewModel.IsShowLoadingDB = Visibility.Collapsed;
             });
         }
-
+      
         private int FindIndexByData(string[] printedCode, List<string[]> dbList) => dbList
             .FindIndex(x => x.Take(x.Length - 1).SequenceEqual(printedCode.Take(printedCode.Length - 1))) - 1;
 
