@@ -67,11 +67,20 @@ namespace DipesLinkDeviceTransfer
             //    Console.WriteLine(arg);
             //}
 #endif
+            try
+            {
 
+           
             GetArgumentList(args);
             JobIndex = DeviceSharedValues.Index;
 
             new Program().NonStaticMainProgram();
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine(ex.Message);
+            }
 
             #region Hold control Readkey
             //Don't exit the Control window when pressing a key

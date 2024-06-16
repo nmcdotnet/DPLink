@@ -87,13 +87,13 @@ namespace DipesLink.ViewModels
             CurrentConnectParams = ConnectParamsList[index];
         }
 
-        internal void SendConnectionParamsToDeviceTransfer(int index)
+        internal void SendConnectionParamsToDeviceTransfer(int stationIndex)
         {
             try
             {
-                int i = index;
+                int i = stationIndex;
                 var sysParamsBytes =  DataConverter.ToByteArray(ViewModelSharedValues.Settings.SystemParamsList[i]);
-                MemoryTransfer.SendConnectionParamsToDevice(_ipcUIToDeviceSharedMemory_DT, index, sysParamsBytes);
+                MemoryTransfer.SendConnectionParamsToDevice(listIPCUIToDevice1MB[stationIndex], stationIndex, sysParamsBytes);
             }
             catch (Exception){}
         }
