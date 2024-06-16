@@ -23,12 +23,9 @@
             </ResourceDictionary.MergedDictionaries>
 
             <converter:AddOne x:Key="AddOneConverter" />
-
             <Color x:Key="DataTagColorGraTop">AliceBlue</Color>
             <Color x:Key="DataTagColorGraMid">WhiteSmoke</Color>
             <Color x:Key="DataTagColorGraBot">White</Color>
-
-
         </ResourceDictionary>
 
     </UserControl.Resources>
@@ -169,57 +166,11 @@
                             </Grid>
                         </Grid>
 
-                        <!--  Static Text  -->
-                        <Grid
-                            Grid.Row="2"
-                            Background="Transparent"
-                            ShowGridLines="False">
-                            <Grid.RowDefinitions>
-                                <RowDefinition MaxHeight="20" />
-                                <RowDefinition MaxHeight="40" />
-                            </Grid.RowDefinitions>
-                            <TextBlock
-                                Margin="10,0,10,0"
-                                VerticalAlignment="Center"
-                                FontSize="16"
-                                Text="Static Text" />
-                            <TextBox
-                                Grid.Row="1"
-                                Height="30"
-                                Margin="10,0,10,0"
-                                FontSize="16"
-                                IsReadOnly="True"
-                                Style="{StaticResource TextBoxStyle1}"
-                                Text="{Binding StaticText}" />
-                        </Grid>
 
-                        <!--  Database  -->
-                        <Grid
-                            Grid.Row="3"
-                            Background="Transparent"
-                            ShowGridLines="False">
-                            <Grid.RowDefinitions>
-                                <RowDefinition MaxHeight="20" />
-                                <RowDefinition MaxHeight="40" />
-                            </Grid.RowDefinitions>
-                            <TextBlock
-                                Margin="10,0,10,0"
-                                VerticalAlignment="Center"
-                                FontSize="16"
-                                Text="Database Path" />
-                            <TextBox
-                                Grid.Row="1"
-                                Height="30"
-                                Margin="10,0,10,0"
-                                FontSize="16"
-                                IsReadOnly="True"
-                                Style="{StaticResource TextBoxStyle1}"
-                                Text="{Binding DatabasePath}" />
-                        </Grid>
 
                         <!--  Totals  -->
                         <Grid
-                            Grid.Row="4"
+                            Grid.Row="2"
                             Background="Transparent"
                             ShowGridLines="False">
                             <Grid.RowDefinitions>
@@ -243,7 +194,7 @@
 
                         <!--  Database compare format  -->
                         <Grid
-                            Grid.Row="5"
+                            Grid.Row="3"
                             Background="Transparent"
                             ShowGridLines="False">
                             <Grid.RowDefinitions>
@@ -265,6 +216,82 @@
                                 Text="{Binding DataCompareFormat}" />
                         </Grid>
 
+                        <!--  Static Text  -->
+
+                        <Grid
+                            Grid.Row="4"
+                            Background="Transparent"
+                            ShowGridLines="False">
+                            <Grid.RowDefinitions>
+                                <RowDefinition MaxHeight="20" />
+                                <RowDefinition MaxHeight="40" />
+                            </Grid.RowDefinitions>
+                            <!--<TextBlock
+                                Margin="10,0,10,0"
+                                VerticalAlignment="Center"
+                                FontSize="16"
+                                Text="Static Text" />
+                            <TextBox
+                                Grid.Row="1"
+                                Height="30"
+                                Margin="10,0,10,0"
+                                FontSize="16"
+                                IsReadOnly="True"
+                                Style="{StaticResource TextBoxStyle1}"
+                                Text="{Binding StaticText}" />-->
+                            <TextBlock
+                                Margin="10,0,10,0"
+                                VerticalAlignment="Center"
+                                FontSize="16"
+                                Text="Code Data" />
+                            <TextBox
+                                Grid.Row="1"
+                                Height="30"
+                                Margin="10,0,10,0"
+                                FontSize="16"
+                                IsReadOnly="True"
+                                Style="{StaticResource TextBoxStyle1}"
+                                Text="{Binding CurrentCodeData}" />
+                        </Grid>
+
+
+                        <!--  Database  -->
+                        <Grid
+                            Grid.Row="5"
+                            Background="Transparent"
+                            ShowGridLines="False">
+                            <Grid.RowDefinitions>
+                                <RowDefinition MaxHeight="20" />
+                                <RowDefinition MaxHeight="40" />
+                            </Grid.RowDefinitions>
+                            <!--<TextBlock
+                            Margin="10,0,10,0"
+                            VerticalAlignment="Center"
+                            FontSize="16"
+                            Text="Database Path" />
+                        <TextBox
+                            Grid.Row="1"
+                            Height="30"
+                            Margin="10,0,10,0"
+                            FontSize="16"
+                            IsReadOnly="True"
+                            Style="{StaticResource TextBoxStyle1}"
+                            Text="{Binding DatabasePath}" />-->
+                            <TextBlock
+                                Margin="10,0,10,0"
+                                VerticalAlignment="Center"
+                                FontSize="16"
+                                Text="Time (ms)" />
+                            <TextBox
+                                Grid.Row="1"
+                                Height="30"
+                                Margin="10,0,10,0"
+                                FontSize="16"
+                                IsReadOnly="True"
+                                Style="{StaticResource TextBoxStyle1}"
+                                Text="{Binding ProcessingTime}" />
+                        </Grid>
+
                         <!--  Database compare format  -->
                         <Grid
                             Grid.Row="6"
@@ -274,7 +301,7 @@
                                 <RowDefinition MaxHeight="20" />
                                 <RowDefinition MaxHeight="40" />
                             </Grid.RowDefinitions>
-                            <TextBlock
+                            <!--<TextBlock
                                 Margin="10,0,10,0"
                                 VerticalAlignment="Center"
                                 FontSize="16"
@@ -286,7 +313,20 @@
                                 FontSize="16"
                                 IsReadOnly="True"
                                 Style="{StaticResource TextBoxStyle1}"
-                                Text="{Binding PrinterTemplate}" />
+                                Text="{Binding PrinterTemplate}" />-->
+                            <TextBlock
+                                Margin="10,0,10,0"
+                                VerticalAlignment="Center"
+                                FontSize="16"
+                                Text="Checked Result" />
+                            <TextBox
+                                Grid.Row="1"
+                                Height="30"
+                                Margin="10,0,10,0"
+                                FontSize="16"
+                                IsReadOnly="True"
+                                Style="{StaticResource TextBoxStyle1}"
+                                Text="{Binding CompareResult}" />
                         </Grid>
 
                     </Grid>
@@ -310,8 +350,8 @@
                 <Button
                     x:Name="ButtonStart"
                     Grid.Column="0"
-                    Height="75"
                     Width="85"
+                    Height="75"
                     Margin="5"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
@@ -337,8 +377,8 @@
                 <Button
                     x:Name="ButtonStop"
                     Grid.Column="1"
-                    Height="75"
                     Width="85"
+                    Height="75"
                     Margin="5"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
@@ -351,8 +391,8 @@
                 <Button
                     x:Name="ButtonTrigger"
                     Grid.Column="2"
-                    Height="75"
                     Width="85"
+                    Height="75"
                     Margin="5"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
@@ -395,7 +435,7 @@
                             Text="VERIFICATION INFO" />
                     </Border>
 
-                    <Grid 
+                    <Grid
                         x:Name="GridChartInfo"
                         Grid.Row="1"
                         Background="Transparent">
@@ -403,7 +443,7 @@
                             <RowDefinition Height="8*" />
                             <RowDefinition Height="300" />
                         </Grid.RowDefinitions>
-                        
+
                         <Grid Background="Transparent">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
@@ -433,10 +473,11 @@
                                     Series="{Binding CircleChart.Series}" />
                             </Border>
                         </Grid>
-                        
-                        
+
+
                         <Grid
-                            Grid.Row="1"  Height="300"
+                            Grid.Row="1"
+                            Height="300"
                             Margin="1"
                             VerticalAlignment="Bottom"
                             Background="Transparent">
@@ -465,9 +506,9 @@
                                         Text="Total Checked" />
                                     <TextBlock
                                         x:Name="TextBlockTotalChecked"
-                                        Grid.Row="1"
-                                        Margin="10"
-                                        HorizontalAlignment="Center"
+                                        Grid.RowSpan="2"
+                                        Margin="126,24,0,0"
+                                        HorizontalAlignment="Left"
                                         VerticalAlignment="Top"
                                         FontSize="40"
                                         FontWeight="Normal"
@@ -495,9 +536,9 @@
                                         Text="Passed" />
                                     <TextBlock
                                         x:Name="TextBlockTotalPassed"
-                                        Grid.Row="1"
-                                        Margin="10"
-                                        HorizontalAlignment="Center"
+                                        Grid.RowSpan="2"
+                                        Margin="126,24,0,0"
+                                        HorizontalAlignment="Left"
                                         VerticalAlignment="Top"
                                         FontSize="40"
                                         FontWeight="Normal"
@@ -523,9 +564,9 @@
                                         Text="Failed" />
                                     <TextBlock
                                         x:Name="TextBlockTotalFailed"
-                                        Grid.Row="1"
-                                        Margin="10"
-                                        HorizontalAlignment="Center"
+                                        Grid.RowSpan="2"
+                                        Margin="126,24,0,0"
+                                        HorizontalAlignment="Left"
                                         VerticalAlignment="Top"
                                         FontSize="40"
                                         FontWeight="Normal"
@@ -542,19 +583,18 @@
         <!--#region RIGHT-->
         <Grid Grid.Column="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="2.5*" MaxHeight="230" />
+                <RowDefinition Height="2.5*" MaxHeight="135" />
                 <RowDefinition Height="5*" />
             </Grid.RowDefinitions>
-
+            <!--  BorderBrush="#00ABE6"  -->
             <Border
                 Margin="5,4,5,5"
-                BorderBrush="#00ABE6"
                 BorderThickness="1"
                 CornerRadius="5">
                 <Grid Margin="1">
                     <Grid.RowDefinitions>
                         <RowDefinition />
-                        <RowDefinition Height="95" />
+                        <!--<RowDefinition Height="35" />-->
                     </Grid.RowDefinitions>
                     <Grid Background="AliceBlue">
                         <Grid.ColumnDefinitions>
@@ -671,9 +711,13 @@
                             </StackPanel>
                         </Border>
                     </Grid>
+
+
+
+
                     <!--  Đặt WrapPanel trong một container có khả năng co dãn, chẳng hạn như Grid  -->
-                    <Grid Grid.Row="1">
-                        <!--<Grid.Resources>
+                    <!--<Grid Grid.Row="1">-->
+                    <!--<Grid.Resources>
                             <ResourceDictionary>
                                 <SolidColorBrush x:Key="TextBox.Static.Border" Color="#3399FF" />
                                 <SolidColorBrush x:Key="TextBox.MouseOver.Border" Color="#FF7EB4EA" />
@@ -731,12 +775,14 @@
                                 </Style>
                             </ResourceDictionary>
                         </Grid.Resources>-->
-                        <Grid.ColumnDefinitions>
+                    <!--<Grid.ColumnDefinitions>
                             <ColumnDefinition />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <StackPanel HorizontalAlignment="Left">
-                            <!--  Các phần tử con của WrapPanel sẽ tự chuyển dòng khi không đủ không gian chiều ngang  -->
+                    -->
+                    <!--  Các phần tử con của WrapPanel sẽ tự chuyển dòng khi không đủ không gian chiều ngang  -->
+                    <!--
                             <StackPanel Margin="5,5,0,0" Orientation="Horizontal">
                                 <TextBlock
                                     Width="110"
@@ -784,10 +830,11 @@
                                     Text="{Binding CompareResult}" />
                             </StackPanel>
                         </StackPanel>
-                        <StackPanel Grid.Column="1" />
-                    </Grid>
+                        <StackPanel Grid.Column="1" />-->
+                    <!--</Grid>-->
 
                 </Grid>
+
             </Border>
 
 

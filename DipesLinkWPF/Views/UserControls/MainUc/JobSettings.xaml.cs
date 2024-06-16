@@ -362,6 +362,8 @@ namespace DipesLink.Views.UserControls.MainUc
             if (vm is null) return;
             vm.StationSelectedIndex = cbb.SelectedIndex;
             vm.CheckStationChange();
+            cbb.SelectedIndex = vm.StationSelectedIndex;
+            //vm.StationSelectedIndex = cbb.SelectedIndex;
         }
     }
 }

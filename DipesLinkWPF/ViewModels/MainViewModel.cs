@@ -6,8 +6,10 @@ using DipesLink.Views.UserControls.MainUc;
 using IPCSharedMemory;
 using SharedProgram.Models;
 using SharedProgram.Shared;
+using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
@@ -93,7 +95,7 @@ namespace DipesLink.ViewModels
         public void ListenDeviceTransferDataAsync(int stationIndex)
         {
             CreateMultiObjects(stationIndex);
-
+            
             Task.Run(() => { ListenDatabase(stationIndex); });
 
            // Task.Run(() => { ListenCheckedResultDatabase(stationIndex); });
@@ -130,6 +132,8 @@ namespace DipesLink.ViewModels
         {
             var userControl = new JobDetails() { DataContext = JobList[stationIndex] };
             TabStation.Add(new TabItemModel() { Header = $"Station {stationIndex + 1}", Content = userControl });
+            
+
         }
 
         private bool CheckJobExisting(int index, out JobModel? job)
@@ -148,12 +152,10 @@ namespace DipesLink.ViewModels
         internal void GetCurrentJobDetail(int index)
         {
             JobModel? jobModel;
-
             if (!CheckJobExisting(index, out jobModel))
             {
                 jobModel = new();
             }
-
             JobList[index].Name = jobModel.Name;
             JobList[index].PrinterSeries = jobModel.PrinterSeries;
             JobList[index].JobType = jobModel.JobType;
@@ -1041,6 +1043,7 @@ namespace DipesLink.ViewModels
 
         private void UpdatePercentForCircleChart(int stationIndex)
         {
+            
             if (int.TryParse(JobList[stationIndex].TotalChecked, out int totalChecked))
             {
                 try

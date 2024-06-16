@@ -4,11 +4,14 @@ using DipesLink.ViewModels;
 using DipesLink.Views.Extension;
 using DipesLink.Views.SubWindows;
 using DipesLink.Views.UserControls.MainUc;
+using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Windows;
+using DipesLink.Views.Models;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Application = System.Windows.Application;
+using System;
 
 namespace DipesLink.Views
 {
@@ -34,12 +37,23 @@ namespace DipesLink.Views
 
         private void EventRegister()
         {
+            JobDetails.OnJobDetailChange += JobDetails_OnJobDetailChange;
             SizeChanged += MainWindow_SizeChanged;
             Closing += MainWindow_Closing;
             Closed += MainWindow_Closed;
             AllStationUc.DoneLoadUIEvent += AllStationUc_DoneLoadUIEvent;
             Shared.OnActionLoadingSplashScreen += Shared_OnActionLoadingSplashScreen;
             ListBoxMenu.SelectionChanged += ListBoxMenu_SelectionChanged;
+        }
+
+        private void JobDetails_OnJobDetailChange(object? sender, int e)
+        {
+            var CamIP = ViewModelSharedValues.Settings.SystemParamsList[e].CameraIP;
+            var PrinterIP = ViewModelSharedValues.Settings.SystemParamsList[e].PrinterIP;
+            var ControllerIP = ViewModelSharedValues.Settings.SystemParamsList[e].ControllerIP;
+            TextBlockControllerIP.Text = ControllerIP.ToString();
+            TextBlockPrinterIP.Text = PrinterIP.ToString();
+            TextBlockCamIP.Text= CamIP.ToString();
         }
 
         private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
@@ -153,7 +167,7 @@ namespace DipesLink.Views
 
         private void ComboBoxStationNum_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            CurrentViewModel<MainViewModel>().CheckStationChange();
+            //CurrentViewModel<MainViewModel>().CheckStationChange();
         }
 
         private void ComboBoxSelectView_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -226,10 +240,37 @@ namespace DipesLink.Views
                 }
             }
         }
+        private void ChangeView()
+        {
+          
+            ListBoxMenu.SelectedIndex = ListBoxMenu.SelectedIndex != -1 ? -1 : 0;
+            if (ListBoxMenu.SelectedIndex != -1)
+            {
+                IpGridChange.Visibility = Visibility.Visible;
+                myToggleButton.IsChecked = false; // This will trigger the setter for True
 
+            }
+            else
+            {
+                // or
+                IpGridChange.Visibility = Visibility.Hidden;
+                myToggleButton.IsChecked = true; // This will trigger the setter for False
+  
+            }
+        }
         private void ToggleButton_Click(object sender, RoutedEventArgs e)
         {
-            ListBoxMenu.SelectedIndex = ListBoxMenu.SelectedIndex != -1 ? -1 : 0;
+            
+            ChangeView();
+        }
+
+       
+
+        private void ListBoxItem_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            myToggleButton.IsChecked = false;
+            IpGridChange.Visibility = Visibility.Visible;
+
         }
     }
 }

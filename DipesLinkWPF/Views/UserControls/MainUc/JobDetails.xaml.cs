@@ -28,6 +28,7 @@ namespace DipesLink.Views.UserControls.MainUc
         CheckedObserHelper _checkedObserHelper = new();
         JobOverview? _currentJob;
         ConcurrentQueue<string[]> _queueCheckedCode = new();
+        public static event EventHandler<int>? OnJobDetailChange;
         int count = 0;
         public JobDetails()
         {
@@ -37,6 +38,11 @@ namespace DipesLink.Views.UserControls.MainUc
             Task.Run(() => { TaskAddDataAsync(); });
             Task.Run(() => { TaskChangePrintStatusAsync(); });
             Debug.WriteLine("JobDetails !" + ++count);
+        }
+
+        private void OnJobDetailChangeHandler()
+        {
+            OnJobDetailChange?.Invoke(this, _currentJob.Index);
         }
 
         private void InitValues()
@@ -49,7 +55,7 @@ namespace DipesLink.Views.UserControls.MainUc
         private async void StationDetailUc_Loaded(object sender, RoutedEventArgs e)
         {
             EventRegister();
-
+            OnJobDetailChangeHandler();
 
             if (!_currentJob.IsDBExist)
             {

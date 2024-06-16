@@ -54,7 +54,6 @@ namespace DipesLink.Views.SubWindows
         {
             GetInputsValues();
             if (Username == null || Password == null) { return; }
-            // thinh is fixing
             var databasePath = Path.Combine(SharedPaths.PathAccountsDb, "AccountDB.db");
             var options = new SQLiteConnectionString(databasePath, true, key: "123456");
             var db = new SQLiteAsyncConnection(options);
