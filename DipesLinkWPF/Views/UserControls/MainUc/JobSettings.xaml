@@ -683,7 +683,7 @@
                                                 <!--  Gr Mode  -->
                                                 <GroupBox Width="auto" Height="70">
                                                     <GroupBox.Header>
-                                                        <TextBlock FontWeight="Bold" Text="Mode" />
+                                                        <TextBlock FontWeight="Normal" Text="Send Mode" />
                                                     </GroupBox.Header>
                                                     <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                                                         <RadioButton
@@ -755,7 +755,7 @@
                                             </StackPanel>
                                         </GroupBox>
 
-                                        <GroupBox Grid.Column="1" Height="256">
+                                        <GroupBox Grid.Column="1" Height="236" Margin="0 20 0 0">
                                             <GroupBox.Header>
                                                 <TextBlock FontWeight="Bold" Text="Select Number of stations" />
                                             </GroupBox.Header>

@@ -46,25 +46,23 @@ namespace DipesLink.ViewModels
 
         public MainViewModel()
         {
-            InitInstanceIPC();
+          
             ViewModelSharedFunctions.LoadSetting();
             _NumberOfStation = ViewModelSharedValues.Settings.NumberOfStation;
             StationSelectedIndex = _NumberOfStation > 0 ? _NumberOfStation - 1 : StationSelectedIndex;
-
             InitDir();
             InitJobConnectionSettings();
-
             InitStations(_NumberOfStation);
 
         }
 
-
-        private void InitInstanceIPC()
+        List<IPCSharedHelper> listIPCUIToDevice1MB = new();
+        private void InitInstanceIPC(int index)
         {
-            _ipcDeviceToUISharedMemory_DT = new(JobIndex, "DeviceToUISharedMemory_DT", SharedValues.SIZE_1MB);
-            _ipcUIToDeviceSharedMemory_DT = new(JobIndex, "UIToDeviceSharedMemory_DT", SharedValues.SIZE_1MB);
-            //_ipcDeviceToUISharedMemory_DB = new(JobIndex, "DeviceToUISharedMemory_DB", SharedValues.SIZE_200MB);
-            //_ipcDeviceToUISharedMemory_RD = new(JobIndex, "DeviceToUISharedMemory_RD", SharedValues.SIZE_100MB);
+            listIPCUIToDevice1MB.Add(new(index, "UIToDeviceSharedMemory_DT", SharedValues.SIZE_1MB));
+           // _ipcDeviceToUISharedMemory_DT = new(JobIndex, "DeviceToUISharedMemory_DT", SharedValues.SIZE_1MB);
+           // _ipcUIToDeviceSharedMemory_DT = new(JobIndex, "UIToDeviceSharedMemory_DT", SharedValues.SIZE_1MB);
+           
         }
 
         private void InitDir()
@@ -86,6 +84,7 @@ namespace DipesLink.ViewModels
         {
             for (int i = 0; i < numberOfStation; i++)
             {
+                InitInstanceIPC(i);
                 ListenDeviceTransferDataAsync(i);
                 InitTabStationUI(i);
                 GetCurrentJobDetail(i);
@@ -208,7 +207,7 @@ namespace DipesLink.ViewModels
                     byte[] indexBytes = SharedFunctions.StringToFixedLengthByteArray(stationIndex.ToString(), 1);
                     byte[] actionTypeBytes = SharedFunctions.StringToFixedLengthByteArray(((int)ActionButtonType.Reprint).ToString(), 1);
                     byte[] combineBytes = SharedFunctions.CombineArrays(indexBytes, actionTypeBytes);
-                    MemoryTransfer.SendActionButtonToDevice(_ipcDeviceToUISharedMemory_DT, stationIndex, combineBytes);
+                    MemoryTransfer.SendActionButtonToDevice(listIPCUIToDevice1MB[stationIndex], stationIndex, combineBytes);
                 }
                 catch (Exception) { }
             }
@@ -244,19 +243,24 @@ namespace DipesLink.ViewModels
         /// <param name="stationIndex"></param>
         private async void ListenDatabase(int stationIndex)
         {
-            if (_ipcDeviceToUISharedMemory_DB is null)
-                _ipcDeviceToUISharedMemory_DB = new(JobIndex, "DeviceToUISharedMemory_DB", SharedValues.SIZE_200MB, isReceiver: true);
+            //if (_ipcDeviceToUISharedMemory_DB is null)
+              using IPCSharedHelper ipc = new(stationIndex, "DeviceToUISharedMemory_DB", SharedValues.SIZE_200MB, isReceiver: true);
             //using IPCSharedHelper ipc = new(stationIndex, "DeviceToUISharedMemory_DB", capacity: 1024 * 1024 * 200, isReceiver: true);
             while (true)
             {
-                bool isCompleteDequeue = _ipcDeviceToUISharedMemory_DB.MessageQueue.TryDequeue(out byte[]? result);
+                bool isCompleteDequeue = ipc.MessageQueue.TryDequeue(out byte[]? result);
                 if (result != null && isCompleteDequeue)
                 {
                     switch (result[0])
                     {
                         case (byte)SharedMemoryCommandType.DeviceCommand:
+                            if (stationIndex == 0)
+                            {
+
+                            }
                             switch (result[2])
                             {
+                                
                                 case (byte)SharedMemoryType.DatabaseList:
                                     GetDatabaseList(stationIndex, result);
                                     break;
@@ -875,12 +879,12 @@ namespace DipesLink.ViewModels
         {
             try
             {
-                if(_ipcDeviceToUISharedMemory_RD is null)
-                    _ipcDeviceToUISharedMemory_RD = new(JobIndex, "DeviceToUISharedMemory_RD", SharedValues.SIZE_100MB, isReceiver:true);
-                //using IPCSharedHelper ipc = new(stationIndex, "DeviceToUISharedMemory_RD", 1024 * 1024 * 100, isReceiver: true);
+             // if(_ipcDeviceToUISharedMemory_RD is null)
+                //    _ipcDeviceToUISharedMemory_RD = new(JobIndex, "DeviceToUISharedMemory_RD", SharedValues.SIZE_100MB, isReceiver:true);
+                using IPCSharedHelper ipc = new(stationIndex, "DeviceToUISharedMemory_RD", SharedValues.SIZE_100MB, isReceiver: true);
                 while (true)
                 {
-                    bool isCompleteDequeue = _ipcDeviceToUISharedMemory_RD.MessageQueue.TryDequeue(out byte[]? result);
+                    bool isCompleteDequeue = ipc.MessageQueue.TryDequeue(out byte[]? result);
                     if (!isCompleteDequeue)
                     {
                         await Task.Delay(1); continue;

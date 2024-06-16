@@ -11,41 +11,7 @@ namespace DipesLink.ViewModels
 {
     public partial class MainViewModel
     {
-        //private JobOverview _currentStation = new();
-        //public JobOverview CurrentStation
-        //{
-        //    get { return _currentStation; }
-        //    set
-        //    {
-        //        if (_currentStation != value)
-        //        {
-        //            _currentStation = value;
-        //            OnPropertyChanged();
-        //        }
-        //    }
-        //}
-
-        #region CommandProperties  
-        public ICommand StartCommand { get; set;}
-        public ICommand StopCommand { get; set;}
-        public ICommand TriggerCommand { get; set;}
-        public ICommand ViewCommand { get; set;}
-        #endregion
-
-        //public void InitStation()
-        //{
-        //    JobList = new();
-        //    for (int i = 0; i < 4; i++)
-        //    {
-        //        JobOverview jobOverview = new()
-        //        {
-        //            Index = i,
-        //            Name = "Job " + i
-        //        };
-        //        JobList.Add(jobOverview);
-        //    }
-           
-        //}
+     
         internal void CheckStationChange()
         {
             if (StationSelectedIndex + 1 != ViewModelSharedValues.Settings.NumberOfStation)
@@ -72,50 +38,6 @@ namespace DipesLink.ViewModels
 
         #region Button Control
 
-        int count = 10;
-        private void TriggerCommandAction(JobOverview? job)
-        {
-
-            if (count == 100) count = 0;
-            count += 10;
-
-            //JobList[0].ValueChart = new LiveChartsCore.Defaults.ObservableValue(90);
-            //JobList[0].GaugeItem = new GaugeItem(JobList[0].ChartValue,
-            //   series =>
-            //   {
-            //       series.MaxRadialColumnWidth = 10;
-            //       series.DataLabelsSize = 30;
-            //   });
-        }
-
-        private void StopCommandAction(JobOverview? job)
-        {
-            if (job == null) return;
-            job.StatusStopButton = false;
-            job.StatusStartButton = true;
-            job.StatusColor = new SolidColorBrush(Colors.Red);
-            job.StatusText = "STOP";
-        }
-
-        private void StartCommandAction(JobOverview? job)
-        {
-            if (job == null) return;
-            job.StatusStartButton = false;
-            job.StatusStopButton = true;
-            job.StatusColor = new SolidColorBrush(Colors.Green);
-            job.StatusText = "RUN";
-        }
-
-        private void ViewCommandAction(JobOverview? job)
-        {
-            if (job == null) return;
-            JobIndex = job.Index;
-          //  CurrentStation = JobList[job.Index];
-            GetCurrentJobDetail(job.Index);
-            JobViewVisibility = Visibility.Collapsed;
-            JobViewVisibility1 = Visibility.Visible;
-        }
-
         internal void UpdateJobInfo(int index)
         {
             GetCurrentJobDetail(index);
@@ -124,7 +46,6 @@ namespace DipesLink.ViewModels
         internal void ChangeJobByDeviceStatSymbol(int index)
         {
             JobIndex = index;
-           // CurrentStation = JobList[index];
             GetCurrentJobDetail(index);
         }
 
@@ -136,17 +57,44 @@ namespace DipesLink.ViewModels
             }
         }
 
-        /// <summary>
-        /// Update Basic Params for Job
-        /// </summary>
-        /// <param name="index"></param>
-       
+        private string _TitleApp = "Stations Details";
 
-        internal void JobCreationSelectionChanged(int jobIndex)
+        public string TitleApp
         {
-           //CurrentJobSetting = JobSettingList[jobIndex];
+            get { return _TitleApp; }
+            set
+            {
+                if (_TitleApp != value)
+                {
+                    _TitleApp = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
+        internal void ChangeTitleMainWindow(TitleAppContext titleType)
+        {
+            switch (titleType)
+            {
+                case TitleAppContext.Overview:
+                    TitleApp = "Stations Overview"; 
+                    break;
+                case TitleAppContext.Home:
+                    TitleApp = "Stations Details";
+                    break;
+                case TitleAppContext.Jobs:
+                    TitleApp = "Station Jobs Operations";
+                    break;
+                case TitleAppContext.Setting:
+                    TitleApp = "Stations Settings";
+                    break;
+                case TitleAppContext.Logs:
+                    TitleApp = "Stations Jobs Logs";
+                    break;
+                default:
+                    break;
+            }
+        }
         #endregion Button Control
     }
 }

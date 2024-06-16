@@ -54,7 +54,7 @@
     <Border
         Padding="0"
         Background="White"
-        BorderBrush="Gray"
+        BorderBrush="LightBlue"
         BorderThickness="1,0,1,1"
         CornerRadius="10">
         <Border.Effect>

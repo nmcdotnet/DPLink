@@ -1,4 +1,5 @@
-﻿using static IPCSharedMemory.Datatypes.Enums;
+﻿using System.Diagnostics;
+using static IPCSharedMemory.Datatypes.Enums;
 using static SharedProgram.DataTypes.CommonDataType;
 
 namespace IPCSharedMemory
@@ -47,7 +48,7 @@ namespace IPCSharedMemory
                 var newCommand = new byte[command.Length + data.Length]; // Create new array
                 Array.Copy(command, 0, newCommand, 0, command.Length); // copy array 1 to new array
                 Array.Copy(data, 0, newCommand, command.Length, data.Length); // copy array 2 to new array start from length array 1
-
+                Debug.WriteLine("gui den index"+ index);
                 SendCommandToDevice(ipc, newCommand); // send memory map file
             }
             catch (Exception) { }
@@ -90,6 +91,7 @@ namespace IPCSharedMemory
                 Array.Copy(data, 0, newCommand, command.Length, data.Length); // copy array 2 to new array start from length array 1
                                                                               // Console.WriteLine("Send: "+ newCommand.Length);
                 SendDatabaseCommandToUI(ipc, newCommand); // send memory map file
+                Console.WriteLine("Send DB:" + newCommand.Length);
             }
             catch (Exception) { }
         }
@@ -108,7 +110,7 @@ namespace IPCSharedMemory
                 Array.Copy(command, 0, newCommand, 0, command.Length); // copy array 1 to new array
                 Array.Copy(data, 0, newCommand, command.Length, data.Length); // copy array 2 to new array start from length array 1
                 SendDatabaseCommandToUI(ipc, newCommand);
-               // Console.WriteLine("Send Checked DB:" + newCommand.Length);
+               Console.WriteLine("Send Checked DB:" + newCommand.Length);
             }
             catch (Exception ex) { Console.WriteLine(ex.Message); }
         }

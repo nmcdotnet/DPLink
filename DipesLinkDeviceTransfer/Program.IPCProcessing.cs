@@ -18,11 +18,13 @@ namespace DipesLinkDeviceTransfer
         {
             Task.Run(async () =>
             {
-                _ipcUIToDeviceSharedMemory_DT = new(JobIndex, "UIToDeviceSharedMemory_DT", SharedValues.SIZE_1MB, isReceiver: true);
-                if (_ipcUIToDeviceSharedMemory_DT == null) return;
+              
+                using IPCSharedHelper ipc = new(JobIndex, "UIToDeviceSharedMemory_DT", SharedValues.SIZE_1MB, isReceiver: true);
+                if (ipc == null) { await Console.Out.WriteLineAsync("Deo co gi"); };
+                await Console.Out.WriteLineAsync(JobIndex.ToString());
                 while (true)
                 {
-                    bool isCompleteDequeue = _ipcUIToDeviceSharedMemory_DT.MessageQueue.TryDequeue(out byte[]? result);
+                    bool isCompleteDequeue = ipc.MessageQueue.TryDequeue(out byte[]? result);
                     if (isCompleteDequeue && result != null)
                     {
                         switch (result[0])
@@ -32,6 +34,7 @@ namespace DipesLinkDeviceTransfer
                                 {
                                     // Get Params Setting for Connection (IP, Port) device 
                                     case (byte)SharedMemoryType.ParamsSetting:
+                                        await Console.Out.WriteLineAsync("Co Vao Day Khong");
                                         GetConenctionParams(result);
                                         break;
 
@@ -155,9 +158,10 @@ namespace DipesLinkDeviceTransfer
                         await LoadDatabaseFirst();
                         NotificationProcess(NotifyType.DeviceDBLoaded);
                         _isLoadFirstDb = true;
+                        await Console.Out.WriteLineAsync("Load Database Action");
                         break;
                     case ActionButtonType.Start:
-                        //  await Console.Out.WriteLineAsync("sdafasdfsadf");
+                     
                         _isStopOrPauseAction = false;
                         StartProcessAction(false); // Start without DB Load  
                         break;

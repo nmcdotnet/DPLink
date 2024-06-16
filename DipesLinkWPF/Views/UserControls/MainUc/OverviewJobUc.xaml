@@ -52,7 +52,7 @@
                             VerticalAlignment="Center"
                             FontSize="20"
                             Foreground="White"
-                            Text="JOB " />
+                            Text="STATION " />
                         <TextBlock
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"

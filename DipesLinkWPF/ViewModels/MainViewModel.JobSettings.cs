@@ -426,14 +426,14 @@ namespace DipesLink.ViewModels
 
         }
 
-        internal void RefreshTemplatName(int jobIndex)
+        internal void RefreshTemplatName(int stationIndex)
         {
             try
             {
-                byte[] indexBytes = SharedFunctions.StringToFixedLengthByteArray(jobIndex.ToString(), 1);
+                byte[] indexBytes = SharedFunctions.StringToFixedLengthByteArray(stationIndex.ToString(), 1);
                 byte[] actionTypeBytes = SharedFunctions.StringToFixedLengthByteArray(((int)ActionButtonType.ReloadTemplate).ToString(), 1);
                 byte[] combineBytes = SharedFunctions.CombineArrays(indexBytes, actionTypeBytes);
-                MemoryTransfer.SendActionButtonToDevice(_ipcUIToDeviceSharedMemory_DT,jobIndex, combineBytes);
+                MemoryTransfer.SendActionButtonToDevice(listIPCUIToDevice1MB[stationIndex],stationIndex, combineBytes);
             }
             catch (Exception) { }
         }

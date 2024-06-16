@@ -93,17 +93,17 @@
                 IsTabStop="False"
                 Style="{DynamicResource ButtonStyleExit}">
                 <Border
-                    Width="50"
-                    Height="50"
+                    Width="40"
+                    Height="40"
                     Background="White"
                     BorderBrush="#00ABE6"
                     BorderThickness="1"
                     CornerRadius="30"
                     PreviewMouseDown="BorderUser_MouseDown">
                     <fa:IconImage
-                        Width="{StaticResource MenuIconSize}"
-                        Height="{StaticResource MenuIconSize}"
-                        Foreground="Gray"
+                        Width="25"
+                        Height="25"
+                        Foreground="#00ABE6"
                         Icon="User" />
                 </Border>
             </Button>
@@ -226,7 +226,7 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     FontSize="30"
-                    Text="Barcode Vevification" />
+                    Text="{Binding TitleApp}" />
                 <StackPanel
                     Grid.Column="2"
                     Margin="0,0,10,0"
