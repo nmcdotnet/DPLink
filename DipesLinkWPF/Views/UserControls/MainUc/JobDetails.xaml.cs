@@ -23,6 +23,7 @@ namespace DipesLink.Views.UserControls.MainUc
         JobOverview? _currentJob;
         ConcurrentQueue<string[]> _queueCheckedCode = new();
         public static event EventHandler<int>? OnJobDetailChange;
+        
         int count = 0;
         public JobDetails()
         {
@@ -38,7 +39,6 @@ namespace DipesLink.Views.UserControls.MainUc
         {
             OnJobDetailChange?.Invoke(this, _currentJob.Index);
         }
-
         private void InitValues()
         {
             TextBlockTotalChecked.Text = "0";
@@ -50,7 +50,6 @@ namespace DipesLink.Views.UserControls.MainUc
         {
             EventRegister();
             OnJobDetailChangeHandler();
-
             if (!_currentJob.IsDBExist)
             {
                 Debug.WriteLine("Event load database was called: " + _currentJob.Index);
