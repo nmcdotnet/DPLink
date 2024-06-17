@@ -1,4 +1,6 @@
-﻿namespace DipesLink.Views.Enums
+﻿using System.Windows.Input;
+
+namespace DipesLink.Views.Enums
 {
     public static class ViewEnums
     {
@@ -13,6 +15,14 @@
             Info,
             Warning,
             Error
+        }
+       public enum TitleAppContext
+        {
+            Overview,
+            Home,
+            Jobs,
+            Setting,
+            Logs
         }
 
     }

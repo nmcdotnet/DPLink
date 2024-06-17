@@ -53,7 +53,7 @@ namespace DipesLink.Views
             var ControllerIP = ViewModelSharedValues.Settings.SystemParamsList[e].ControllerIP;
             TextBlockControllerIP.Text = ControllerIP.ToString();
             TextBlockPrinterIP.Text = PrinterIP.ToString();
-            TextBlockCamIP.Text= CamIP.ToString();
+            TextBlockCamIP.Text = CamIP.ToString();
         }
 
         private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
@@ -70,6 +70,30 @@ namespace DipesLink.Views
             ListBoxMenuSelectionChange?.Invoke(ListBoxMenu.SelectedIndex, EventArgs.Empty);
             if (ListBoxMenu.SelectedIndex != -1)
                 ComboBoxSelectView.SelectedIndex = 0;
+            if (sender is ListBox lb)
+            {
+                var vm = CurrentViewModel<MainViewModel>();
+                switch (lb.SelectedIndex)
+                {
+                    case -1:
+                        vm?.ChangeTitleMainWindow(Enums.ViewEnums.TitleAppContext.Overview);
+                        break;
+                    case 0:
+                        vm?.ChangeTitleMainWindow(Enums.ViewEnums.TitleAppContext.Home);
+                        break;
+                    case 1:
+                        vm?.ChangeTitleMainWindow(Enums.ViewEnums.TitleAppContext.Jobs); break;
+                    case 2:
+                        vm?.ChangeTitleMainWindow(Enums.ViewEnums.TitleAppContext.Setting);
+                        break;
+                    case 3:
+                        vm?.ChangeTitleMainWindow(Enums.ViewEnums.TitleAppContext.Logs);
+                        break;
+                }
+            }
+
+
+
         }
 
         private void MainWindow_Closed(object? sender, EventArgs e)
@@ -242,7 +266,7 @@ namespace DipesLink.Views
         }
         private void ChangeView()
         {
-          
+
             ListBoxMenu.SelectedIndex = ListBoxMenu.SelectedIndex != -1 ? -1 : 0;
             if (ListBoxMenu.SelectedIndex != -1)
             {
@@ -255,16 +279,16 @@ namespace DipesLink.Views
                 // or
                 IpGridChange.Visibility = Visibility.Hidden;
                 myToggleButton.IsChecked = true; // This will trigger the setter for False
-  
+
             }
         }
         private void ToggleButton_Click(object sender, RoutedEventArgs e)
         {
-            
+
             ChangeView();
         }
 
-       
+
 
         private void ListBoxItem_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -272,5 +296,7 @@ namespace DipesLink.Views
             IpGridChange.Visibility = Visibility.Visible;
 
         }
+
+
     }
 }

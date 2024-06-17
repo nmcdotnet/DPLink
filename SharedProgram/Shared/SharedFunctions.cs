@@ -126,7 +126,7 @@ namespace SharedProgram.Shared
                 {
                     image.Save(memoryStream, image.RawFormat);
                     memoryStream.Position = 0;
-                    BitmapImage bitmapImage = new BitmapImage();
+                    BitmapImage bitmapImage = new();
                     bitmapImage.BeginInit();
                     bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
                     bitmapImage.StreamSource = memoryStream;
@@ -150,11 +150,15 @@ namespace SharedProgram.Shared
                 {
                     FileName = fullPath,
                     WindowStyle = ProcessWindowStyle.Hidden,
-                    Verb = "runas",
-                    Arguments = arguments
+                    // Comment out this line if admin privileges are not necessary
+                    // Verb = "runas",
+                    Arguments = arguments,
+                    CreateNoWindow = true, // Ensures no window is created
+                    UseShellExecute = false // Ensure using shell execute is disabled
                 };
 #if DEBUG
                 startInfo.WindowStyle = ProcessWindowStyle.Normal;
+                startInfo.CreateNoWindow = false;
 #endif
                 if (startInfo != null)
                 {
@@ -237,6 +241,29 @@ namespace SharedProgram.Shared
             return combinedArray;
         }
 
-       
+       public static string ReadStringOfPrintedResponePath(string filePath)
+        {
+          
+            if (!File.Exists(filePath))
+            {
+               
+            }
+            using (var reader = new StreamReader(filePath, Encoding.UTF8))
+            {
+                return reader.ReadToEnd();
+            }
+        }
+
+        public static void SaveStringOfPrintedResponePath(string directoryPath, string fileName, string content)
+        {
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+            string filePath = System.IO.Path.Combine(directoryPath, fileName);
+            using var writer = new StreamWriter(filePath, false, Encoding.UTF8);
+            writer.Write(content);
+        }
+
     }
 }

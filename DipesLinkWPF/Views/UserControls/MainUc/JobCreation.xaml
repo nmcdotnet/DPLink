@@ -415,13 +415,13 @@
                                                 SelectedItem="{Binding SelectedJob}"
                                                 SelectionChanged="ListViewJobTemplate_SelectionChanged"
                                                 Style="{StaticResource ModernListViewStyle}" />
-                                            <Button
+                                            <!--<Button
                                                 x:Name="ButtonDelJob"
                                                 Width="60"
                                                 Height="30"
                                                 Click="ButtonDelJob_Click"
                                                 Content="DELETE"
-                                                Style="{StaticResource ModernButtonDel}" />
+                                                Style="{StaticResource ModernButtonDel}" />-->
                                         </StackPanel>
 
 
@@ -432,6 +432,14 @@
                                                 Click="Button_AddJobClick"
                                                 Content="ADD"
                                                 Style="{StaticResource ModernButton2}" />
+                                            <Button
+                                                x:Name="ButtonDelJob"
+                                                Width="70"
+                                                Height="30"
+                                                Margin="0,10,0,0"
+                                                Click="ButtonDelJob_Click"
+                                                Content="DELETE"
+                                                Style="{StaticResource ModernButtonDel}" />
                                         </StackPanel>
                                         <StackPanel Grid.Column="2">
                                             <TextBlock
@@ -442,6 +450,7 @@
                                                 x:Name="ListViewSelectedJob"
                                                 Height="200"
                                                 Margin="10"
+                                                IsEnabled="False"
                                                 ItemsSource="{Binding SelectedJobFileList}"
                                                 SelectedItem="{Binding SelectedWorkJob}"
                                                 SelectionChanged="ListViewSelectedJob_SelectionChanged"
@@ -460,6 +469,7 @@
                                         FontWeight="Bold"
                                         Header="Job Info">
                                         <StackPanel>
+                                           
                                             <!--<TextBlock Text="Job Info" />-->
                                             <Grid>
                                                 <Grid.RowDefinitions>
@@ -473,6 +483,7 @@
                                                     <RowDefinition Height="*" />
                                                 </Grid.RowDefinitions>
                                                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                                    
                                                     <TextBlock
                                                         Width="150"
                                                         VerticalAlignment="Center"
@@ -484,8 +495,8 @@
                                                         FontSize="16"
                                                         FontWeight="Normal"
                                                         IsReadOnly="True"
-                                                        Style="{StaticResource TextBoxStyle2}"
-                                                        Text="{Binding Name}" />
+                                                        Style="{StaticResource TextBoxStyle3}"
+                                                        Text="{Binding Name,FallbackValue=aaaa}" />
                                                     <TextBlock
                                                         Width="150"
                                                         Margin="30,0,0,0"
@@ -498,7 +509,7 @@
                                                         FontSize="16"
                                                         FontWeight="Normal"
                                                         IsReadOnly="True"
-                                                        Style="{StaticResource TextBoxStyle2}"
+                                                        Style="{StaticResource TextBoxStyle3}"
                                                         Text="{Binding CompleteCondition}" />
                                                 </StackPanel>
 
@@ -517,7 +528,7 @@
                                                         FontSize="16"
                                                         FontWeight="Normal"
                                                         IsReadOnly="True"
-                                                        Style="{StaticResource TextBoxStyle2}"
+                                                        Style="{StaticResource TextBoxStyle3}"
                                                         Text="{Binding PrinterSeries}" />
                                                     <TextBlock
                                                         Width="150"
@@ -531,7 +542,7 @@
                                                         FontSize="16"
                                                         FontWeight="Normal"
                                                         IsReadOnly="True"
-                                                        Style="{StaticResource TextBoxStyle2}"
+                                                        Style="{StaticResource TextBoxStyle3}"
                                                         Text="{Binding OutputCamera}" />
                                                 </StackPanel>
 
@@ -550,7 +561,7 @@
                                                         FontSize="16"
                                                         FontWeight="Normal"
                                                         IsReadOnly="True"
-                                                        Style="{StaticResource TextBoxStyle2}"
+                                                        Style="{StaticResource TextBoxStyle3}"
                                                         Text="{Binding JobType}" />
                                                     <TextBlock
                                                         Width="150"
@@ -564,7 +575,7 @@
                                                         FontSize="16"
                                                         FontWeight="Normal"
                                                         IsReadOnly="True"
-                                                        Style="{StaticResource TextBoxStyle2}"
+                                                        Style="{StaticResource TextBoxStyle3}"
                                                         Text="{Binding IsImageExport}" />
                                                 </StackPanel>
 
@@ -583,7 +594,7 @@
                                                         FontSize="16"
                                                         FontWeight="Normal"
                                                         IsReadOnly="True"
-                                                        Style="{StaticResource TextBoxStyle2}"
+                                                        Style="{StaticResource TextBoxStyle3}"
                                                         Text="{Binding CompareType}" />
                                                     <TextBlock
                                                         Width="150"
@@ -597,7 +608,7 @@
                                                         FontSize="16"
                                                         FontWeight="Normal"
                                                         IsReadOnly="True"
-                                                        Style="{StaticResource TextBoxStyle2}"
+                                                        Style="{StaticResource TextBoxStyle3}"
                                                         Text="{Binding ImageExportPath}" />
                                                 </StackPanel>
 
@@ -617,7 +628,7 @@
                                                         FontSize="16"
                                                         FontWeight="Normal"
                                                         IsReadOnly="True"
-                                                        Style="{StaticResource TextBoxStyle2}"
+                                                        Style="{StaticResource TextBoxStyle3}"
                                                         Text="{Binding DatabasePath}" />
                                                     <TextBlock
                                                         Width="150"
@@ -631,7 +642,7 @@
                                                         FontSize="16"
                                                         FontWeight="Normal"
                                                         IsReadOnly="True"
-                                                        Style="{StaticResource TextBoxStyle2}"
+                                                        Style="{StaticResource TextBoxStyle3}"
                                                         Text="{Binding TotalRecDb}" />
                                                 </StackPanel>
 
@@ -650,7 +661,7 @@
                                                         FontSize="16"
                                                         FontWeight="Normal"
                                                         IsReadOnly="True"
-                                                        Style="{StaticResource TextBoxStyle2}"
+                                                        Style="{StaticResource TextBoxStyle3}"
                                                         Text="{Binding DataCompareFormat}" />
                                                     <TextBlock
                                                         Width="150"
@@ -664,7 +675,7 @@
                                                         FontSize="16"
                                                         FontWeight="Normal"
                                                         IsReadOnly="True"
-                                                        Style="{StaticResource TextBoxStyle2}"
+                                                        Style="{StaticResource TextBoxStyle3}"
                                                         Text="{Binding JobStatus}" />
                                                 </StackPanel>
 
@@ -683,7 +694,7 @@
                                                         FontSize="16"
                                                         FontWeight="Normal"
                                                         IsReadOnly="True"
-                                                        Style="{StaticResource TextBoxStyle2}"
+                                                        Style="{StaticResource TextBoxStyle3}"
                                                         Text="{Binding PrinterTemplate}" />
 
                                                 </StackPanel>

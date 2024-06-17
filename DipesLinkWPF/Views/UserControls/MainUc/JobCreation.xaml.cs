@@ -52,7 +52,7 @@ namespace DipesLink.Views.UserControls.MainUc
             if (listBox != null)
             {
                 int jobIndex = listBox.SelectedIndex;
-                CallbackCommand(vm => vm.JobCreationSelectionChanged(jobIndex));
+              //  CallbackCommand(vm => vm.JobCreationSelectionChanged(jobIndex));
                 CallbackCommand(vm => vm.LoadJobList(jobIndex)); // Update Job on UI
                 
             }

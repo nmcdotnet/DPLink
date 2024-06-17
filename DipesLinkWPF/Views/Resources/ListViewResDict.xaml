@@ -21,7 +21,7 @@
                                     Name="ItemBorder"
                                     Padding="8"
                                     Background="WhiteSmoke"
-                                    BorderBrush="#1bc6cc"
+                                    BorderBrush="#00ABE6"
                                     BorderThickness="1"
                                     CornerRadius="5">
                                     <ContentPresenter />
@@ -31,7 +31,7 @@
                                         <Setter TargetName="ItemBorder" Property="Background" Value="#B3E5FC" />
                                     </Trigger>
                                     <Trigger Property="IsSelected" Value="True">
-                                        <Setter TargetName="ItemBorder" Property="Background" Value="#34b4eb" />
+                                        <Setter TargetName="ItemBorder" Property="Background" Value="#9EDFF6" />
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>

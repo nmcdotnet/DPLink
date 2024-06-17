@@ -93,17 +93,17 @@
                 IsTabStop="False"
                 Style="{DynamicResource ButtonStyleExit}">
                 <Border
-                    Width="50"
-                    Height="50"
+                    Width="40"
+                    Height="40"
                     Background="White"
                     BorderBrush="#00ABE6"
                     BorderThickness="1"
                     CornerRadius="30"
                     PreviewMouseDown="BorderUser_MouseDown">
                     <fa:IconImage
-                        Width="{StaticResource MenuIconSize}"
-                        Height="{StaticResource MenuIconSize}"
-                        Foreground="Gray"
+                        Width="25"
+                        Height="25"
+                        Foreground="#00ABE6"
                         Icon="User" />
                 </Border>
             </Button>
@@ -226,7 +226,7 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     FontSize="30"
-                    Text="Barcode Vevification" />
+                    Text="{Binding TitleApp}" />
                 <StackPanel
                     Grid.Column="2"
                     Margin="0,0,10,0"
@@ -300,9 +300,9 @@
             <!--  Device Status  -->
             <Grid Grid.Row="2" Background="WhiteSmoke">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="3*" />
-                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="300" />
+                    <ColumnDefinition Width="470"/>
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <ListBox
                     x:Name="DeviceStatListBox"
@@ -349,13 +349,13 @@
 
                     <StackPanel Orientation="Horizontal">
 
-                        <StackPanel Margin="10" Orientation="Horizontal">
+                        <StackPanel Margin="30 0 0 0" Orientation="Horizontal">
                             <TextBlock
                                 Width="70"
                                 VerticalAlignment="Center"
                                 FontSize="14"
                                 Foreground="LightSlateGray"
-                                Text="IP Printer: " />
+                                Text="Printer IP: " />
                             <TextBlock
                                 x:Name="TextBlockPrinterIP"
                                 VerticalAlignment="Center"
@@ -369,7 +369,7 @@
                                 VerticalAlignment="Center"
                                 FontSize="14"
                                 Foreground="LightSlateGray"
-                                Text="IP Camera: " />
+                                Text="Camera IP: " />
                             <TextBlock
                                 x:Name="TextBlockCamIP"
                                 VerticalAlignment="Center"
@@ -384,11 +384,11 @@
                         </StackPanel>
                         <StackPanel Margin="10" Orientation="Horizontal">
                             <TextBlock
-                                Width="70"
+                                Width="85"
                                 VerticalAlignment="Center"
                                 FontSize="14"
                                 Foreground="LightSlateGray"
-                                Text="IP Camera: " />
+                                Text="Controller IP: " />
                             <TextBlock
                                 x:Name="TextBlockControllerIP"
                                 VerticalAlignment="Center"
@@ -399,7 +399,7 @@
                     </StackPanel>
                 </Grid>
                 <!--  Printer Status  -->
-                <Grid Grid.Column="2" Background="WhiteSmoke">
+                <Grid Grid.Column="2" Background="White">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock
                             Margin="5,0,0,0"

@@ -18,11 +18,13 @@ namespace DipesLinkDeviceTransfer
         {
             Task.Run(async () =>
             {
-                _ipcUIToDeviceSharedMemory_DT = new(JobIndex, "UIToDeviceSharedMemory_DT", SharedValues.SIZE_1MB,isReceiver: true);
-                if (_ipcUIToDeviceSharedMemory_DT == null) return;
+              
+                using IPCSharedHelper ipc = new(JobIndex, "UIToDeviceSharedMemory_DT", SharedValues.SIZE_1MB, isReceiver: true);
+                if (ipc == null) { await Console.Out.WriteLineAsync("Deo co gi"); };
+                await Console.Out.WriteLineAsync(JobIndex.ToString());
                 while (true)
                 {
-                    bool isCompleteDequeue = _ipcUIToDeviceSharedMemory_DT.MessageQueue.TryDequeue(out byte[]? result);
+                    bool isCompleteDequeue = ipc.MessageQueue.TryDequeue(out byte[]? result);
                     if (isCompleteDequeue && result != null)
                     {
                         switch (result[0])
@@ -32,6 +34,7 @@ namespace DipesLinkDeviceTransfer
                                 {
                                     // Get Params Setting for Connection (IP, Port) device 
                                     case (byte)SharedMemoryType.ParamsSetting:
+                                        await Console.Out.WriteLineAsync("Co Vao Day Khong");
                                         GetConenctionParams(result);
                                         break;
 
@@ -108,7 +111,7 @@ namespace DipesLinkDeviceTransfer
                     if (message != null && DeviceSharedValues.EnController)
                     {
                         var fullMess = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss") + ": " + message + "\n";
-                     //   Console.WriteLine("Full mess: " + fullMess);
+                        //   Console.WriteLine("Full mess: " + fullMess);
                         var data = DataConverter.ToByteArray(fullMess);
                         //  Console.WriteLine(data.Length);
                         MemoryTransfer.SendControllerResponseMessageToUI(_ipcDeviceToUISharedMemory_DT, JobIndex, data);
@@ -155,11 +158,12 @@ namespace DipesLinkDeviceTransfer
                         await LoadDatabaseFirst();
                         NotificationProcess(NotifyType.DeviceDBLoaded);
                         _isLoadFirstDb = true;
+                        await Console.Out.WriteLineAsync("Load Database Action");
                         break;
                     case ActionButtonType.Start:
-                      //  await Console.Out.WriteLineAsync("sdafasdfsadf");
+                     
                         _isStopOrPauseAction = false;
-                            StartProcessAction(false); // Start without DB Load  
+                        StartProcessAction(false); // Start without DB Load  
                         break;
 
                     case ActionButtonType.Pause: //Pause 
@@ -199,14 +203,14 @@ namespace DipesLinkDeviceTransfer
 
         private async Task LoadDatabaseFirst()
         {
-             await LoadSelectedJob();
+            await LoadSelectedJob();
         }
         private async void StartProcessAction(bool startWithDB)
         {
             Task<int> connectionCode = CheckDeviceConnectionAsync();
             if (connectionCode == null) return;
             int code = connectionCode.Result;
-            if(code == 1) code = 0; // bypass check cam connection
+            if (code == 1) code = 0; // bypass check cam connection
             if (code == 0)
             {
                 if (startWithDB)
@@ -243,46 +247,51 @@ namespace DipesLinkDeviceTransfer
             try
             {
 
-           
-            string? selectedJobName = SharedFunctions.GetSelectedJobNameList(JobIndex).FirstOrDefault();
-            _SelectedJob = SharedFunctions.GetJobSelected(selectedJobName, JobIndex);
+
+                string? selectedJobName = SharedFunctions.GetSelectedJobNameList(JobIndex).FirstOrDefault();
+                _SelectedJob = SharedFunctions.GetJobSelected(selectedJobName, JobIndex);
                 await Console.Out.WriteLineAsync(_SelectedJob.Index.ToString());
                 if (_SelectedJob != null)
-            {
-                //Lấy trạng thái cho các mode lưu vào biến
-                _IsAfterProductionMode = _SelectedJob.JobType == JobType.AfterProduction;
-                _IsOnProductionMode = _SelectedJob.JobType == JobType.OnProduction;
-                _IsVerifyAndPrintMode = _SelectedJob.JobType == JobType.VerifyAndPrint;
+                {
+                    //Lấy trạng thái cho các mode lưu vào biến
+                    _IsAfterProductionMode = _SelectedJob.JobType == JobType.AfterProduction;
+                    _IsOnProductionMode = _SelectedJob.JobType == JobType.OnProduction;
+                    _IsVerifyAndPrintMode = _SelectedJob.JobType == JobType.VerifyAndPrint;
 
-                //Reset các biến
-                _TotalCode = 0;
-                NumberOfSentPrinter = 0;
-                ReceivedCode = 0;
-                NumberPrinted = 0;
+                    //Reset các biến
+                    _TotalCode = 0;
+                    NumberOfSentPrinter = 0;
+                    ReceivedCode = 0;
+                    NumberPrinted = 0;
 
-                TotalChecked = 0;
-                NumberOfCheckPassed = 0;
-                NumberOfCheckFailed = 0;
+                    TotalChecked = 0;
+                    NumberOfCheckPassed = 0;
+                    NumberOfCheckFailed = 0;
 
-                // Làm rỗng các danh sách
-                _ListCheckedResultCode.Clear();
-                _ListPrintedCodeObtainFromFile.Clear();
-                _CodeListPODFormat.Clear();
+                    // Làm rỗng các danh sách
+                    _ListCheckedResultCode.Clear();
+                    _ListPrintedCodeObtainFromFile.Clear();
+                    _CodeListPODFormat.Clear();
 
-                await InitDataAsync(_SelectedJob);
+                    SharedFunctions.SaveStringOfPrintedResponePath(
+                        SharedPaths.PathSubJobsApp + $"{JobIndex + 1}\\",
+                        "printedPathString",
+                        _SelectedJob.PrintedResponePath);
 
-                // Notify for UI, done load DB
+                    await InitDataAsync(_SelectedJob);
 
-                //MemoryTransfer.SendMessageJobStatusToUI(JobIndex, DataConverter.ToByteArray(tmp));
+                    // Notify for UI, done load DB
 
-            }
+                    //MemoryTransfer.SendMessageJobStatusToUI(JobIndex, DataConverter.ToByteArray(tmp));
+
+                }
             }
             catch (Exception ex)
             {
                 await Console.Out.WriteLineAsync(ex.Message);
             }
         }
-        private  void NotificationProcess(NotifyType notifyType)
+        private void NotificationProcess(NotifyType notifyType)
         {
             MemoryTransfer.SendMessageJobStatusToUI(_ipcDeviceToUISharedMemory_DT, JobIndex, DataConverter.ToByteArray(notifyType));
         }

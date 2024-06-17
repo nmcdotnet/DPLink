@@ -49,7 +49,7 @@ namespace DipesLink.ViewModels
                 byte[] indexBytes = SharedFunctions.StringToFixedLengthByteArray(stationIndex.ToString(), 1);
                 byte[] actionTypeBytes = DataConverter.ToByteArray(buttonType); //SharedFunctions.StringToFixedLengthByteArray(((int)buttonType).ToString(), 1);
                 byte[] combineBytes = SharedFunctions.CombineArrays(indexBytes, actionTypeBytes);
-                MemoryTransfer.SendActionButtonToDevice(_ipcDeviceToUISharedMemory_DT,stationIndex, combineBytes);
+                MemoryTransfer.SendActionButtonToDevice(listIPCUIToDevice1MB[stationIndex],stationIndex, combineBytes);
             }
             catch (Exception) { }
         }

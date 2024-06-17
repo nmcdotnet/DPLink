@@ -126,7 +126,8 @@
                             x:Name="TextBoxUsername"
                             Width="150"
                             Height="30"
-                            Style="{StaticResource TextBoxStyle2}" />
+                            Style="{StaticResource TextBoxStyle2}"
+                            />
                     </StackPanel>
 
                     <StackPanel
@@ -178,6 +179,7 @@
                             x:Name="ComboBoxRole"
                             Width="150"
                             Height="30"
+                            FontSize="14"
                             SelectedIndex="1"
                             Style="{StaticResource ComboBoxStyle2}">
                             <ComboBoxItem Content="Administrator" />

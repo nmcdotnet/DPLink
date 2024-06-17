@@ -116,24 +116,24 @@
                 <ColumnDefinition Width="20" />
             </Grid.ColumnDefinitions>
             <Border
-              x:Name="Border"
-              Grid.ColumnSpan="2"
-              Background="White"
-              BorderBrush="#3399FF"
-              BorderThickness="1"
-              CornerRadius="0" />
+                x:Name="Border"
+                Grid.ColumnSpan="2"
+                Background="White"
+                BorderBrush="#3399FF"
+                BorderThickness="1"
+                CornerRadius="0" />
             <Border
-              Grid.Column="1"
-              Background="#3399FF"
-              BorderThickness="0,1,1,1"
-              CornerRadius="0,0,0,0" />
+                Grid.Column="1"
+                Background="#3399FF"
+                BorderThickness="0,1,1,1"
+                CornerRadius="0,0,0,0" />
             <Path
-              x:Name="Arrow"
-              Grid.Column="1"
-              HorizontalAlignment="Center"
-              VerticalAlignment="Center"
-              Data="M 0 0 L 4 4 L 8 0 Z"
-              Fill="White" />
+                x:Name="Arrow"
+                Grid.Column="1"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Data="M 0 0 L 4 4 L 8 0 Z"
+                Fill="White" />
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="ToggleButton.IsMouseOver" Value="true">
@@ -147,7 +147,7 @@
             </Trigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
-    <Style x:Key="ComboBoxStyle2" TargetType="ComboBox" >
+    <Style x:Key="ComboBoxStyle2" TargetType="ComboBox">
         <Setter Property="Foreground" Value="#333" />
         <Setter Property="FontFamily" Value="Segoe UI" />
         <Setter Property="FontSize" Value="12" />

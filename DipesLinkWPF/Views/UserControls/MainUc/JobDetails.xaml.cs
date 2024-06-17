@@ -2,13 +2,19 @@
 using DipesLink.ViewModels;
 using DipesLink.Views.Extension;
 using DipesLink.Views.SubWindows;
+using SharedProgram.Models;
+using SharedProgram.Shared;
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using static SharedProgram.DataTypes.CommonDataType;
+using System.Data;
 
 namespace DipesLink.Views.UserControls.MainUc
 {
@@ -70,10 +76,10 @@ namespace DipesLink.Views.UserControls.MainUc
                 {
                     _currentJob = CurrentViewModel<JobOverview>();
                     if (_currentJob == null) return;
-                    _currentJob.OnLoadCompleteDatabase -= Shared_OnLoadCompleteDatabase;
-                    _currentJob.OnChangePrintedCode -= Shared_OnChangePrintedCode;
-                    _currentJob.OnLoadCompleteCheckedDatabase -= Shared_OnLoadCompleteCheckedDatabase;
-                    _currentJob.OnChangeCheckedCode -= Shared_OnChangeCheckedCode;
+                    //_currentJob.OnLoadCompleteDatabase -= Shared_OnLoadCompleteDatabase;
+                    //_currentJob.OnChangePrintedCode -= Shared_OnChangePrintedCode;
+                    //_currentJob.OnLoadCompleteCheckedDatabase -= Shared_OnLoadCompleteCheckedDatabase;
+                    //_currentJob.OnChangeCheckedCode -= Shared_OnChangeCheckedCode;
 
                     _currentJob.OnLoadCompleteDatabase += Shared_OnLoadCompleteDatabase;
                     _currentJob.OnChangePrintedCode += Shared_OnChangePrintedCode;
@@ -136,7 +142,7 @@ namespace DipesLink.Views.UserControls.MainUc
             Application.Current.Dispatcher.Invoke(async () =>
             {
                 if (sender is List<(List<string[]>, int)> dbList)  // Item 1: db, item 2: current page
-                { 
+                {
                     await _printingDataTableHelper.InitDatabaseAsync(dbList.FirstOrDefault().Item1, DataGridDB, dbList.FirstOrDefault().Item2, CurrentViewModel<JobOverview>());
                     if (_currentJob != null) _currentJob.PrintedDataNumber = _printingDataTableHelper.PrintedNumber.ToString(); // Update UI First time
                 }
@@ -304,6 +310,22 @@ namespace DipesLink.Views.UserControls.MainUc
             {
             }
         }
+
+        private void PrintedData_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            try
+            {
+                if (_currentJob == null) return;
+                PrintedLogsWindow printedLogsWindow = new(_currentJob);
+                printedLogsWindow.ShowDialog();
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+     
+       
 
         //private void Border_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         //{
