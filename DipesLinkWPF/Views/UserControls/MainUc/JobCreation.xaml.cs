@@ -1,7 +1,10 @@
 ﻿using DipesLink.ViewModels;
 using DipesLink.Views.SubWindows;
+using log4net.Util;
+using SharedProgram.Models;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 
 namespace DipesLink.Views.UserControls.MainUc
@@ -64,9 +67,26 @@ namespace DipesLink.Views.UserControls.MainUc
         private int CurrentIndex() => ListBoxMenu.SelectedIndex;
         private void ButtonSaveJob_Click(object sender, RoutedEventArgs e)
         {
-                int jobIndex = ListBoxMenu.SelectedIndex;
-                CallbackCommand(vm => vm.SaveJob(jobIndex));
-                CallbackCommand(vm => vm.LoadJobList(jobIndex)); // Update Job on UI
+            var vm = CurrentViewModel<MainViewModel>();
+            int jobIndex = ListBoxMenu.SelectedIndex;
+            
+           
+            CallbackCommand(vm => vm.SaveJob(jobIndex));
+            CallbackCommand(vm => vm.LoadJobList(jobIndex)); // Update Job on UI
+            //MainViewModel.SelectJob.JobFileList = new();
+            var isSaveJob = vm.isSaveJob;
+
+
+            if (vm is null) return;
+            if (isSaveJob)
+            {
+                vm.CreateNewJob.Name = string.Empty;
+                vm.CreateNewJob.StaticText = string.Empty;
+                vm.CreateNewJob.DatabasePath = string.Empty;
+                vm.CreateNewJob.DataCompareFormat = string.Empty;
+                vm.CreateNewJob.ImageExportPath = string.Empty;
+                vm.CreateNewJob.TemplateList = new List<string>();
+            }
            
         }
 
@@ -226,6 +246,28 @@ namespace DipesLink.Views.UserControls.MainUc
                 default:
                     break;
             }
+        }
+
+        private void ListViewJobTemplate_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void ListViewJobTemplate_MouseDoubleClick_1(object sender, MouseButtonEventArgs e)
+        {
+            Button_AddJobClick(sender, e);
+        }
+
+        private void ListViewSelectedJob_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ButtonDelJob.IsEnabled = false;
+            ButtonAddJob.IsEnabled = false;
+        }
+
+        private void ListViewJobTemplate_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ButtonDelJob.IsEnabled = true;
+            ButtonAddJob.IsEnabled = true;
         }
     }
 }

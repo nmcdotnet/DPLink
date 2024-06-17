@@ -246,12 +246,13 @@ namespace SharedProgram.Shared
           
             if (!File.Exists(filePath))
             {
-               
+                return "";
             }
             using (var reader = new StreamReader(filePath, Encoding.UTF8))
             {
                 return reader.ReadToEnd();
             }
+
         }
 
         public static void SaveStringOfPrintedResponePath(string directoryPath, string fileName, string content)

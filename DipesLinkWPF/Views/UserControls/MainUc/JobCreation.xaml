@@ -8,7 +8,7 @@
     xmlns:local="clr-namespace:DipesLink.Views.UserControls.MainUc"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
-    d:Background="White"
+    d:Background="red"
     d:DesignHeight="740"
     d:DesignWidth="1165"
     FontSize="14"
@@ -412,6 +412,8 @@
                                                 Margin="10"
                                                 FontWeight="Normal"
                                                 ItemsSource="{Binding JobFileList}"
+                                                MouseDoubleClick="ListViewJobTemplate_MouseDoubleClick_1"
+                                                PreviewMouseDown="ListViewJobTemplate_PreviewMouseDown"
                                                 SelectedItem="{Binding SelectedJob}"
                                                 SelectionChanged="ListViewJobTemplate_SelectionChanged"
                                                 Style="{StaticResource ModernListViewStyle}" />
@@ -427,6 +429,7 @@
 
                                         <StackPanel Grid.Column="1" Margin="0,50,0,0">
                                             <Button
+                                                x:Name="ButtonAddJob"
                                                 Width="70"
                                                 Height="30"
                                                 Click="Button_AddJobClick"
@@ -450,8 +453,8 @@
                                                 x:Name="ListViewSelectedJob"
                                                 Height="200"
                                                 Margin="10"
-                                                IsEnabled="False"
                                                 ItemsSource="{Binding SelectedJobFileList}"
+                                                PreviewMouseDown="ListViewSelectedJob_MouseDown"
                                                 SelectedItem="{Binding SelectedWorkJob}"
                                                 SelectionChanged="ListViewSelectedJob_SelectionChanged"
                                                 Style="{StaticResource ModernListViewStyle}" />
@@ -469,7 +472,7 @@
                                         FontWeight="Bold"
                                         Header="Job Info">
                                         <StackPanel>
-                                           
+
                                             <!--<TextBlock Text="Job Info" />-->
                                             <Grid>
                                                 <Grid.RowDefinitions>
@@ -483,7 +486,7 @@
                                                     <RowDefinition Height="*" />
                                                 </Grid.RowDefinitions>
                                                 <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                                    
+
                                                     <TextBlock
                                                         Width="150"
                                                         VerticalAlignment="Center"
@@ -496,7 +499,7 @@
                                                         FontWeight="Normal"
                                                         IsReadOnly="True"
                                                         Style="{StaticResource TextBoxStyle3}"
-                                                        Text="{Binding Name,FallbackValue=aaaa}" />
+                                                        Text="{Binding Name}" />
                                                     <TextBlock
                                                         Width="150"
                                                         Margin="30,0,0,0"

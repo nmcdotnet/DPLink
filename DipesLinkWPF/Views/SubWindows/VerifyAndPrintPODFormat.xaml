@@ -9,6 +9,7 @@
     Title="VerifyAndPrintPODFormat"
     Width="800"
     Height="400"
+    Icon="pack://application:,,,/DipesLink;component/Images/statistic_1.png"
     ResizeMode="NoResize"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
@@ -47,7 +48,6 @@
                     x:Name="listBoxPODLeft"
                     Height="180"
                     Margin="0,0,0,0"
-                    
                     GotFocus="ListViewField_GotFocus"
                     SelectedItem="{Binding SelectedColumnItem1}"
                     Style="{StaticResource ModernListViewStyle}" />
@@ -115,9 +115,7 @@
                 <ListView
                     x:Name="listBoxPODRight"
                     Height="180"
-                 
                     GotFocus="ListViewPodCustom_GotFocus"
-                   
                     LostFocus="ListViewPodCustom_LostFocus"
                     SelectedIndex="{Binding SelectedHeaderIndex}"
                     SelectedItem="{Binding SelectedColumnItem2}"
@@ -158,9 +156,10 @@
                     FontSize="16"
                     FontWeight="Bold"
                     Text="Send Field Format" />
-                <TextBox Margin="10 0 10 0"
+                <TextBox
                     x:Name="txtPrintFields"
                     Height="100"
+                    Margin="10,0,10,0"
                     BorderBrush="#FF688CAF"
                     BorderThickness="1"
                     IsEnabled="False" />

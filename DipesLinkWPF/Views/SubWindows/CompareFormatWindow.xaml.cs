@@ -94,5 +94,16 @@ namespace DipesLink.Views.SubWindows
         {
             CallbackCommand(vm => vm.PreviewPODList());
         }
+
+        private void ListViewField_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            CallbackCommand(vm => vm.OperationPODFormat("ButtonAdd"));
+            CallbackCommand(vm => TextBoxResultFormatPOD.Text = vm.TextPODResult);
+        }
+
+        private void ListViewField_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }

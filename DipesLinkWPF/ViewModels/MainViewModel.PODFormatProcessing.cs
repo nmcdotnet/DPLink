@@ -353,7 +353,6 @@ namespace DipesLink.ViewModels
                 {
                     case "ButtonAdd":
                         bool isExistItemAdd = SelectedHeadersList.Any(x => x == SelectedColumnItem1);
-
                         SelectedHeadersList.Add(SelectedColumnItem1.Clone());
 
                         break;

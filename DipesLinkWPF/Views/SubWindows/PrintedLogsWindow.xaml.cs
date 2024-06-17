@@ -11,6 +11,8 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
+using Cloudtoid;
+using System.Windows.Input;
 
 namespace DipesLink.Views.SubWindows
 {
@@ -105,6 +107,10 @@ namespace DipesLink.Views.SubWindows
         public static async Task<DataTable> InitDatabaseAsync(List<string[]> dbList)
         {
             var printedDataTable = new DataTable();
+            if (dbList == null || dbList.IsEmpty())
+            {
+                return printedDataTable;
+            }
             await Task.Run(() =>
             {
                 foreach (var header in dbList[0]) // add column
@@ -472,6 +478,15 @@ namespace DipesLink.Views.SubWindows
             }
             catch (IOException) { }
             catch (Exception) { }
+        }
+
+        private void TextBoxSearch_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                ButtonSearch_Click(sender, e);
+            }
+
         }
     }
 }
