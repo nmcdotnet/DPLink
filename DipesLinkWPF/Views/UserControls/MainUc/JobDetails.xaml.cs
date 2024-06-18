@@ -56,6 +56,7 @@ namespace DipesLink.Views.UserControls.MainUc
         {
             EventRegister();
             OnJobDetailChangeHandler();
+            
             if (!_currentJob.IsDBExist)
             {
                 Debug.WriteLine("Event load database was called: " + _currentJob.Index);

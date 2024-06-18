@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualBasic.FileIO;
+﻿using DipesLink.Views.Extension;
+using DipesLink.Views.SubWindows;
+using Microsoft.VisualBasic.FileIO;
 using SharedProgram.Models;
 using System.Collections.ObjectModel;
 using System.Data;
@@ -212,8 +214,13 @@ namespace DipesLink.ViewModels
                 {
                     var dataTable = new DataTable();
                     int rowCount = 0;
+                    if(csvFilePath == "")
+                    {
+                        return dataTable;
+                    }
                     using (var parser = new TextFieldParser(csvFilePath))
                     {
+                       
                         var numberOfLine = File.ReadLines(csvFilePath).Count() - 1;
                         CreateNewJob.TotalRecDb = numberOfLine;
                         parser.TextFieldType = FieldType.Delimited;
@@ -269,10 +276,17 @@ namespace DipesLink.ViewModels
                 });
 
             }
+            catch (IOException ioex)
+            
+            {
+                var mess = ioex.Message;
+                CusMsgBox.Show(mess, "File Error", Views.Enums.ViewEnums.ButtonStyleMessageBox.OK, Views.Enums.ViewEnums.ImageStyleMessageBox.Warning);
+            }
             catch (Exception)
             {
               //  MessageBox.Show("Database Not Found", "", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+            
         }
 
         internal void DBView()

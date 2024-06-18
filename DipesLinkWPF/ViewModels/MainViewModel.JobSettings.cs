@@ -35,7 +35,35 @@ namespace DipesLink.ViewModels
                 }
             }
         }
+        // thinh
+        internal void LockChoosingStation()
+        {
+            int t = 0;
+            for (int i = 0; i < JobList.Count; i++)
+                if (JobList[i].OperationStatus != OperationStatus.Stopped) t++;
+            
+            for (int i = 0; i < JobList.Count; i++)
+                ConnectParamsList[i].LockChoosingStation = t <= 0;  // use ternary
+        }
 
+
+        internal void LockUI(int stationIndex)
+        {
+        switch (JobList[stationIndex].OperationStatus)
+        {
+            case OperationStatus.Running:
+                ConnectParamsList[stationIndex].LockUISetting = false;
+                break;
+            case OperationStatus.Processing:
+                ConnectParamsList[stationIndex].LockUISetting = false;
+                break;
+            case OperationStatus.Stopped:
+                ConnectParamsList[stationIndex].LockUISetting = true;
+                break;
+            default:
+                break;
+        }
+        }
 
         private SelectJobModel _SelectJob;
         public SelectJobModel SelectJob

@@ -23,7 +23,7 @@ namespace DipesLink.Views
         public static event EventHandler<EventArgs>? MainWindowSizeChangeCustomEvent;
         public static SplashScreenLoading? SplashScreenLoading = new();
         public static event EventHandler? ListBoxMenuSelectionChange;
-
+        public static int currentStation = 0;
         public MainWindow()
         {
             InitializeComponent();
@@ -54,6 +54,7 @@ namespace DipesLink.Views
             TextBlockControllerIP.Text = ControllerIP.ToString();
             TextBlockPrinterIP.Text = PrinterIP.ToString();
             TextBlockCamIP.Text = CamIP.ToString();
+            currentStation = e;
         }
 
         private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
@@ -91,7 +92,7 @@ namespace DipesLink.Views
                         break;
                 }
             }
-
+          
 
 
         }
@@ -289,12 +290,16 @@ namespace DipesLink.Views
         }
 
 
-
+     
         private void ListBoxItem_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            //here
             myToggleButton.IsChecked = false;
             IpGridChange.Visibility = Visibility.Visible;
 
+            JobDetails_OnJobDetailChange(sender, currentStation);
+            CurrentViewModel<MainViewModel>().LockUI(currentStation);
+            CurrentViewModel<MainViewModel>().LockChoosingStation();
         }
 
         private void ListBoxItem_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

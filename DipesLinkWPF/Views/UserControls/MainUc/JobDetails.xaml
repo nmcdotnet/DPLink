@@ -320,13 +320,15 @@
                                 FontSize="16"
                                 Text="Checked Result" />
                             <TextBox
+                                x:Name="CheckResultColor"
                                 Grid.Row="1"
                                 Height="30"
                                 Margin="10,0,10,0"
                                 FontSize="16"
+                                Foreground="{Binding CompareResultColor}"
                                 IsReadOnly="True"
                                 Style="{StaticResource TextBoxStyle1}"
-                                Text="{Binding CompareResult}" />
+                                Text="{Binding CompareResult, TargetNullValue='', FallbackValue=''}" />
                         </Grid>
 
                     </Grid>
@@ -399,8 +401,8 @@
                     Command="{Binding DataContext.TriggerCommandJob, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                     Content="{fa:Icon ArrowPointer,
                                       Foreground=WhiteSmoke}"
-                     IsEnabled="{Binding StatusStopButton}"
                     FontSize="30"
+                    IsEnabled="{Binding StatusStopButton}"
                     Style="{StaticResource ModernButton1}" />
 
             </Grid>
@@ -508,9 +510,8 @@
                                     <TextBlock
                                         x:Name="TextBlockTotalChecked"
                                         Grid.RowSpan="2"
-                                        Margin="126,24,0,0"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Top"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
                                         FontSize="40"
                                         FontWeight="Normal"
                                         Foreground="White" />
@@ -538,9 +539,8 @@
                                     <TextBlock
                                         x:Name="TextBlockTotalPassed"
                                         Grid.RowSpan="2"
-                                        Margin="126,24,0,0"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Top"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
                                         FontSize="40"
                                         FontWeight="Normal"
                                         Foreground="White" />
@@ -566,9 +566,8 @@
                                     <TextBlock
                                         x:Name="TextBlockTotalFailed"
                                         Grid.RowSpan="2"
-                                        Margin="126,24,0,0"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Top"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
                                         FontSize="40"
                                         FontWeight="Normal"
                                         Foreground="White" />
