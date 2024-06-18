@@ -297,6 +297,16 @@ namespace DipesLink.Views
 
         }
 
+        private void ListBoxItem_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
 
+        }
+
+        private void ListBoxItem_PreviewMouseDown_1(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            //AboutPopup popup = new AboutPopup();
+            var aboutPopup = new AboutPopup();
+            aboutPopup.ShowDialog();
+        }
     }
 }

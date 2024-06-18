@@ -22,7 +22,6 @@ namespace DipesLink.ViewModels
     public partial class MainViewModel
     {
         private JobModel _jobModel;
-
         private JobModel _createNewJob = new();
         public JobModel CreateNewJob
         {
@@ -96,8 +95,11 @@ namespace DipesLink.ViewModels
             return job;
         }
 
+        public bool isSaveJob = false;
+
         internal void SaveJob(int jobIndex)
         {
+            isSaveJob = false;
             try
             {
                 _jobModel = InitJobModel(jobIndex);
@@ -219,6 +221,7 @@ namespace DipesLink.ViewModels
                             _jobModel.SaveJobFile(selectedfilePath);
                            
                         }
+                        isSaveJob = true;
                         CustomMessageBox saveJobSuccMsgBox = new("Save Job done !", "Notification", ButtonStyleMessageBox.OK, ImageStyleMessageBox.Info);
                         saveJobSuccMsgBox.ShowDialog();
                     }

@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:DipesLink.Views.SubWindows"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="JobLogsWindow"
+   Icon="pack://application:,,,/DipesLink;component/Images/statistic_1.png"
     Width="1025"
     Height="600"
     ResizeMode="NoResize"
@@ -22,359 +22,393 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
+
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*" />
-            <ColumnDefinition Width="3*" />
-        </Grid.ColumnDefinitions>
-        <!--  Left menu  -->
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-                <RowDefinition Height="50" />
-            </Grid.RowDefinitions>
-            <Grid.Resources>
-                <Style x:Key="TextBoxLabelStyle" TargetType="TextBlock">
-                    <Setter Property="FontSize" Value="15" />
-                    <Setter Property="Margin" Value="10,0,0,0" />
-                </Style>
-                <Style x:Key="TextBoxValueStyle" TargetType="TextBlock">
-                    <Setter Property="FontSize" Value="20" />
-                    <Setter Property="Margin" Value="20,0,0,0" />
-                    <Setter Property="FontWeight" Value="Bold" />
-                </Style>
-            </Grid.Resources>
-            <!--  Total code  -->
-            <Border
-                Margin="10"
-                BorderBrush="Transparent"
-                BorderThickness="1"
-                CornerRadius="3">
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Offset="0.0" Color="#44C2ED" />
-                        <GradientStop Offset="1.0" Color="LightBlue" />
-                    </LinearGradientBrush>
-                </Border.Background>
-                <StackPanel>
-                    <TextBlock FontSize="16" Style="{StaticResource TextBoxLabelStyle}" Text="Total code of the job" />
-                    <TextBlock x:Name="TextBlockTotal" Style="{StaticResource TextBoxValueStyle}">2000,000</TextBlock>
-                </StackPanel>
-            </Border>
-
-            <!--  Printed code  -->
-            <Border
-                Grid.Row="1"
-                Margin="10"
-                BorderBrush="Transparent"
-                BorderThickness="1"
-                CornerRadius="3">
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Offset="0.0" Color="#00ABE6" />
-                        <GradientStop Offset="1.0" Color="LightBlue" />
-                    </LinearGradientBrush>
-                </Border.Background>
-                <StackPanel>
-                    <TextBlock  FontSize="16" Style="{StaticResource TextBoxLabelStyle}" Text="Number of printed code" />
-                    <TextBlock x:Name="TextBlockPrinted" Style="{StaticResource TextBoxValueStyle}">2000,000</TextBlock>
-                </StackPanel>
-            </Border>
-
-            <!--  Verified code  -->
-            <Border
-                Grid.Row="2"
-                Margin="10"
-                BorderBrush="Transparent"
-                BorderThickness="1"
-                CornerRadius="3">
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Offset="0.0" Color="#44C2ED" />
-                        <GradientStop Offset="1.0" Color="LightBlue" />
-                    </LinearGradientBrush>
-                </Border.Background>
-                <StackPanel>
-                    <TextBlock  FontSize="16" Style="{StaticResource TextBoxLabelStyle}" Text="Number of verified code" />
-                    <TextBlock x:Name="TextBlockVerified" Style="{StaticResource TextBoxValueStyle}">2000,000</TextBlock>
-                </StackPanel>
-            </Border>
-
-            <!--  Valid code  -->
-            <Border
-                Grid.Row="3"
-                Margin="10"
-                BorderBrush="Transparent"
-                BorderThickness="1"
-                CornerRadius="3">
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Offset="0.0" Color="#44C2ED" />
-                        <GradientStop Offset="1.0" Color="LightBlue" />
-                    </LinearGradientBrush>
-                </Border.Background>
-                <StackPanel>
-                    <TextBlock  FontSize="16" Style="{StaticResource TextBoxLabelStyle}" Text="Number of valid code" />
-                    <TextBlock x:Name="TextBlockValid" Style="{StaticResource TextBoxValueStyle}">2000,000</TextBlock>
-                </StackPanel>
-            </Border>
-
-            <!--  Failed code  -->
-            <Border
-                Grid.Row="4"
-                Margin="10"
-                BorderBrush="Transparent"
-                BorderThickness="1"
-                CornerRadius="3">
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Offset="0.0" Color="#44C2ED" />
-                        <GradientStop Offset="1.0" Color="LightBlue" />
-                    </LinearGradientBrush>
-                </Border.Background>
-                <StackPanel>
-                    <TextBlock  FontSize="16" Style="{StaticResource TextBoxLabelStyle}" Text="Number of failed code" />
-                    <TextBlock x:Name="TextBlockFailed" Style="{StaticResource TextBoxValueStyle}">2000,000</TextBlock>
-                </StackPanel>
-            </Border>
-            <TextBlock
-                x:Name="TextBlockPageInfo" FontSize="16"
-                Grid.Row="5"
-                Margin="10,20,0,0"
-                HorizontalAlignment="Left"
-                Text="Page # of # (# items)" />
-        </Grid>
-
-        <!--  Content  -->
-        <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="150" />
-                <RowDefinition />
-                <RowDefinition Height="50" />
-            </Grid.RowDefinitions>
-
-            <!--  Header  -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <!--  Title  -->
+        <TextBlock
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            FontSize="25"
+            Text="Jobs Log" />
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="3*" />
+            </Grid.ColumnDefinitions>
+            <!--  Left menu  -->
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition Height="50" />
+                </Grid.RowDefinitions>
+                <Grid.Resources>
+                    <Style x:Key="TextBoxLabelStyle" TargetType="TextBlock">
+                        <Setter Property="FontSize" Value="18" />
+                        <Setter Property="FontFamily" Value="Calibri" />
+                        <Setter Property="Margin" Value="10,5,0,1" />
+                        <Setter Property="Foreground" Value="#03071e" />
 
-                <!--  Filter  -->
+                    </Style>
+                    <Style x:Key="TextBoxValueStyle" TargetType="TextBlock">
+                        <Setter Property="FontSize" Value="20" />
+                        <Setter Property="Margin" Value="20,0,0,0" />
+                        <Setter Property="FontWeight" Value="Bold" />
+                        <Setter Property="Foreground" Value="#03071e" />
+                    </Style>
+                </Grid.Resources>
+                <!--  Total code  -->
                 <Border
-                    Width="auto"
-                    Height="100"
                     Margin="10"
-                    VerticalAlignment="Top"
                     BorderBrush="Transparent"
-                    BorderThickness="0"
-                    CornerRadius="10">
+                    BorderThickness="1"
+                    CornerRadius="3">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Offset="1.0" Color="#00b4d8" />
+                            <GradientStop Offset="0.5" Color="#90e0ef" />
+                            <GradientStop Offset="0.0" Color="#caf0f8" />
+                        </LinearGradientBrush>
+                    </Border.Background>
                     <StackPanel>
-                        <TextBlock
-                            Margin="10,0,0,0"
-                            FontSize="20"
-                            Text="Filter" />
-                        <ComboBox Style="{StaticResource ComboBoxStyle1}"
-                            x:Name="ComboBoxFilter"
-                            Width="250"
-                            Height="30"
-                            Margin="10,14,0,0"
-                            HorizontalAlignment="Left"
-                            SelectedIndex="0"
-                            SelectionChanged="ComboBoxFilter_SelectionChanged">
-                            <ComboBoxItem Content="All" />
-                            <ComboBoxItem Content="Valid" />
-                            <ComboBoxItem Content="Invalided" />
-                            <ComboBoxItem Content="Duplicated" />
-                            <ComboBoxItem Content="Null" />
-                            <ComboBoxItem Content="Unknown/Missed" />
-                            <ComboBoxItem Content="Failed" />
-                        </ComboBox>
+                        <TextBlock Style="{StaticResource TextBoxLabelStyle}" Text="Total code of the job" />
+                        <TextBlock x:Name="TextBlockTotal" Style="{StaticResource TextBoxValueStyle}">
+                            2000,000
+                        </TextBlock>
                     </StackPanel>
                 </Border>
-                <StackPanel Grid.Column="1">
-                    <Grid Margin="10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-                        <Button
-                            x:Name="ButtonRePrint"
-                            Width="80"
-                            Height="30"
-                            Click="ButtonRePrint_Click"
-                            Content="Reprint"
-                            Style="{StaticResource ModernButton2}" />
-                        <Button
-                            x:Name="ButtonRF"
-                            Grid.Column="1"
-                            Width="80"
-                            Height="30"
-                            Click="ButtonRF_Click"
-                            Content="Refresh"
-                            Style="{StaticResource ModernButton2}" />
-                        <Button
-                            x:Name="ButtonSearch"
-                            Grid.Column="2"
-                            Width="80"
-                            Height="30"
-                            Click="ButtonSearch_Click"
-                            Content="Search"
-                            Style="{StaticResource ModernButton2}" />
-                    </Grid>
-                    <TextBox Padding="0 3 0 0"
-                        x:Name="TextBoxSearch" FontSize="16"
-                        Height="30"
-                        Margin="30,0,30,0"
-                        Style="{StaticResource TextBoxStyle1}" />
-                </StackPanel>
-            </Grid>
 
-            <!--  DataView  -->
-            <Grid Grid.Row="1">
-                <DataGrid
-                    x:Name="DataGridResult"
-                    Grid.Row="3"
-                    Margin="20"
-                    AlternatingRowBackground="#F5F5F5"
-                    BorderBrush="LightGray"
+
+
+                <!--  Printed code  -->
+                <Border
+                    Grid.Row="1"
+                    Margin="10"
+                    BorderBrush="Transparent"
                     BorderThickness="1"
-                    ColumnWidth="150"
-                    EnableColumnVirtualization="True"
-                    EnableRowVirtualization="True"
-                    GridLinesVisibility="All"
-                    HeadersVisibility="Column"
-                    HorizontalGridLinesBrush="#D3D3D3"
-                    IsReadOnly="True"
-                    MouseDown="DataGridResult_MouseDown"
-                    RowDetailsVisibilityMode="Collapsed"
-                    SelectionChanged="DataGridResult_SelectionChanged"
-                    VerticalGridLinesBrush="#D3D3D3"
-                    VirtualizingPanel.VirtualizationMode="Recycling"
-                    VirtualizingStackPanel.IsVirtualizing="True">
+                    CornerRadius="3">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Offset="1.0" Color="#00b4d8" />
+                            <GradientStop Offset="0.5" Color="#90e0ef" />
+                            <GradientStop Offset="0.0" Color="#caf0f8" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource TextBoxLabelStyle}" Text="Number of printed code" />
+                        <TextBlock x:Name="TextBlockPrinted" Style="{StaticResource TextBoxValueStyle}">2000,000</TextBlock>
+                    </StackPanel>
+                </Border>
 
-                    <!--  Row Image detail  -->
-                    <DataGrid.RowDetailsTemplate>
-                        <DataTemplate>
-                            <StackPanel Margin="10">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock
-                                        FontSize="14"
-                                        FontWeight="Bold"
-                                        Text="Failed Image: " />
-                                    <TextBlock
-                                        FontSize="14"
-                                        Text="{Binding DataContext.NameOfFailedImage, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
-                                </StackPanel>
+                <!--  Verified code  -->
+                <Border
+                    Grid.Row="2"
+                    Margin="10"
+                    BorderBrush="Transparent"
+                    BorderThickness="1"
+                    CornerRadius="3">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Offset="1.0" Color="#00b4d8" />
+                            <GradientStop Offset="0.5" Color="#90e0ef" />
+                            <GradientStop Offset="0.0" Color="#caf0f8" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource TextBoxLabelStyle}" Text="Number of verified code" />
+                        <TextBlock x:Name="TextBlockVerified" Style="{StaticResource TextBoxValueStyle}">2000,000</TextBlock>
+                    </StackPanel>
+                </Border>
 
-                                <Border
-                                    Width="200"
-                                    Height="100"
-                                    Padding="2"
-                                    BorderBrush="Gray"
-                                    BorderThickness="1"
-                                    CornerRadius="5">
-                                    <Image Source="{Binding DataContext.PathOfFailedImage, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
-                                </Border>
-                            </StackPanel>
-                        </DataTemplate>
-                    </DataGrid.RowDetailsTemplate>
+                <!--  Valid code  -->
+                <Border
+                    Grid.Row="3"
+                    Margin="10"
+                    BorderBrush="Transparent"
+                    BorderThickness="1"
+                    CornerRadius="3">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Offset="1.0" Color="#00b4d8" />
+                            <GradientStop Offset="0.5" Color="#90e0ef" />
+                            <GradientStop Offset="0.0" Color="#caf0f8" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource TextBoxLabelStyle}" Text="Number of valid code" />
+                        <TextBlock x:Name="TextBlockValid" Style="{StaticResource TextBoxValueStyle}">2000,000</TextBlock>
+                    </StackPanel>
+                </Border>
 
-                    <DataGrid.ColumnHeaderStyle>
-                        <Style TargetType="DataGridColumnHeader">
-                            <Setter Property="ContentTemplate">
-                                <Setter.Value>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock
-                                                Margin="5"
-                                                FontWeight="Bold"
-                                                Text="{Binding}" />
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </DataGrid.ColumnHeaderStyle>
-                    <DataGrid.CellStyle>
-                        <Style TargetType="{x:Type DataGridCell}">
-                            <Style.Triggers>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="Background" Value="#44C2ED" />
-                                    <Setter Property="Foreground" Value="White" />
-                                    <Setter Property="BorderBrush" Value="Transparent" />
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </DataGrid.CellStyle>
-                </DataGrid>
+                <!--  Failed code  -->
+                <Border
+                    Grid.Row="4"
+                    Margin="10"
+                    BorderBrush="Transparent"
+                    BorderThickness="1"
+                    CornerRadius="3">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Offset="1.0" Color="#00b4d8" />
+                            <GradientStop Offset="0.5" Color="#90e0ef" />
+                            <GradientStop Offset="0.0" Color="#caf0f8" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource TextBoxLabelStyle}" Text="Number of failed code" />
+                        <TextBlock x:Name="TextBlockFailed" Style="{StaticResource TextBoxValueStyle}">2000,000</TextBlock>
+                    </StackPanel>
+                </Border>
+                <TextBlock
+                    x:Name="TextBlockPageInfo"
+                    Grid.Row="5"
+                    Margin="10,20,0,0"
+                    HorizontalAlignment="Left"
+                    FontSize="16"
+                    Text="Page # of # (# items)" />
             </Grid>
 
-            <!--  Pagination  -->
-            <Grid Grid.Row="2">
-                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                    <Button
-                        x:Name="ButtonFirst"
-                        Width="70"
-                        Height="30"
-                        Margin="0,0,10,0"
-                        Click="PageAction_Click"
-                        Content="First"
-                        Style="{StaticResource ModernButton2}" />
-                    <Button
-                        x:Name="ButtonBack"
-                        Width="70"
-                        Height="30"
-                        Margin="0,0,10,0"
-                        Click="PageAction_Click"
-                        Content="Back"
-                        Style="{StaticResource ModernButton2}" />
-                    <Button
-                        x:Name="ButtonNext"
-                        Width="70"
-                        Height="30"
-                        Margin="0,0,10,0"
-                        Click="PageAction_Click"
-                        Content="Next"
-                        Style="{StaticResource ModernButton2}" />
-                    <Button
-                        x:Name="ButtonEnd"
-                        Width="70"
-                        Height="30"
-                        Margin="0,0,10,0"
-                        Click="PageAction_Click"
-                        Content="End"
-                        Style="{StaticResource ModernButton2}" />
-                    <TextBlock VerticalAlignment="Center" FontSize="16" Text="Goto Page" />
-                    <!--<ComboBox
+            <!--  Content  -->
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="150" />
+                    <RowDefinition />
+                    <RowDefinition Height="50" />
+                </Grid.RowDefinitions>
+
+                <!--  Header  -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <!--  Filter  -->
+                    <Border
+                        Width="auto"
+                        Height="100"
+                        Margin="10"
+                        VerticalAlignment="Top"
+                        BorderBrush="Transparent"
+                        BorderThickness="0"
+                        CornerRadius="10">
+                        <StackPanel>
+                            <TextBlock
+                                Margin="10,0,0,0"
+                                FontSize="20"
+                                Text="Filter" />
+                            <ComboBox
+                                x:Name="ComboBoxFilter"
+                                Width="250"
+                                Height="30"
+                                Margin="10,14,0,0"
+                                HorizontalAlignment="Left"
+                                SelectedIndex="0"
+                                SelectionChanged="ComboBoxFilter_SelectionChanged"
+                                Style="{StaticResource ComboBoxStyle2}">
+                                <ComboBoxItem Content="All" />
+                                <ComboBoxItem Content="Valid" />
+                                <ComboBoxItem Content="Invalided" />
+                                <ComboBoxItem Content="Duplicated" />
+                                <ComboBoxItem Content="Null" />
+                                <ComboBoxItem Content="Unknown/Missed" />
+                                <ComboBoxItem Content="Failed" />
+                            </ComboBox>
+                        </StackPanel>
+                    </Border>
+                    <StackPanel Grid.Column="1">
+                        <Grid Margin="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Button
+                                x:Name="ButtonRePrint"
+                                Width="80"
+                                Height="30"
+                                Click="ButtonRePrint_Click"
+                                Content="Reprint"
+                                Style="{StaticResource ModernButton2}" />
+                            <Button
+                                x:Name="ButtonRF"
+                                Grid.Column="1"
+                                Width="80"
+                                Height="30"
+                                Click="ButtonRF_Click"
+                                Content="Refresh"
+                                Style="{StaticResource ModernButton2}" />
+                            <Button
+                                x:Name="ButtonSearch"
+                                Grid.Column="2"
+                                Width="80"
+                                Height="30"
+                                Click="ButtonSearch_Click"
+                                Content="Search"
+                                Style="{StaticResource ModernButton2}" />
+                        </Grid>
+                        <TextBox
+                            x:Name="TextBoxSearch"
+                            Height="30"
+                            Margin="30,0,30,0"
+                            Padding="0,0,0,0"
+                            FontSize="16"
+                            KeyDown="Search_KeyDown"
+                            Style="{StaticResource TextBoxStyle2}" />
+                    </StackPanel>
+                </Grid>
+
+                <!--  DataView  -->
+                <Grid Grid.Row="1">
+                    <DataGrid
+                        x:Name="DataGridResult"
+                        Grid.Row="3"
+                        Margin="20,20,20,12"
+                        AlternatingRowBackground="#F5F5F5"
+                        BorderBrush="LightGray"
+                        BorderThickness="1"
+                        ColumnWidth="150"
+                        EnableColumnVirtualization="True"
+                        EnableRowVirtualization="True"
+                        GridLinesVisibility="All"
+                        HeadersVisibility="Column"
+                        HorizontalGridLinesBrush="#D3D3D3"
+                        IsReadOnly="True"
+                        MouseDown="DataGridResult_MouseDown"
+                        RowDetailsVisibilityMode="Collapsed"
+                        SelectionChanged="DataGridResult_SelectionChanged"
+                        VerticalGridLinesBrush="#D3D3D3"
+                        VirtualizingPanel.VirtualizationMode="Recycling"
+                        VirtualizingStackPanel.IsVirtualizing="True">
+
+                        <!--  Row Image detail  -->
+                        <DataGrid.RowDetailsTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="10">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock
+                                            FontSize="14"
+                                            FontWeight="Bold"
+                                            Text="Failed Image: " />
+                                        <TextBlock FontSize="14" Text="{Binding DataContext.NameOfFailedImage, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                                    </StackPanel>
+
+                                    <Border
+                                        Width="200"
+                                        Height="100"
+                                        Padding="2"
+                                        BorderBrush="Gray"
+                                        BorderThickness="1"
+                                        CornerRadius="5">
+                                        <Image Source="{Binding DataContext.PathOfFailedImage, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                                    </Border>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGrid.RowDetailsTemplate>
+
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="ContentTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock
+                                                    Margin="5"
+                                                    FontWeight="Bold"
+                                                    Text="{Binding}" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
+                        <DataGrid.CellStyle>
+                            <Style TargetType="{x:Type DataGridCell}">
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="#44C2ED" />
+                                        <Setter Property="Foreground" Value="White" />
+                                        <Setter Property="BorderBrush" Value="Transparent" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.CellStyle>
+                    </DataGrid>
+                </Grid>
+
+                <!--  Pagination  -->
+                <Grid Grid.Row="2">
+                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                        <Button
+                            x:Name="ButtonFirst"
+                            Width="70"
+                            Height="30"
+                            Margin="0,0,10,0"
+                            Click="PageAction_Click"
+                            Content="First"
+                            Style="{StaticResource ModernButton2}" />
+                        <Button
+                            x:Name="ButtonBack"
+                            Width="70"
+                            Height="30"
+                            Margin="0,0,10,0"
+                            Click="PageAction_Click"
+                            Content="Back"
+                            Style="{StaticResource ModernButton2}" />
+                        <Button
+                            x:Name="ButtonNext"
+                            Width="70"
+                            Height="30"
+                            Margin="0,0,10,0"
+                            Click="PageAction_Click"
+                            Content="Next"
+                            Style="{StaticResource ModernButton2}" />
+                        <Button
+                            x:Name="ButtonEnd"
+                            Width="70"
+                            Height="30"
+                            Margin="0,0,10,0"
+                            Click="PageAction_Click"
+                            Content="End"
+                            Style="{StaticResource ModernButton2}" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="16"
+                            Text="Goto Page" />
+                        <!--<ComboBox
                         Width="70"
                         Height="30"
                         Margin="10,0,0,0" />-->
-                    <TextBox
-                        x:Name="TextBoxPage" Style="{StaticResource TextBoxStyle1}"
-                        Width="70"
-                        Height="30"  Padding="0 5 0 0"
-                        Margin="10,0,0,0" />
-                    <Button
-                        x:Name="ButtonGotoPage"
-                        Width="70"
-                        Height="30"
-                        Margin="20,0,10,0"
-                        Click="PageAction_Click"
-                        Content="GO"
-                        Style="{StaticResource ModernButton2}" />
-                </StackPanel>
+                        <TextBox
+                            x:Name="TextBoxPage"
+                            Width="70"
+                            Height="30"
+                            Margin="10,0,0,0"
+                            Padding="0,0,0,0"
+                            Style="{StaticResource TextBoxStyle2}" />
+                        <Button
+                            x:Name="ButtonGotoPage"
+                            Width="70"
+                            Height="30"
+                            Margin="20,0,10,0"
+                            Click="PageAction_Click"
+                            Content="GO"
+                            Style="{StaticResource ModernButton2}" />
+                    </StackPanel>
 
+
+                </Grid>
 
             </Grid>
 
+
         </Grid>
-
-
     </Grid>
 </Window>

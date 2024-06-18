@@ -9,7 +9,7 @@
     xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
-    d:Background="White"
+    d:Background="red"
     d:DesignHeight="650"
     d:DesignWidth="1150"
     mc:Ignorable="d">
@@ -50,7 +50,7 @@
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsChecked" Value="True">
                                     <!--  Custom visuals for checked state  -->
-                                    <Setter TargetName="border" Property="Background" Value="LightGray" />
+                                    <Setter TargetName="border" Property="Background" Value="red" />
                                     <Setter TargetName="contentPresenter" Property="Content" Value="On" />
                                 </Trigger>
                                 <Trigger Property="IsChecked" Value="False">
@@ -68,7 +68,7 @@
             <converter:OptIntToVisibility x:Key="OptToVis" />
 
             <!--  Common Var  -->
-            <SolidColorBrush x:Key="ColorMenuItem">White</SolidColorBrush>
+            <SolidColorBrush x:Key="ColorMenuItem">red</SolidColorBrush>
             <Thickness x:Key="CommonMenuMargin">20 0 0 0</Thickness>
             <system:Double x:Key="MenuItemHeight">40</system:Double>
             <system:Double x:Key="MenuIconSize">24</system:Double>
@@ -86,7 +86,7 @@
         <!--  Menu  -->
         <Border
             Margin="5,5,0,0"
-            Background="#F2F2F2"
+            Background="WhiteSmoke"
             BorderBrush="LightGray"
             BorderThickness="1,1,1,0"
             CornerRadius="5 5 0 0">
@@ -224,7 +224,7 @@
 
 
                 <!--  Every Line  -->
-                <Grid Background="Transparent" Visibility="Visible">
+                <Grid Visibility="Visible">
                     <!--  Content setting  -->
                     <Grid
                         Grid.Column="1"
@@ -755,7 +755,10 @@
                                             </StackPanel>
                                         </GroupBox>
 
-                                        <GroupBox Grid.Column="1" Height="236" Margin="0 20 0 0">
+                                        <GroupBox
+                                            Grid.Column="1"
+                                            Height="236"
+                                            Margin="0,20,0,0">
                                             <GroupBox.Header>
                                                 <TextBlock FontWeight="Bold" Text="Select Number of stations" />
                                             </GroupBox.Header>

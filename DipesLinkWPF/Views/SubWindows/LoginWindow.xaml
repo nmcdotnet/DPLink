@@ -315,7 +315,7 @@
                 <TextBlock
                     FontSize="15"
                     Foreground="White"
-                    Text="Barcode Verification system" />
+                    Text="Multi-Line Barcode Verification System" />
             </StackPanel>
 
         </Grid>
@@ -339,19 +339,21 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
 
-                <TextBox x:Name="TextBoxUsername"
+                <TextBox
+                    x:Name="TextBoxUsername"
                     Width="250"
                     Height="35"
                     FontSize="15"
                     KeyDown="Login_KeyDown"
                     Style="{DynamicResource TextBoxStyle1}" />
 
-                <PasswordBox x:Name="TextBoxPassword"
+                <PasswordBox
+                    x:Name="TextBoxPassword"
                     Grid.Row="1"
                     Width="250"
                     Height="35"
                     FontSize="15"
-                    KeyDown="Login_KeyDown"         
+                    KeyDown="Login_KeyDown"
                     PasswordChar="*"
                     Style="{DynamicResource PasswordBoxStyle1}" />
 
@@ -361,12 +363,14 @@
                     Orientation="Horizontal">
                     <CheckBox x:Name="CheckBoxRememberme" Style="{DynamicResource CheckBoxStyle1}">Remember me</CheckBox>
                 </StackPanel>
-                <Button x:Name="ButtonLogin"
+                <Button
+                    x:Name="ButtonLogin"
                     Grid.Row="3"
                     Width="100"
                     Height="35"
                     Margin="0,15,0,0"
-                    Content="LOGIN" Click="ButtonLogin_Click"
+                    Click="ButtonLogin_Click"
+                    Content="LOGIN"
                     Style="{StaticResource ModernButton}" />
             </Grid>
             <Button

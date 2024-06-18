@@ -6,6 +6,7 @@
     xmlns:local="clr-namespace:DipesLink.Views.SubWindows"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Width="800"
+    Icon="pack://application:,,,/DipesLink;component/Images/statistic_1.png"
     Height="450"
     ResizeMode="NoResize"
     WindowStartupLocation="CenterScreen"

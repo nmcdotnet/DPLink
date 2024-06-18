@@ -3,6 +3,7 @@ using DipesLink.Views.SubWindows;
 using SharedProgram.Shared;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace DipesLink
 {
@@ -17,8 +18,12 @@ namespace DipesLink
             base.OnStartup(e);
             SQLitePCL.Batteries_V2.Init();
             ShutdownMode = ShutdownMode.OnMainWindowClose;
-            
+
+            //this.Icon = new Icon("pack://application:,,,/DipesLink;component/Images/Duplicated_res.png");
+
+
             var loginWindow = new LoginWindow();
+            //MainWindow.Icon = new BitmapImage(new Uri("pack://application:,,,/DipesLink;component/Images/statistic_1.png"));
             loginWindow.ShowDialog();
             if (loginWindow.IsLoggedIn)
             {

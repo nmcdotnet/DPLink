@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace DipesLink.Views.SubWindows
@@ -406,6 +407,14 @@ namespace DipesLink.Views.SubWindows
         {
             var currentJob = CurrentViewModel<JobOverview>();
             currentJob?.RaiseReprint(currentJob.Index);
+        }
+
+        private void Search_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                ButtonSearch_Click(sender, e);
+            }
         }
     }
 }
