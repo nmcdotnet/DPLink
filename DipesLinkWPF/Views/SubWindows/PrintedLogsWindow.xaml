@@ -248,7 +248,7 @@
                                 Grid.Column="2"
                                 Width="80"
                                 Height="30"
-                                Click="ButtonSearch_Click"
+                                Click="ButtonSearch_ClickAsync"
                                 Content="Search"
                                 Style="{StaticResource ModernButton2}" />
                         </Grid>
@@ -258,7 +258,7 @@
                             Margin="30,0,30,0"
                             Padding="0,0,0,0"
                             FontSize="16"
-                            KeyDown="TextBoxSearch_KeyDown"
+                            KeyDown="TextBoxSearch_KeyDownAsync"
                             Style="{StaticResource TextBoxStyle2}" />
                     </StackPanel>
                 </Grid>

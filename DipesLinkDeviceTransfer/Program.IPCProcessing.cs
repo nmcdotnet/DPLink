@@ -135,8 +135,9 @@ namespace DipesLinkDeviceTransfer
                 {
                     try
                     {
+                     //   await Console.Out.WriteLineAsync("ConnecttionPrinter State : " + SharedValues.OperStatus);
                         MemoryTransfer.SendOperationStatusToUI(_ipcDeviceToUISharedMemory_DT, JobIndex, DataConverter.ToByteArray(SharedValues.OperStatus));
-                        // await Console.Out.WriteLineAsync("ConnecttionPrinter State : " + SharedValues.OperStatus);
+                        
                     }
                     catch (Exception) { }
 
@@ -210,7 +211,7 @@ namespace DipesLinkDeviceTransfer
             Task<int> connectionCode = CheckDeviceConnectionAsync();
             if (connectionCode == null) return;
             int code = connectionCode.Result;
-            if (code == 1) code = 0; // bypass check cam connection
+           // if (code == 1) code = 0; // bypass check cam connection
             if (code == 0)
             {
                 if (startWithDB)

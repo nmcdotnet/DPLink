@@ -19,62 +19,98 @@ namespace DipesLink.Views.Extension
         private DataTable? _miniDataTable;
         private DataTable? _originalDataTable;
 
-        public int NumberItemInCurPage { get; set; }
+        public int NumberItemInCurPage;
 
-        public void InitDatabase(DataTable dataTable, DataGrid dataGrid, JobOverview currentViewModel = null)
+        public async Task InitDatabaseAsync(DataTable dataTable, DataGrid dataGrid, JobOverview currentViewModel = null)
         {
             _originalDataTable = dataTable; // saved original DB
-            ProcessMiniPage(dataGrid, dataTable);
+            await ProcessMiniPageAsync(dataGrid, dataTable);
         }
 
 
-        public void DatabaseSearchForPrintStatus(DataGrid dataGrid, string keyword)
+        public async Task DatabaseSearchForPrintStatusAsync(DataGrid dataGrid, string keyword)
         {
+            DataTable searchTable = null;
             try
             {
-
-                // Creates a list containing filter condition strings
-                List<string> filterConditions = new List<string>();
-
-                //Browse through all columns in the DataTable
-                foreach (DataColumn column in _originalDataTable.Columns)
+                searchTable = await Task.Run(() =>
                 {
-                    string columnName = column.ColumnName;
-                    filterConditions.Add($"[{columnName}] LIKE '%{keyword}%'"); // special symbol must put it in []
-                }
+                    // Creates a list containing filter condition strings
+                    List<string> filterConditions = new List<string>();
 
-                // Combine all filter conditions into a single string
-                string filterString = string.Join(" OR ", filterConditions);
-                if (keyword == "") filterString = ""; // Refresh button
+                    // Browse through all columns in the DataTable
+                    foreach (DataColumn column in _originalDataTable.Columns)
+                    {
+                        string columnName = column.ColumnName;
+                        filterConditions.Add($"[{columnName}] LIKE '%{keyword}%'"); // special symbol must put it in []
+                    }
 
-                DataView dataView = new(_originalDataTable)
-                {
-                    RowFilter = filterString
-                };
-                
-                DataTable searchTable = dataView.ToTable();
-                dataGrid.Columns.Clear();
-                ProcessMiniPage(dataGrid, searchTable);
+                    // Combine all filter conditions into a single string
+                    string filterString = string.Join(" OR ", filterConditions);
+                    if (keyword == "") filterString = ""; // Refresh button
+
+                    DataView dataView = new(_originalDataTable)
+                    {
+                        RowFilter = filterString
+                    };
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        dataGrid.Columns.Clear();
+                    });
+                    return dataView.ToTable();
+                });
+              
+                await ProcessMiniPageAsync(dataGrid, searchTable);
             }
             catch (Exception) { }
+            finally
+            {
+                // Giải phóng tài nguyên
+                if (searchTable != null)
+                {
+                    searchTable.Dispose();
+                }
+            }
         }
 
 
-        public void DatabaseSearch(DataGrid dataGrid,string keyword)
-        { 
+        public async Task DatabaseSearchAsync(DataGrid dataGrid,string keyword)
+        {
+            DataTable searchTable = null;
             try
             {
-                string filterString = $"Index LIKE '%{keyword}%' OR ResultData LIKE '%{keyword}%' OR Result LIKE '%{keyword}%' OR ProcessingTime LIKE '%{keyword}%' OR DateTime LIKE '%{keyword}%'";
-                if (keyword == "") filterString = ""; // Refresh button
-                DataView dataView = new(_originalDataTable)
+                searchTable = await Task.Run(() =>
                 {
-                    RowFilter = filterString
-                };
-                DataTable searchTable = dataView.ToTable();
-                dataGrid.Columns.Clear();
-                ProcessMiniPage(dataGrid, searchTable);
+                    string filterString = $"Index LIKE '%{keyword}%' OR ResultData LIKE '%{keyword}%' OR Result LIKE '%{keyword}%' OR ProcessingTime LIKE '%{keyword}%' OR DateTime LIKE '%{keyword}%'";
+
+
+                    if (keyword == "") filterString = ""; // Refresh button
+                    DataView dataView = new(_originalDataTable)
+                    {
+                        RowFilter = filterString
+                    };
+
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        dataGrid.Columns.Clear();
+                    });
+                    return dataView.ToTable();
+                });
+                //string filterString = $"Index LIKE '%{keyword}%' OR ResultData LIKE '%{keyword}%' OR Result LIKE '%{keyword}%' OR ProcessingTime LIKE '%{keyword}%' OR DateTime LIKE '%{keyword}%'";
+                //if (keyword == "") filterString = ""; // Refresh button
+                //DataView dataView = new(_originalDataTable)
+                //{
+                //    RowFilter = filterString
+                //};
+                //DataTable searchTable = dataView.ToTable();
+                //dataGrid.Columns.Clear();
+                await ProcessMiniPageAsync(dataGrid, searchTable);
             }
             catch (Exception){ }
+            finally
+            {
+                searchTable?.Dispose();
+            }
         }
 
         public async Task DatabaseFilteredForPrintStatusAsync(DataGrid dataGrid, FilteredKeyword keyword)
@@ -109,10 +145,10 @@ namespace DipesLink.Views.Extension
                 }
  
                 DataTable filteredTable = dataView.ToTable();
-                   Application.Current.Dispatcher.Invoke(() =>
+                   Application.Current.Dispatcher.Invoke(async () =>
                    {
                        dataGrid.Columns.Clear();
-                       ProcessMiniPage(dataGrid, filteredTable);
+                       await ProcessMiniPageAsync(dataGrid, filteredTable);
                    });
                }
             catch (Exception) { }
@@ -169,60 +205,73 @@ namespace DipesLink.Views.Extension
                 }
                 DataTable filteredTable = dataView.ToTable();
                 dataGrid.Columns.Clear();
-                ProcessMiniPage(dataGrid, filteredTable);
+                ProcessMiniPageAsync(dataGrid, filteredTable);
             }
             catch (Exception) { }
         }
 
 
 
-        public void ProcessMiniPage(DataGrid dataGrid, DataTable dataTable)
+        public async Task ProcessMiniPageAsync(DataGrid dataGrid, DataTable dataTable)
         {
             Paginator = new Paginator(dataTable);
             if (Paginator == null) return;
-            // Paginator.CurrentPage = 0;
-            foreach (DataColumn column in Paginator.GetPage(Paginator.CurrentPage).Columns)
+            DataTable pageTable = null;
+            try
             {
-                if (column.ColumnName == "Result" || column.ColumnName == "Status")
-                {
-                    DataGridTemplateColumn templateColumn = new() { Header = column.ColumnName, Width = DataGridLength.Auto };
-                    DataTemplate template = new();
-                    FrameworkElementFactory factory = new(typeof(Image)); // Create Image UI by Code behind instead XAML
-                    Binding binding = new();
-                    if (column.ColumnName == "Result")
-                    {
-                       binding = new(column.ColumnName) { Converter = new ResultCheckedImgConverter() };
-                    }
-                    else if(column.ColumnName == "Status")
-                    {
-                        binding = new(column.ColumnName) { Converter = new StatusToIconConverter() };
-                    }
-                  
+                pageTable = await Task.Run(() => Paginator.GetPage(Paginator.CurrentPage));
 
-                    factory.SetValue(Image.SourceProperty, binding); // Set binding for Image.
-                    factory.SetValue(Image.HeightProperty, 20.0); // Image Height
-                    factory.SetValue(Image.WidthProperty, 20.0);  // Image Width
-
-                    template.VisualTree = factory; // add UI to VisualTree Template
-                    templateColumn.CellTemplate = template; // CellTemplate = Template
-                    dataGrid.Columns.Add(templateColumn); // Add DataGridTemplateColumn
-                }
-                else
+                foreach (DataColumn column in Paginator.GetPage(Paginator.CurrentPage).Columns)
                 {
-                    DataGridTextColumn textColumn = new()
+                    if (column.ColumnName == "Result" || column.ColumnName == "Status")
                     {
-                        Header = column.ColumnName,
-                        Binding = new Binding(column.ColumnName),
-                        Width = 100
-                    };
-                    dataGrid.Columns.Add(textColumn);
+                        DataGridTemplateColumn templateColumn = new() { Header = column.ColumnName, Width = DataGridLength.Auto };
+                        DataTemplate template = new();
+                        FrameworkElementFactory factory = new(typeof(Image)); // Create Image UI by Code behind instead XAML
+                        Binding binding = new();
+                        if (column.ColumnName == "Result")
+                        {
+                            binding = new(column.ColumnName) { Converter = new ResultCheckedImgConverter() };
+                        }
+                        else if (column.ColumnName == "Status")
+                        {
+                            binding = new(column.ColumnName) { Converter = new StatusToIconConverter() };
+                        }
+
+                        factory.SetValue(Image.SourceProperty, binding); // Set binding for Image.
+                        factory.SetValue(Image.HeightProperty, 20.0); // Image Height
+                        factory.SetValue(Image.WidthProperty, 20.0);  // Image Width
+
+                        template.VisualTree = factory; // add UI to VisualTree Template
+                        templateColumn.CellTemplate = template; // CellTemplate = Template
+                        dataGrid.Columns.Add(templateColumn); // Add DataGridTemplateColumn
+                    }
+                    else
+                    {
+                        DataGridTextColumn textColumn = new()
+                        {
+                            Header = column.ColumnName,
+                            Binding = new Binding(column.ColumnName),
+                            Width = 100
+                        };
+                        dataGrid.Columns.Add(textColumn);
+                    }
                 }
             }
-            UpdateDataGrid(dataGrid);
+            catch (Exception)
+            {
+               
+            }
+            finally
+            {
+                pageTable?.Dispose();
+            }
+             
+            await UpdateDataGridAsync(dataGrid);
         }
 
 
-        public void UpdateDataGrid(DataGrid dataGrid, int customPage = 0)
+        public async Task UpdateDataGridAsync(DataGrid dataGrid, int customPage = 0)
         {
             if (Paginator != null)
             {
@@ -231,14 +280,28 @@ namespace DipesLink.Views.Extension
                 {
                     Paginator.CurrentPage = customPage - 1;
                 }
-                _miniDataTable = Paginator.GetPage(Paginator.CurrentPage); // Load mini datatable by current page
-                if (_miniDataTable != null)
+                try
                 {
-                    NumberItemInCurPage = _miniDataTable.Rows.Count;
+                    _miniDataTable = await Task.Run(() => Paginator.GetPage(Paginator.CurrentPage)); // Load mini datatable by current page
+                    if (_miniDataTable != null)
+                    {
+                       // NumberItemInCurPage = _miniDataTable.Rows.Count;
+                        Interlocked.Exchange(ref NumberItemInCurPage, _miniDataTable.Rows.Count);
+                        // Cập Nhật Luồng UI
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            dataGrid.AutoGenerateColumns = false;
+                            dataGrid.ItemsSource = _miniDataTable.DefaultView;
+                        });
+                    }
+                }
+                catch (Exception)
+                {
 
-                    dataGrid.AutoGenerateColumns = false;
-                    dataGrid.ItemsSource = _miniDataTable.DefaultView;
-
+                }
+                finally
+                {
+                    _miniDataTable?.Dispose();
                 }
             }
         }

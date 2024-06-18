@@ -476,7 +476,7 @@ namespace DipesLink.Models
         public ConcurrentQueue<byte[]> QueueCurrentCheckedCode { get; set; } = new();
         public ConcurrentQueue<byte[]> QueueCameraDataDetect { get; set; } = new();
 
-        public OperationStatus OperationStatus { get; set; }
+        public OperationStatus OperationStatus { get; set; } = OperationStatus.Stopped;
 
         public JobSystemSettings JobSystemSettings { get; set; }
 

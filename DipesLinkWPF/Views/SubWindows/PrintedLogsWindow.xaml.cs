@@ -13,6 +13,7 @@ using System.Windows.Data;
 using System.Windows.Media;
 using Cloudtoid;
 using System.Windows.Input;
+using Microsoft.VisualBasic.Devices;
 
 namespace DipesLink.Views.SubWindows
 {
@@ -68,6 +69,7 @@ namespace DipesLink.Views.SubWindows
 
         public void CreateDataTemplate(DataGrid dataGrid)
         {
+            if (PrintedDataTable is null || PrintedDataTable.Columns is null || PrintedDataTable.Rows is null) return;
             try
             {
                 dataGrid.Columns.Clear();
@@ -167,7 +169,7 @@ namespace DipesLink.Views.SubWindows
             if (_jobLogsDataTableHelper == null) return;
             if (PrintedDataTable != null)
             {
-                _jobLogsDataTableHelper.InitDatabase(PrintedDataTable, DataGridResult);
+                await _jobLogsDataTableHelper.InitDatabaseAsync(PrintedDataTable, DataGridResult);
             }
             UpdateNumber(); 
             UpdatePageInfo();
@@ -187,25 +189,25 @@ namespace DipesLink.Views.SubWindows
             switch (button.Name)
             {
                 case "ButtonFirst":
-                    _jobLogsDataTableHelper.UpdateDataGrid(DataGridResult, 1);
+                    _jobLogsDataTableHelper.UpdateDataGridAsync(DataGridResult, 1);
                     break;
 
                 case "ButtonBack":
                     if (_jobLogsDataTableHelper.Paginator.PreviousPage())
                     {
-                        _jobLogsDataTableHelper.UpdateDataGrid(DataGridResult);
+                        _jobLogsDataTableHelper.UpdateDataGridAsync(DataGridResult);
                     }
                     break;
 
                 case "ButtonNext":
                     if (_jobLogsDataTableHelper.Paginator.NextPage())
                     {
-                        _jobLogsDataTableHelper.UpdateDataGrid(DataGridResult);
+                        _jobLogsDataTableHelper.UpdateDataGridAsync(DataGridResult);
                     }
                     break;
 
                 case "ButtonEnd":
-                    _jobLogsDataTableHelper.UpdateDataGrid(DataGridResult, _jobLogsDataTableHelper.Paginator.TotalPages);
+                    _jobLogsDataTableHelper.UpdateDataGridAsync(DataGridResult, _jobLogsDataTableHelper.Paginator.TotalPages);
                     break;
 
                 case "ButtonGotoPage":
@@ -254,7 +256,7 @@ namespace DipesLink.Views.SubWindows
             {
                 if (page > 0 && page <= _jobLogsDataTableHelper.Paginator.TotalPages)
                 {
-                    _jobLogsDataTableHelper.UpdateDataGrid(DataGridResult, page);
+                    _jobLogsDataTableHelper.UpdateDataGridAsync(DataGridResult, page);
                 }
                 else
                 {
@@ -293,24 +295,35 @@ namespace DipesLink.Views.SubWindows
             ButtonPaginationVis();
         }
 
-        private void ButtonSearch_Click(object sender, RoutedEventArgs e)
+        private async void ButtonSearch_ClickAsync(object sender, RoutedEventArgs e)
         {
-            SearchAction(TextBoxSearch.Text);
+            await SearchActionAsync();
         }
 
+        private async Task SearchActionAsync()
+        {
+
+            if (_jobLogsDataTableHelper == null || _jobLogsDataTableHelper.Paginator == null) return;
+
+            await _jobLogsDataTableHelper.DatabaseSearchForPrintStatusAsync(DataGridResult, TextBoxSearch.Text);
+
+            // Cập nhật giao diện người dùng sau khi hoàn thành tìm kiếm
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                UpdatePageInfo();
+                ButtonPaginationVis();
+            });
+
+
+
+        }
         private void ButtonRF_Click(object sender, RoutedEventArgs e)
         {
             TextBoxSearch.Text = "";
-            SearchAction("");
+            SearchActionAsync();
         }
 
-        private void SearchAction(string keyword)
-        {
-            if (_jobLogsDataTableHelper == null || _jobLogsDataTableHelper.Paginator == null) return;
-            _jobLogsDataTableHelper.DatabaseSearchForPrintStatus(DataGridResult, keyword);
-            UpdatePageInfo();
-            ButtonPaginationVis();
-        }
+      
 
         private void DataGridResult_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -486,13 +499,23 @@ namespace DipesLink.Views.SubWindows
             catch (Exception) { }
         }
 
-        private void TextBoxSearch_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        //private async Task TextBoxSearch_KeyDownAsync(object sender, System.Windows.Input.KeyEventArgs e)
+        //{
+        //    if (e.Key == Key.Enter)
+        //    {
+        //        await ButtonSearch_ClickAsync(sender, e);
+        //    }
+
+        //}
+
+     
+
+        private void TextBoxSearch_KeyDownAsync(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                ButtonSearch_Click(sender, e);
+                SearchActionAsync();
             }
-
         }
     }
 }

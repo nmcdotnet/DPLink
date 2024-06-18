@@ -498,6 +498,8 @@ namespace DipesLink.ViewModels
             }
         }
 
+        private bool _detectCamDisconnected;
+        private bool _detectPrinterDisconnected;
         private void DevicesStatusChange(int stationIndex)
         {
             Application.Current?.Dispatcher.Invoke(async () =>
@@ -510,8 +512,10 @@ namespace DipesLink.ViewModels
                         byte printerStsBytes = JobList[stationIndex].PrinterStsBytes;
                         byte controllerStsBytes = JobList[stationIndex].ControllerStsBytes;
 
+                        // CAMERA CONNECTION
                         if (camStsBytes == (byte)CameraStatus.Connected) // Camera Status Change
                         {
+                            _detectCamDisconnected = false;
                             if (JobDeviceStatusList[stationIndex].CameraStatusColor.Color != Colors.Green)
                             {
                                 JobDeviceStatusList[stationIndex].CameraStatusColor = new SolidColorBrush(Colors.Green); // Camera online
@@ -522,10 +526,18 @@ namespace DipesLink.ViewModels
                         {
                             JobDeviceStatusList[stationIndex].CameraStatusColor = new SolidColorBrush(Colors.Red); // Camera offline
                             JobDeviceStatusList[stationIndex].IsCamConnected = false;
+                            // If Running but Camera Disconnected => Show Alert
+                            if(JobList[stationIndex].OperationStatus != OperationStatus.Stopped && !_detectCamDisconnected)
+                            {
+                                CusAlert.Show("Camera's Disconnected !", ImageStyleMessageBox.Error);
+                                _detectCamDisconnected = true;
+                            }
                         }
 
+                        // PRINTER CONNECTION
                         if (printerStsBytes == (byte)PrinterStatus.Connected) // Printer Status Change
                         {
+                            _detectPrinterDisconnected = false;
                             if (JobDeviceStatusList[stationIndex].PrinterStatusColor.Color != Colors.Green)
                             {
                                 JobDeviceStatusList[stationIndex].PrinterStatusColor = new SolidColorBrush(Colors.Green); //Printer online
@@ -536,11 +548,16 @@ namespace DipesLink.ViewModels
                         {
                             JobDeviceStatusList[stationIndex].PrinterStatusColor = new SolidColorBrush(Colors.Red); // Printer offline
                             JobDeviceStatusList[stationIndex].IsPrinterConnected = false;
+
+                            if (JobList[stationIndex].OperationStatus != OperationStatus.Stopped && !_detectPrinterDisconnected)
+                            {
+                                CusAlert.Show("Printer's Disconnected !", ImageStyleMessageBox.Error);
+                                _detectPrinterDisconnected = true;
+                            }
                         }
 
                         if (controllerStsBytes == (byte)ControllerStatus.Connected) // Controller Status Change
                         {
-
                             if (JobList[stationIndex].StatusStartButton)
                             {
                                 SaveConnectionSetting(); // send connection setting until run job
@@ -739,16 +756,16 @@ namespace DipesLink.ViewModels
                 case NotifyType.NotLoadDatabase:
                     break;
                 case NotifyType.NotLoadTemplate:
+                    CusAlert.Show($"Station {stationIndex + 1}: Can't load template printer!", ImageStyleMessageBox.Warning);
                     break;
                 case NotifyType.NotConnectCamera:
-                    // CusMsgBox.Show("Camera not connected !", "Notification", ButtonStyleMessageBox.OK, ImageStyleMessageBox.Error);
-                    CusAlert.Show($"Station {stationIndex + 1}: Camera  not connected!", ImageStyleMessageBox.Warning);
+                    CusAlert.Show($"Station {stationIndex + 1}: Camera's not connected!", ImageStyleMessageBox.Warning);
                     break;
                 case NotifyType.MissingParameter:
                     CusMsgBox.Show("Missing params !", "Notification", ButtonStyleMessageBox.OK, ImageStyleMessageBox.Error);
                     break;
                 case NotifyType.NotConnectPrinter:
-                    CusMsgBox.Show("Printer not connected !", "Notification", ButtonStyleMessageBox.OK, ImageStyleMessageBox.Error);
+                    CusAlert.Show($"Station {stationIndex + 1}: Printer's not connected!", ImageStyleMessageBox.Warning);
                     break;
                 case NotifyType.LeastOneAction:
                     break;
