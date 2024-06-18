@@ -33,7 +33,7 @@ namespace DipesLink.Views.SubWindows
         public JobLogsWindow()
         {
             InitializeComponent();
-            Loaded += JobLogsWindow_Loaded;
+            Loaded += JobLogsWindow_LoadedAsync;
         }
         private T? CurrentViewModel<T>() where T : class
         {
@@ -46,12 +46,12 @@ namespace DipesLink.Views.SubWindows
                 return null;
             }
         }
-        private void JobLogsWindow_Loaded(object sender, RoutedEventArgs e)
+        private async void JobLogsWindow_LoadedAsync(object sender, RoutedEventArgs e)
         {
             if (_jobLogsDataTableHelper == null) return;
             if (CheckedDataTable != null)
             {
-                _jobLogsDataTableHelper.InitDatabase(CheckedDataTable, DataGridResult);
+                await _jobLogsDataTableHelper.InitDatabaseAsync(CheckedDataTable, DataGridResult);
             }
             UpdateParams();
             UpdatePageInfo();
@@ -75,9 +75,6 @@ namespace DipesLink.Views.SubWindows
            
         }
 
-        /// <summary>
-        /// Update Text about page infor (page/totalpage and item/page)
-        /// </summary>
         private void UpdatePageInfo()
         {
             _pageInfo = string.Format("Page {0} of {1} ({2} items)", _jobLogsDataTableHelper?.Paginator?.CurrentPage + 1, _jobLogsDataTableHelper?.Paginator?.TotalPages, _jobLogsDataTableHelper?.NumberItemInCurPage);
@@ -85,37 +82,32 @@ namespace DipesLink.Views.SubWindows
             TextBoxPage.Text = (_jobLogsDataTableHelper?.Paginator?.CurrentPage + 1).ToString(); // Get current page for Textbox Page
         }
 
-        /// <summary>
-        /// Page action : First, Back, Next, End
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void PageAction_Click(object sender, RoutedEventArgs e)
+        private async void PageAction_Click(object sender, RoutedEventArgs e)
         {
             if (_jobLogsDataTableHelper == null || _jobLogsDataTableHelper.Paginator == null) return;
             Button button = (Button)sender;
             switch (button.Name)
             {
                 case "ButtonFirst":
-                    _jobLogsDataTableHelper.UpdateDataGrid(DataGridResult, 1);
+                    await _jobLogsDataTableHelper.UpdateDataGridAsync(DataGridResult, 1);
                     break;
 
                 case "ButtonBack":
                     if (_jobLogsDataTableHelper.Paginator.PreviousPage())
                     {
-                        _jobLogsDataTableHelper.UpdateDataGrid(DataGridResult);
+                        await _jobLogsDataTableHelper.UpdateDataGridAsync(DataGridResult);
                     }
                     break;
 
                 case "ButtonNext":
                     if (_jobLogsDataTableHelper.Paginator.NextPage())
                     {
-                        _jobLogsDataTableHelper.UpdateDataGrid(DataGridResult);
+                       await  _jobLogsDataTableHelper.UpdateDataGridAsync(DataGridResult);
                     }
                     break;
 
                 case "ButtonEnd":
-                    _jobLogsDataTableHelper.UpdateDataGrid(DataGridResult, _jobLogsDataTableHelper.Paginator.TotalPages);
+                   await _jobLogsDataTableHelper.UpdateDataGridAsync(DataGridResult, _jobLogsDataTableHelper.Paginator.TotalPages);
                     break;
 
                 case "ButtonGotoPage":
@@ -128,9 +120,7 @@ namespace DipesLink.Views.SubWindows
             UpdatePageInfo();
         }
 
-        /// <summary>
-        /// Visibility for Pagination Button
-        /// </summary>
+       
         private void ButtonPaginationVis()
         {
             if (_jobLogsDataTableHelper == null || _jobLogsDataTableHelper.Paginator == null) return;
@@ -163,14 +153,14 @@ namespace DipesLink.Views.SubWindows
         /// <summary>
         /// Goto Page Number Function
         /// </summary>
-        private void GotoPageAction()
+        private async void GotoPageAction()
         {
             if (_jobLogsDataTableHelper == null || _jobLogsDataTableHelper.Paginator == null) return;
             if (int.TryParse(TextBoxPage.Text, out int page))
             {
                 if (page > 0 && page <= _jobLogsDataTableHelper.Paginator.TotalPages)
                 {
-                    _jobLogsDataTableHelper.UpdateDataGrid(DataGridResult, page);
+                   await  _jobLogsDataTableHelper.UpdateDataGridAsync(DataGridResult, page);
                 }
                 else
                 {
@@ -183,11 +173,7 @@ namespace DipesLink.Views.SubWindows
             }
         }
 
-        /// <summary>
-        /// Combobox Filter by Result
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+       
         private void ComboBoxFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (_jobLogsDataTableHelper == null || _jobLogsDataTableHelper.Paginator == null) return;
@@ -224,35 +210,23 @@ namespace DipesLink.Views.SubWindows
             ButtonPaginationVis();
         }
 
-        /// <summary>
-        /// Button Search
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void ButtonSearch_Click(object sender, RoutedEventArgs e)
         {
             SearchAction(TextBoxSearch.Text);
         }
 
-        /// <summary>
-        /// Button Refresh
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+      
         private void ButtonRF_Click(object sender, RoutedEventArgs e)
         {
             TextBoxSearch.Text = "";
             SearchAction("");
         }
 
-        /// <summary>
-        /// Search by text funtion
-        /// </summary>
-        /// <param name="keyword"></param>
-        private void SearchAction(string keyword)
+    
+        private async void SearchAction(string keyword)
         {
             if (_jobLogsDataTableHelper == null || _jobLogsDataTableHelper.Paginator == null) return;
-            _jobLogsDataTableHelper.DatabaseSearch(DataGridResult, keyword);
+            await _jobLogsDataTableHelper.DatabaseSearchAsync(DataGridResult, keyword);
             UpdatePageInfo();
             ButtonPaginationVis();
         }
@@ -413,8 +387,11 @@ namespace DipesLink.Views.SubWindows
         {
             if (e.Key == Key.Enter)
             {
-                ButtonSearch_Click(sender, e);
+                SearchAction(TextBoxSearch.Text);
             }
+           
         }
+
+      
     }
 }

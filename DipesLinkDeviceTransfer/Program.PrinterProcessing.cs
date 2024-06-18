@@ -218,7 +218,8 @@ namespace DipesLinkDeviceTransfer
             else // For mode Not use Database
             {
                 SharedValues.OperStatus = OperationStatus.Running;
-               
+              
+
             }
 
             _SelectedJob.JobStatus = JobStatus.Unfinished;
@@ -422,10 +423,12 @@ namespace DipesLinkDeviceTransfer
                                 if (counterCodeSent >= 100 && _IsAfterProductionMode) // Sau 100 lần gửi đầu tiên thành công sẽ chuyển sang trạng thái Running
                                 {
                                     SharedValues.OperStatus = OperationStatus.Running;
+                                  //  Console.WriteLine("Bị Running oi dayu");
                                 }
                                 else if(counterCodeSent>= 1 && _IsOnProductionMode)// Với mode OnProduction thì gửi 1 Data POD sẽ Run 
                                 {
                                     SharedValues.OperStatus = OperationStatus.Running;
+                                  //  Console.WriteLine("Bị Running oi day");
                                 }
                             }
 
@@ -472,6 +475,7 @@ namespace DipesLinkDeviceTransfer
                     if (SharedValues.OperStatus == OperationStatus.Processing)
                     {
                         SharedValues.OperStatus = OperationStatus.Running;
+                        
                     }
 
                 }
