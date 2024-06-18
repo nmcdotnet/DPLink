@@ -18,6 +18,7 @@ namespace DipesLink.Views.UserControls.MainUc
     public partial class JobSettings : UserControl
     {
         public static bool IsInitializing = true;
+
         public JobSettings()
         {
             InitializeComponent();
@@ -25,6 +26,7 @@ namespace DipesLink.Views.UserControls.MainUc
             TextBoxPrinterIP.TextChanged += TextBox_ParamsChanged;
             TextBoxCamIP.TextChanged += TextBox_ParamsChanged;
             TextBoxControllerIP.TextChanged += TextBox_ParamsChanged;
+           
         }
       
 
@@ -38,6 +40,8 @@ namespace DipesLink.Views.UserControls.MainUc
                 vm?.SaveConnectionSetting();
                 ComboBoxStationNum.SelectedIndex = vm.StationSelectedIndex;
                 RadBasic.IsChecked = vm?.ConnectParamsList[CurrentIndex()].VerifyAndPrintBasicSentMethod;
+                // ???? why put ? it shows error in vm? below
+                InputArea.IsEnabled = vm.ConnectParamsList[CurrentIndex()].EnController;
             }
             catch (Exception)
             {
@@ -81,6 +85,7 @@ namespace DipesLink.Views.UserControls.MainUc
         private void ListBoxMenu_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             CurrentViewModel<MainViewModel>()?.SelectionChangeSystemSettings(CurrentIndex());
+            CurrentViewModel<MainViewModel>().LockUI(CurrentIndex());// Lock UI when running
         }
 
         private int CurrentIndex() => ListBoxMenu.SelectedIndex;
@@ -284,14 +289,24 @@ namespace DipesLink.Views.UserControls.MainUc
             try
             {
                 var toggleButton = sender as ToggleButton;
+                var vm = CurrentViewModel<MainViewModel>();
                 toggleButton?.Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    var vm = CurrentViewModel<MainViewModel>();
                     if (vm == null) return;
                     vm.ConnectParamsList[CurrentIndex()].EnController = (bool)toggleButton.IsChecked;
                     Debug.WriteLine("Vao day 3");
                     vm.AutoSaveConnectionSetting(CurrentIndex());
                 }), DispatcherPriority.Background);
+
+                if (vm.ConnectParamsList[CurrentIndex()].EnController)
+                {
+                    InputArea.IsEnabled = true;
+                }
+                else
+                {
+                    InputArea.IsEnabled = false;
+                }
+
             }
             catch (Exception) { }
         }

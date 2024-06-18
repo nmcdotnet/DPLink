@@ -42,6 +42,7 @@
             <StackPanel Grid.ColumnSpan="2" Margin="10,10,63,1">
                 <TextBlock
                     Height="20"
+                    Margin="0,3,3,3"
                     FontSize="16"
                     FontWeight="Bold"
                     Text="List of fields from the database" />
@@ -55,13 +56,14 @@
                     ItemsSource="{Binding PODList}"
                     MouseDoubleClick="ListViewField_MouseDoubleClick"
                     SelectedItem="{Binding SelectedColumnItem1}"
-                    Style="{StaticResource ModernListViewStyle}" SelectionChanged="ListViewField_SelectionChanged" />
+                    SelectionChanged="ListViewField_SelectionChanged"
+                    Style="{StaticResource ModernListViewStyle}" />
             </StackPanel>
 
             <StackPanel
                 Grid.Column="1"
                 Grid.ColumnSpan="2"
-                Margin="50,24,262,6">
+                Margin="50,34,262,6">
                 <Button
                     x:Name="ButtonAdd"
                     Width="70"
@@ -122,6 +124,7 @@
                 HorizontalAlignment="Left">
                 <TextBlock
                     Height="20"
+                    Margin="0,3,3,3"
                     FontSize="16"
                     FontWeight="Bold"
                     Text="Data compare format" />
@@ -177,6 +180,7 @@
                 <StackPanel Margin="10">
                     <TextBlock
                         Height="20"
+                        Margin="0,3,3,3"
                         FontSize="16"
                         FontWeight="Bold"
                         Text="Text Field Input" />
@@ -191,6 +195,7 @@
                 <StackPanel Grid.Column="1" Margin="10">
                     <TextBlock
                         Height="20"
+                        Margin="0,3,3,3"
                         FontSize="16"
                         FontWeight="Bold"
                         Text="Verification Field Format" />
@@ -206,29 +211,29 @@
 
         <StackPanel
             Grid.Row="2"
-            Height="229"
+            Height="214"
             VerticalAlignment="Top">
             <TextBlock
-                Margin="10,0,0,0"
+                Margin="10,0,3,3"
                 FontSize="16"
                 FontWeight="Bold"
                 Text="Database Preview" />
             <DataGrid
-                Height="201"
-                Margin="10"
+                Width="988"
+                Height="188"
                 CellStyle="{DynamicResource DataGridCellStyle1}"
                 ColumnHeaderStyle="{DynamicResource DataGridColumnHeaderStyle1}"
                 ItemsSource="{Binding DataViewPODFormat}"
-                RenderTransformOrigin="0.5,0.5"
                 Style="{DynamicResource DataGridStyle1}">
-                <DataGrid.RenderTransform>
+                <!--  RenderTransformOrigin="0.5,0.5"  -->
+                <!--<DataGrid.RenderTransform>
                     <TransformGroup>
                         <ScaleTransform />
                         <SkewTransform AngleX="0.385" />
                         <RotateTransform />
                         <TranslateTransform X="0.598" />
                     </TransformGroup>
-                </DataGrid.RenderTransform>
+                </DataGrid.RenderTransform>-->
             </DataGrid>
         </StackPanel>
 

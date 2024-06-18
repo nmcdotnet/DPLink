@@ -1,4 +1,5 @@
-﻿using DipesLink.Models;
+﻿using Cloudtoid;
+using DipesLink.Models;
 using DipesLink.Views.Converter;
 using System.Data;
 using System.Windows;
@@ -30,6 +31,7 @@ namespace DipesLink.Views.Extension
         /// <param name="currentViewModel"></param>
         public async Task InitDatabaseAsync(List<string[]> dbList, DataGrid dataGrid, int currentPage, JobOverview? currentViewModel)
         {
+            if(dbList is null || dbList.IsEmpty()) return;
             PrintedDataTable = new();
             //DataTable dataTable = new();
             await Task.Run(() =>

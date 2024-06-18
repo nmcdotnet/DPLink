@@ -7,8 +7,8 @@
     xmlns:local="clr-namespace:DipesLink.Views.SubWindows"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="VerifyAndPrintPODFormat"
-    Width="800"
-    Height="400"
+    Width="1025"
+    Height="600"
     Icon="pack://application:,,,/DipesLink;component/Images/statistic_1.png"
     ResizeMode="NoResize"
     WindowStartupLocation="CenterScreen"
@@ -26,7 +26,7 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="230" />
+            <RowDefinition Height="420" />
             <RowDefinition Height="*" />
 
         </Grid.RowDefinitions>
@@ -38,26 +38,28 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <StackPanel Margin="10">
+            <StackPanel Grid.ColumnSpan="2" Margin="55,10,18,1">
                 <TextBlock
-                    Height="20"
+                    Width="298"
+                    Height="25"
                     FontSize="16"
                     FontWeight="Bold"
                     Text="List of Fields" />
                 <ListView
                     x:Name="listBoxPODLeft"
-                    Height="180"
-                    Margin="0,0,0,0"
+                    Width="300"
+                    Height="384"
                     GotFocus="ListViewField_GotFocus"
+                    MouseDoubleClick="listBoxPODLeft_MouseDoubleClick"
                     SelectedItem="{Binding SelectedColumnItem1}"
                     Style="{StaticResource ModernListViewStyle}" />
             </StackPanel>
 
-            <StackPanel Grid.Column="1" Margin="0,30,0,0">
+            <StackPanel Grid.Column="2" Margin="2,54,222,-9">
                 <Button
                     x:Name="ButtonAdd"
-                    Width="70"
-                    Height="35"
+                    Width="73"
+                    Height="39"
                     Margin="2"
                     Click="Operation_Click"
                     Content="{fa:Icon CaretRight,
@@ -66,8 +68,8 @@
                     Style="{StaticResource ModernButton2}" />
                 <Button
                     x:Name="ButtonRemove"
-                    Width="70"
-                    Height="35"
+                    Width="73"
+                    Height="39"
                     Margin="2"
                     Click="Operation_Click"
                     Content="{fa:Icon CaretLeft,
@@ -96,8 +98,8 @@
                     Style="{StaticResource ModernButton2}" />-->
                 <Button
                     x:Name="ButtonClearAll"
-                    Width="70"
-                    Height="35"
+                    Width="73"
+                    Height="39"
                     Margin="2"
                     Click="Operation_Click"
                     Content="{fa:Icon FileCircleXmark,
@@ -106,15 +108,20 @@
                     Style="{StaticResource ModernButton2}" />
             </StackPanel>
 
-            <StackPanel Grid.Column="2" Margin="10">
+            <StackPanel
+                Grid.Column="2"
+                Grid.ColumnSpan="2"
+                Margin="82,10,150,0">
                 <TextBlock
-                    Height="20"
+                    Width="302"
+                    Height="25"
                     FontSize="16"
                     FontWeight="Bold"
                     Text="Data send Fields" />
                 <ListView
                     x:Name="listBoxPODRight"
-                    Height="180"
+                    Width="300"
+                    Height="384"
                     GotFocus="ListViewPodCustom_GotFocus"
                     LostFocus="ListViewPodCustom_LostFocus"
                     SelectedIndex="{Binding SelectedHeaderIndex}"
@@ -123,10 +130,14 @@
                     Style="{StaticResource ModernListViewStyle}" />
             </StackPanel>
 
-            <StackPanel Grid.Column="3" VerticalAlignment="Center">
+            <StackPanel
+                Grid.Column="3"
+                Height="62"
+                Margin="118,0,0,0"
+                VerticalAlignment="Center">
                 <Button
-                    Width="100"
-                    Height="40"
+                    Width="105"
+                    Height="45"
                     Margin="0,10,0,0"
                     Click="SavePODFormat"
                     Content="Save"
@@ -150,16 +161,20 @@
         </Grid>
 
         <Grid Grid.Row="1">
-            <StackPanel Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="92*" />
+                <ColumnDefinition Width="113*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.ColumnSpan="2" Margin="0,9,0,0">
                 <TextBlock
-                    Margin="10,0,0,0"
+                    Margin="10,5,0,5"
                     FontSize="16"
                     FontWeight="Bold"
                     Text="Send Field Format" />
                 <TextBox
                     x:Name="txtPrintFields"
-                    Height="100"
-                    Margin="10,0,10,0"
+                    Width="992"
+                    Height="89"
                     BorderBrush="#FF688CAF"
                     BorderThickness="1"
                     IsEnabled="False" />

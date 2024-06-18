@@ -172,5 +172,11 @@ namespace DipesLink.Views.SubWindows
         {
 
         }
+
+        private void listBoxPODLeft_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            AddingField();
+            Sample();
+        }
     }
 }

@@ -79,6 +79,7 @@ namespace DipesLink.ViewModels
             }
         }
 
+
         [ObservableProperty]
         private Visibility _jobViewVisibility = Visibility.Visible;
 

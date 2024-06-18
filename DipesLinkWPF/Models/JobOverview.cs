@@ -232,22 +232,62 @@ namespace DipesLink.Models
             }
         }
 
+        private Brush _compareResultColor = Brushes.Red; // 
 
-        private ComparisonResult _compareResult;
-        public ComparisonResult CompareResult
+        public Brush CompareResultColor
         {
-            get { return _compareResult; }
+            get
+            {
+                return _compareResultColor;
+            }
             set
             {
+
+                _compareResultColor = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private ComparisonResult _compareResult = ComparisonResult.Null;
+        public ComparisonResult CompareResult
+        {
+            get {
+                ChangeColorResult();
+                return _compareResult;
+            }
+            set
+            {
+                ChangeColorResult();
                 if (_compareResult != value)
                 {
                     _compareResult = value;
+                    
                     OnPropertyChanged();
                 }
             }
         }
 
-     
+     private  void ChangeColorResult()
+        {
+            switch (_compareResult)
+            {
+                case ComparisonResult.Valid:
+                    CompareResultColor = Brushes.Green;
+                    break;
+                case ComparisonResult.Missed:
+                case ComparisonResult.Invalided:
+                    CompareResultColor = Brushes.Red;
+                    break;
+                case ComparisonResult.Duplicated:
+                    CompareResultColor = Brushes.Orange;
+                    break;
+                case ComparisonResult.Null:
+                    CompareResultColor = Brushes.Black;
+                    break;
+                default:
+                    break;
+            }
+        }
       
 
         private string _totalChecked = "0";

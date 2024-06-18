@@ -19,8 +19,22 @@ namespace SharedProgram.Models
         public double EncoderDiameter { get; set; } = 0.00;
         public bool EnController { get; set; } = false;
 
-      
 
+
+        private bool _lockUISetting;
+        public bool LockUISetting
+        {
+            get { return _lockUISetting; }
+            set { _lockUISetting = value; OnPropertyChanged(); }
+        }
+
+        // thinh
+        private bool _lockChoosingStation;
+        public bool LockChoosingStation
+        {
+            get { return _lockChoosingStation; }
+            set { _lockChoosingStation = value; OnPropertyChanged(); }
+        }
 
         private ObservableCollection<string> _responseMessList = new();
 
