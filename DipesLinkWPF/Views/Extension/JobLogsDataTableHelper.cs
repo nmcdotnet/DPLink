@@ -32,6 +32,7 @@ namespace DipesLink.Views.Extension
         {
             try
             {
+
                 // Creates a list containing filter condition strings
                 List<string> filterConditions = new List<string>();
 
@@ -41,13 +42,16 @@ namespace DipesLink.Views.Extension
                     string columnName = column.ColumnName;
                     filterConditions.Add($"[{columnName}] LIKE '%{keyword}%'"); // special symbol must put it in []
                 }
+
                 // Combine all filter conditions into a single string
                 string filterString = string.Join(" OR ", filterConditions);
                 if (keyword == "") filterString = ""; // Refresh button
+
                 DataView dataView = new(_originalDataTable)
                 {
                     RowFilter = filterString
                 };
+                
                 DataTable searchTable = dataView.ToTable();
                 dataGrid.Columns.Clear();
                 ProcessMiniPage(dataGrid, searchTable);

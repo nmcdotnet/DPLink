@@ -68,39 +68,45 @@ namespace DipesLink.Views.SubWindows
 
         public void CreateDataTemplate(DataGrid dataGrid)
         {
-            dataGrid.Columns.Clear();
-            foreach (DataColumn column in PrintedDataTable.Columns)
+            try
             {
-                if (column.ColumnName == "Status") // Create template for "Result" column
+                dataGrid.Columns.Clear();
+                foreach (DataColumn column in PrintedDataTable.Columns)
                 {
-                    DataGridTemplateColumn templateColumn = new() { Header = column.ColumnName, Width = DataGridLength.Auto };
-                    DataTemplate template = new();
-                    FrameworkElementFactory factory = new(typeof(Image));
-
-                    Binding binding = new(column.ColumnName)
+                    if (column.ColumnName == "Status") 
                     {
-                        Converter = new StatusToIconConverter(),
-                        Mode = BindingMode.OneWay
-                    };
+                        DataGridTemplateColumn templateColumn = new() { Header = column.ColumnName, Width = DataGridLength.Auto };
+                        DataTemplate template = new();
+                        FrameworkElementFactory factory = new(typeof(Image));
 
-                    factory.SetValue(Image.SourceProperty, binding);
-                    factory.SetValue(Image.HeightProperty, 20.0);
-                    factory.SetValue(Image.WidthProperty, 20.0);
+                        Binding binding = new(column.ColumnName)
+                        {
+                            Converter = new StatusToIconConverter(),
+                            Mode = BindingMode.OneWay
+                        };
 
-                    template.VisualTree = factory;
-                    templateColumn.CellTemplate = template;
-                    dataGrid.Columns.Add(templateColumn);
-                }
-                else
-                {
-                    DataGridTextColumn textColumn = new()
+                        factory.SetValue(Image.SourceProperty, binding);
+                        factory.SetValue(Image.HeightProperty, 20.0);
+                        factory.SetValue(Image.WidthProperty, 20.0);
+
+                        template.VisualTree = factory;
+                        templateColumn.CellTemplate = template;
+                        dataGrid.Columns.Add(templateColumn);
+                    }
+                    else
                     {
-                        Header = column.ColumnName,
-                        Binding = new Binding(column.ColumnName),
-                        Width = DataGridLength.Auto
-                    };
-                    dataGrid.Columns.Add(textColumn);
+                        DataGridTextColumn textColumn = new()
+                        {
+                            Header = column.ColumnName,
+                            Binding = new Binding(column.ColumnName),
+                            Width = DataGridLength.Auto
+                        };
+                        dataGrid.Columns.Add(textColumn);
+                    }
                 }
+            }
+            catch (Exception)
+            {
             }
         }
 

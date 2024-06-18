@@ -27,8 +27,6 @@ namespace DipesLinkDeviceTransfer
             ReceiveDataFromPrinterHandlerAsync();
         }
 
-       
-
         private void SharedEvents_OnPrinterDataChange(object? sender, EventArgs e)
         {
             if (sender is PODDataModel)
@@ -217,9 +215,10 @@ namespace DipesLinkDeviceTransfer
                     RynanRPrinterDeviceHandler.SendData(startPrintCommand); // Send Start command to printer
                 }
             }
-            else
+            else // For mode Not use Database
             {
                 SharedValues.OperStatus = OperationStatus.Running;
+               
             }
 
             _SelectedJob.JobStatus = JobStatus.Unfinished;
@@ -424,6 +423,26 @@ namespace DipesLinkDeviceTransfer
                                 {
                                     SharedValues.OperStatus = OperationStatus.Running;
                                 }
+                                else if(counterCodeSent>= 1 && _IsOnProductionMode)// Với mode OnProduction thì gửi 1 Data POD sẽ Run 
+                                {
+                                    SharedValues.OperStatus = OperationStatus.Running;
+                                }
+                            }
+
+                            if (_IsOnProductionMode)
+                            {
+                                lock (_PrintLocker)
+                                {
+                                    _IsPrintedWait = true;
+                                    while (_IsPrintedWait) Monitor.Wait(_PrintLocker); // Chờ đến khi cập nhật UI sẽ đi tiếp
+
+                                    // Nếu Printed Result lấy từ kết quả việc check từ camera Invalid sẽ giữ index này cho việc gửi tiếp theo
+                                    if (_PrintedResult != ComparisonResult.Valid && _PrintedResult != ComparisonResult.Duplicated) 
+                                    {
+                                        codeIndex--;
+                                    }
+
+                                }
                             }
 
                             // After production mode
@@ -519,7 +538,13 @@ namespace DipesLinkDeviceTransfer
 
                                         case "RSFP": //Feedback data printed
 
-                                            // Todo: On production 
+                                            if (_IsOnProductionMode)
+                                            {
+                                                lock (_PrintedResponseLocker)
+                                                {
+                                                    _IsPrintedResponse = true; // Notify that have a printed response
+                                                }
+                                            }
 
                                             if (_IsAfterProductionMode)
                                             {
@@ -760,7 +785,7 @@ namespace DipesLinkDeviceTransfer
 
                 // Detect printer suddenly stop 
               //  Console.WriteLine($"operation: {SharedValues.OperStatus} !");
-                if (podResponse.Status == "Stop" && (SharedValues.OperStatus == OperationStatus.Running || SharedValues.OperStatus == OperationStatus.WaitingData) &&
+                if (podResponse.Status == "Stop" && (SharedValues.OperStatus == OperationStatus.Running) &&
                     _SelectedJob.CompareType == CompareType.Database && _SelectedJob.JobType != JobType.StandAlone && !_isStopOrPauseAction)
                 {
                     _ = StopProcessAsync();
@@ -771,22 +796,22 @@ namespace DipesLinkDeviceTransfer
                 {
                     case "Stop":
                         _PrinterStatus = PrinterStatus.Stop;
-                        SharedValues.OperStatus = OperationStatus.Stopped;
+                      //  SharedValues.OperStatus = OperationStatus.Stopped;
                        
                         break;
                     case "Processing":
                         _PrinterStatus = PrinterStatus.Processing;
-                        SharedValues.OperStatus = OperationStatus.Processing;
+                      //  SharedValues.OperStatus = OperationStatus.Processing;
                         break;
                     case "Ready":
                     case "Start":
                         _PrinterStatus = PrinterStatus.Ready;
                         _PrinterStatus = PrinterStatus.Start;
-                        SharedValues.OperStatus = OperationStatus.Running;
+                      //  SharedValues.OperStatus = OperationStatus.Running;
                         break;
                     case "WaitingData":
                         _PrinterStatus = PrinterStatus.WaitingData;
-                        SharedValues.OperStatus = OperationStatus.WaitingData;
+                       // SharedValues.OperStatus = OperationStatus.WaitingData;
                         break;
                     case "Printing": 
                         _PrinterStatus = PrinterStatus.Printing; 
@@ -816,6 +841,12 @@ namespace DipesLinkDeviceTransfer
 
 
         #region COMPARE 
+        private readonly object _PrintedResponseLocker = new object();
+        private bool _IsPrintedResponse = false;
+        private readonly object _CheckLocker = new object();
+        private ComparisonResult _CheckedResult = ComparisonResult.Valid;
+        private bool _IsCheckedWait = true;
+
         private async void CompareAsync()
         {
             // await Console.Out.WriteLineAsync("Compare Start");
@@ -929,24 +960,33 @@ namespace DipesLinkDeviceTransfer
                             // DATABASE COMPARE
                             else if (_SelectedJob.CompareType == CompareType.Database)
                             {
-                                bool isNeedToCheckPrintedResponse = true;
+                                bool isNeedToCheckPrintedResponse = true; // mặc định true nếu không phải on production
                                
                                 if (_IsOnProductionMode)  // On Production
                                 {
-                                    // Todo
+                                    lock (_PrintedResponseLocker) // lắng nghe tín hiệu RSPF từ máy in (biến check phản hồi)
+                                    {
+                                        isNeedToCheckPrintedResponse = _IsPrintedResponse;
+                                        _IsPrintedResponse = false;
+                                    }
                                 }
 
-                                if (!isNeedToCheckPrintedResponse || _CodeListPODFormat == null) // Invalid check first
+                                if (!isNeedToCheckPrintedResponse || _CodeListPODFormat == null) // Invalid nếu máy in không phản hồi
                                 {
                                     detectModel.CompareResult = ComparisonResult.Invalided;
                                 }
-                                else
+                                else // nếu máy in có phản hồi thì tiến hành so sánh
                                 {
                                     detectModel.CompareResult = DatabaseCompare(detectModel.Text, ref currentCheckedIndex); // Conclude Compare Result
 
                                     if (_IsOnProductionMode)
                                     {
-                                        // Todo
+                                        lock (_CheckLocker)
+                                        {
+                                            _CheckedResult = detectModel.CompareResult;
+                                            _IsCheckedWait = false;
+                                            Monitor.PulseAll(_CheckLocker); // Mở khoá các lock ở phần cập nhật UI
+                                        }
                                     }
                                 }
                                
@@ -1288,6 +1328,31 @@ namespace DipesLinkDeviceTransfer
                         _QueueBufferPODDataCompared.TryDequeue(out string? podCommand);
                         if (podCommand != null)
                         {
+                            // For On Production Mode
+                            if (_IsOnProductionMode)
+                            {
+                                var checkedResult = ComparisonResult.Null;
+
+                                // Chờ để camera check
+                                lock (_CheckLocker)
+                                {
+                                    while (_IsCheckedWait) Monitor.Wait(_CheckLocker); // Waiting until detect data was verify
+                                    checkedResult = _CheckedResult;
+                                    _IsCheckedWait = true;
+                                }
+
+                                //Cam Check xong Giải phóng khoá để gửi POD
+                                lock (_PrintLocker) // Notify that code is printed
+                                {
+                                    _IsPrintedWait = false;
+                                    _PrintedResult = checkedResult;
+                                    Monitor.PulseAll(_PrintLocker);
+                                }
+
+                                if (checkedResult != ComparisonResult.Valid) continue;
+                            }
+
+
                             // Update printed status
                             if (_CodeListPODFormat.TryGetValue(podCommand, out CompareStatus? compareStatus)) // Get status from done compare list
                             {

@@ -399,6 +399,7 @@
                     Command="{Binding DataContext.TriggerCommandJob, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                     Content="{fa:Icon ArrowPointer,
                                       Foreground=WhiteSmoke}"
+                     IsEnabled="{Binding StatusStopButton}"
                     FontSize="30"
                     Style="{StaticResource ModernButton1}" />
 
