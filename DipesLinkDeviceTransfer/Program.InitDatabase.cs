@@ -23,17 +23,7 @@ namespace DipesLinkDeviceTransfer
         private readonly int _StartIndex = 1;
 
     
-        private async Task SendDatabaseToUI()
-        {
-            try 
-            {
-
-            }
-            catch
-            {
-
-            }
-        }
+  
         private async Task InitDataAsync(JobModel selectedJob)
         {
             if (_SelectedJob == null) return;
@@ -48,8 +38,6 @@ namespace DipesLinkDeviceTransfer
 
                 MemoryTransfer.SendDatabaseToUIFirstTime(_ipcDeviceToUISharedMemory_DB, JobIndex, DataConverter.ToByteArray(_ListPrintedCodeObtainFromFile)); // Send saved DB to UI
                 MemoryTransfer.SendCheckedDatabaseToUIFirstTime(_ipcDeviceToUISharedMemory_DB, JobIndex, DataConverter.ToByteArray(_ListCheckedResultCode)); // Send checked list to UI
-                //MemoryTransfer.SendDatabaseToUIFirstTime(JobIndex,DataConverter.ToByteArray(_ListPrintedCodeObtainFromFile)); // Send saved DB to UI
-                //MemoryTransfer.SendCheckedDatabaseToUIFirstTime(JobIndex, DataConverter.ToByteArray(_ListCheckedResultCode)); // Send checked list to UI
 
 #if DEBUG
                 Console.WriteLine("\nDatabase: {0} raw", _ListPrintedCodeObtainFromFile.Count-1);

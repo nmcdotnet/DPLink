@@ -229,10 +229,7 @@ namespace DipesLink_SDK_Printers
                 if (end != -1)
                 {
                     string command = data.Substring(start + 1, end - start - 1);
-
                     RaiseOnPODReceiveDataEventEvent(new PODDataModel { Text = command });
-                    //Console.WriteLine(command);
-
                     start = data.IndexOf(STX, end + 1);
                 }
                 else

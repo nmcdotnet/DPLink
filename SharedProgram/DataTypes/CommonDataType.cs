@@ -67,10 +67,9 @@ namespace SharedProgram.DataTypes
         }
         public enum OperationStatus
         {
-            Running = 1,
-            Processing = 3,
-            Stopped = 2,
-            WaitingData = 4
+            Running,
+            Processing,
+            Stopped
         }
         public enum PrinterStatus
         {

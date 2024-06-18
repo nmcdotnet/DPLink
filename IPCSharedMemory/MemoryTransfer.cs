@@ -48,7 +48,7 @@ namespace IPCSharedMemory
                 var newCommand = new byte[command.Length + data.Length]; // Create new array
                 Array.Copy(command, 0, newCommand, 0, command.Length); // copy array 1 to new array
                 Array.Copy(data, 0, newCommand, command.Length, data.Length); // copy array 2 to new array start from length array 1
-                Debug.WriteLine("gui den index"+ index);
+              //  Debug.WriteLine("gui den index"+ index);
                 SendCommandToDevice(ipc, newCommand); // send memory map file
             }
             catch (Exception) { }

@@ -835,7 +835,6 @@ namespace DipesLink.ViewModels
                         switch (JobList[stationIndex].OperationStatus)
                         {
                             case OperationStatus.Processing:
-                            case OperationStatus.WaitingData:
                             case OperationStatus.Running:
                                 JobList[stationIndex].StatusStartButton = false;
                                 JobList[stationIndex].StatusStopButton = true;
@@ -845,7 +844,6 @@ namespace DipesLink.ViewModels
                             case OperationStatus.Stopped:
                                 JobList[stationIndex].StatusStartButton = true;
                                 JobList[stationIndex].StatusStopButton = false;
-
                                 isRunningCmp = false;
                                 break;
                         }

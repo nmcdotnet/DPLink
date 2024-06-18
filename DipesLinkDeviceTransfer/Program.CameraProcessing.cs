@@ -21,8 +21,8 @@ namespace DipesLinkDeviceTransfer
 #endif
 
             if (SharedValues.OperStatus != OperationStatus.Running && 
-                SharedValues.OperStatus != OperationStatus.Processing && 
-                SharedValues.OperStatus != OperationStatus.WaitingData && 
+                //SharedValues.OperStatus != OperationStatus.Processing && 
+                //SharedValues.OperStatus != OperationStatus.WaitingData && 
                 _SelectedJob?.JobType != JobType.StandAlone)
             {
                 return; // Only implement when Running
