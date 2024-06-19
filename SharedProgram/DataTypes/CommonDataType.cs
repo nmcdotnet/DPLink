@@ -10,14 +10,15 @@ namespace SharedProgram.DataTypes
     {
         public enum JobType
         {
-           
             AfterProduction,
             OnProduction,
             VerifyAndPrint,
-            StandAlone
+            StandAlone,
+           
         }
         public enum CompareType
         {
+            None,
             CanRead,
             StaticText,
             Database
@@ -25,6 +26,7 @@ namespace SharedProgram.DataTypes
 
         public enum PrinterSeries
         {
+            None,
             RynanSeries,
             Standalone
         }
@@ -37,11 +39,13 @@ namespace SharedProgram.DataTypes
 
         public enum CompleteCondition
         {
+            None,
             TotalPassed,
             TotalChecked
         }
         public enum JobStatus
         {
+            None,
             NewlyCreated,
             Unfinished,
             Accomplished,
@@ -49,8 +53,7 @@ namespace SharedProgram.DataTypes
         }
         public enum ProcessCheckeType
         {
-            TotalChecked = 0,
-            TotalPassed = 1
+            None, TotalChecked = 0, TotalPassed = 1
         }
         public enum RoleOfStation
         {
@@ -64,7 +67,8 @@ namespace SharedProgram.DataTypes
             Invalided,
             Duplicated,
             Null,
-            Missed
+            Missed,
+            None
         }
         public enum OperationStatus
         {

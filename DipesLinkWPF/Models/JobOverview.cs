@@ -248,7 +248,7 @@ namespace DipesLink.Models
             }
         }
 
-        private ComparisonResult _compareResult = ComparisonResult.Null;
+        private ComparisonResult _compareResult = ComparisonResult.None;
         public ComparisonResult CompareResult
         {
             get {

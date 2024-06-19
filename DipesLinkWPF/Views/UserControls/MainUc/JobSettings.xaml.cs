@@ -86,6 +86,7 @@ namespace DipesLink.Views.UserControls.MainUc
         {
             CurrentViewModel<MainViewModel>()?.SelectionChangeSystemSettings(CurrentIndex());
             CurrentViewModel<MainViewModel>().LockUI(CurrentIndex());// Lock UI when running
+            CurrentViewModel<MainViewModel>().LockChoosingStation();
         }
 
         private int CurrentIndex() => ListBoxMenu.SelectedIndex;

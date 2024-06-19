@@ -6,6 +6,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace DipesLink.Views.UserControls.MainUc
 {
@@ -17,11 +19,7 @@ namespace DipesLink.Views.UserControls.MainUc
         public JobCreation()
         {
             InitializeComponent();
-            Loaded += JobCreation_Loaded;
-        }
 
-        private void JobCreation_Loaded(object sender, RoutedEventArgs e)
-        {
         }
 
         public void CallbackCommand(Action<MainViewModel> execute)
@@ -55,7 +53,7 @@ namespace DipesLink.Views.UserControls.MainUc
         }
         private void ListBoxMenu_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var listBox = sender as System.Windows.Controls.ListBox; 
+            var listBox = sender as System.Windows.Controls.ListBox;
             if (listBox != null)
             {
                 int jobIndex = listBox.SelectedIndex;
@@ -64,9 +62,39 @@ namespace DipesLink.Views.UserControls.MainUc
                 
             }
 
-          
-
         }
+        //ClearTextBoxes(myGroupBox);
+
+        //private void ClearTextBoxes(GroupBox groupBox)
+        //{
+
+        //    // Iterate through all child controls within the GroupBox
+        //    foreach (var control in FindVisualChildren<TextBox>(groupBox))
+        //    {
+        //        control.Text = ""; // Set the text of each TextBox to an empty string
+        //    }
+        //}
+
+        //// Helper method to find all visual children of a specific type within a parent control
+        //public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        //{
+        //    if (depObj != null)
+        //    {
+        //        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+        //        {
+        //            DependencyObject child = VisualTreeHelper.GetChild(depObj, i);
+        //            if (child != null && child is T)
+        //            {
+        //                yield return (T)child;
+        //            }
+
+        //            foreach (T childOfChild in FindVisualChildren<T>(child))
+        //            {
+        //                yield return childOfChild;
+        //            }
+        //        }
+        //    }
+        //}
 
         private int CurrentIndex() => ListBoxMenu.SelectedIndex;
         private void ButtonSaveJob_Click(object sender, RoutedEventArgs e)

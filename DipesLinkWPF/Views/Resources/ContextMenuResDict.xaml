@@ -2,6 +2,8 @@
 
     <ContextMenu x:Key="MyContextMenu">
         <MenuItem Header="Account Management" />
+        <MenuItem Header="System Management" />
+        <MenuItem Header="About DP-Link" />
         <MenuItem Header="Logout" />
     </ContextMenu>
 
