@@ -28,7 +28,7 @@
             <converter:CompareTypeToBool x:Key="CompareTypeToBool" />
             <converter:CompleteConditionToBool x:Key="CompleteCondToBool" />
             <converter:RadioButtonToBool x:Key="CoupRadToBol" />
-
+            <converter:FromEnumtoStringConverter x:Key="FromEnumtoStringConverter" />
             <!--  Common Var  -->
             <SolidColorBrush x:Key="ColorMenuItem">White</SolidColorBrush>
             <Thickness x:Key="CommonMenuMargin">20 0 0 0</Thickness>
@@ -434,6 +434,7 @@
                                                 Height="30"
                                                 Click="Button_AddJobClick"
                                                 Content="ADD"
+                                                IsEnabled="{Binding IsButtonEnable}"
                                                 Style="{StaticResource ModernButton2}" />
                                             <Button
                                                 x:Name="ButtonDelJob"
@@ -442,6 +443,7 @@
                                                 Margin="0,10,0,0"
                                                 Click="ButtonDelJob_Click"
                                                 Content="DELETE"
+                                                IsEnabled="{Binding IsButtonEnable}"
                                                 Style="{StaticResource ModernButtonDel}" />
                                         </StackPanel>
                                         <StackPanel Grid.Column="2">
@@ -465,6 +467,7 @@
 
                                 <Grid Grid.Row="1">
                                     <GroupBox
+                                        x:Name="myGroupBox"
                                         Height="280"
                                         Margin="2"
                                         VerticalAlignment="Top"
@@ -513,7 +516,7 @@
                                                         FontWeight="Normal"
                                                         IsReadOnly="True"
                                                         Style="{StaticResource TextBoxStyle3}"
-                                                        Text="{Binding CompleteCondition}" />
+                                                        Text="{Binding CompleteCondition, Converter={StaticResource FromEnumtoStringConverter}, ConverterParameter=0}" />
                                                 </StackPanel>
 
                                                 <StackPanel
@@ -532,7 +535,7 @@
                                                         FontWeight="Normal"
                                                         IsReadOnly="True"
                                                         Style="{StaticResource TextBoxStyle3}"
-                                                        Text="{Binding PrinterSeries}" />
+                                                        Text="{Binding PrinterSeries, Converter={StaticResource FromEnumtoStringConverter}, ConverterParameter=0}" />
                                                     <TextBlock
                                                         Width="150"
                                                         Margin="30,0,0,0"
@@ -546,7 +549,7 @@
                                                         FontWeight="Normal"
                                                         IsReadOnly="True"
                                                         Style="{StaticResource TextBoxStyle3}"
-                                                        Text="{Binding OutputCamera}" />
+                                                        Text="{Binding OutputCamera, Converter={StaticResource FromEnumtoStringConverter}, ConverterParameter=0}" />
                                                 </StackPanel>
 
                                                 <StackPanel
@@ -558,6 +561,7 @@
                                                         VerticalAlignment="Center"
                                                         Text="Job Type" />
                                                     <TextBox
+                                                        x:Name="test"
                                                         Width="200"
                                                         Height="30"
                                                         Margin="10,0,0,0"
@@ -565,7 +569,7 @@
                                                         FontWeight="Normal"
                                                         IsReadOnly="True"
                                                         Style="{StaticResource TextBoxStyle3}"
-                                                        Text="{Binding JobType}" />
+                                                        Text="{Binding JobType, Converter={StaticResource FromEnumtoStringConverter}, ConverterParameter=0}" />
                                                     <TextBlock
                                                         Width="150"
                                                         Margin="30,0,0,0"
@@ -579,7 +583,7 @@
                                                         FontWeight="Normal"
                                                         IsReadOnly="True"
                                                         Style="{StaticResource TextBoxStyle3}"
-                                                        Text="{Binding IsImageExport}" />
+                                                        Text="{Binding IsImageExport, Converter={StaticResource FromEnumtoStringConverter}, ConverterParameter=0}" />
                                                 </StackPanel>
 
                                                 <StackPanel
@@ -589,7 +593,7 @@
                                                     <TextBlock
                                                         Width="150"
                                                         VerticalAlignment="Center"
-                                                        Text="Comapre Type" />
+                                                        Text="Compare Type" />
                                                     <TextBox
                                                         Width="200"
                                                         Height="30"
@@ -598,7 +602,7 @@
                                                         FontWeight="Normal"
                                                         IsReadOnly="True"
                                                         Style="{StaticResource TextBoxStyle3}"
-                                                        Text="{Binding CompareType}" />
+                                                        Text="{Binding CompareType, Converter={StaticResource FromEnumtoStringConverter}, ConverterParameter=0}" />
                                                     <TextBlock
                                                         Width="150"
                                                         Margin="30,0,0,0"
@@ -646,7 +650,7 @@
                                                         FontWeight="Normal"
                                                         IsReadOnly="True"
                                                         Style="{StaticResource TextBoxStyle3}"
-                                                        Text="{Binding TotalRecDb}" />
+                                                        Text="{Binding TotalRecDb, Converter={StaticResource FromEnumtoStringConverter}, ConverterParameter=0}" />
                                                 </StackPanel>
 
                                                 <StackPanel
@@ -679,7 +683,7 @@
                                                         FontWeight="Normal"
                                                         IsReadOnly="True"
                                                         Style="{StaticResource TextBoxStyle3}"
-                                                        Text="{Binding JobStatus}" />
+                                                        Text="{Binding JobStatus, Converter={StaticResource FromEnumtoStringConverter}, ConverterParameter=0}" />
                                                 </StackPanel>
 
                                                 <StackPanel

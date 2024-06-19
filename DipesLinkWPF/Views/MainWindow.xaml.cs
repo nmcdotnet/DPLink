@@ -210,6 +210,7 @@ namespace DipesLink.Views
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
+            // thinh 2
             var menuItem = sender as MenuItem;
             if (menuItem != null)
             {
@@ -218,6 +219,14 @@ namespace DipesLink.Views
                     case "Account Management":
                         UsersManagement um = new();
                         um.Show();
+                        break;
+                    case "About DP-Link":
+                        var aboutPopup = new AboutPopup();
+                        aboutPopup.ShowDialog();
+                        break;
+                    case "System Management":
+                        var systemManangement = new SystemManangement();
+                        systemManangement.ShowDialog();
                         break;
                     case "Logout": //Restart
                         var res = CusMsgBox.Show("Do you want to logout ?", "Logout", Enums.ViewEnums.ButtonStyleMessageBox.OKCancel, Enums.ViewEnums.ImageStyleMessageBox.Warning);

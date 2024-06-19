@@ -21,7 +21,7 @@
                 <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/TextBoxResDict.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/ButtonResDict.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
+            <converter:FromEnumtoStringConverter x:Key="FromEnumtoStringConverter" />
             <converter:AddOne x:Key="AddOneConverter" />
             <Color x:Key="DataTagColorGraTop">AliceBlue</Color>
             <Color x:Key="DataTagColorGraMid">WhiteSmoke</Color>
@@ -109,7 +109,7 @@
                                 FontSize="16"
                                 IsReadOnly="True"
                                 Style="{StaticResource TextBoxStyle1}"
-                                Text="{Binding Name}" />
+                                Text="{Binding Name, Converter={StaticResource FromEnumtoStringConverter}, ConverterParameter=0}" />
                         </Grid>
 
                         <!--  Compare Type  -->
@@ -138,7 +138,7 @@
                                     FontSize="16"
                                     IsReadOnly="True"
                                     Style="{StaticResource TextBoxStyle1}"
-                                    Text="{Binding JobType}" />
+                                    Text="{Binding JobType, Converter={StaticResource FromEnumtoStringConverter}, ConverterParameter=0}" />
                             </Grid>
 
                             <!--  Process Type  -->
@@ -162,7 +162,7 @@
                                     FontSize="16"
                                     IsReadOnly="True"
                                     Style="{StaticResource TextBoxStyle1}"
-                                    Text="{Binding CompareType}" />
+                                    Text="{Binding CompareType, Converter={StaticResource FromEnumtoStringConverter}, ConverterParameter=0}" />
                             </Grid>
                         </Grid>
 
@@ -189,7 +189,7 @@
                                 FontSize="16"
                                 IsReadOnly="True"
                                 Style="{StaticResource TextBoxStyle1}"
-                                Text="{Binding TotalRecDb}" />
+                                Text="{Binding TotalRecDb, Converter={StaticResource FromEnumtoStringConverter}, ConverterParameter=0}" />
                         </Grid>
 
                         <!--  Database compare format  -->
@@ -213,7 +213,7 @@
                                 FontSize="16"
                                 IsReadOnly="True"
                                 Style="{StaticResource TextBoxStyle1}"
-                                Text="{Binding DataCompareFormat}" />
+                                Text="{Binding DataCompareFormat, Converter={StaticResource FromEnumtoStringConverter}, ConverterParameter=0}" />
                         </Grid>
 
                         <!--  Static Text  -->
@@ -251,7 +251,7 @@
                                 FontSize="16"
                                 IsReadOnly="True"
                                 Style="{StaticResource TextBoxStyle1}"
-                                Text="{Binding CurrentCodeData}" />
+                                Text="{Binding CurrentCodeData, Converter={StaticResource FromEnumtoStringConverter}, ConverterParameter=0}" />
                         </Grid>
 
 
@@ -260,6 +260,10 @@
                             Grid.Row="5"
                             Background="Transparent"
                             ShowGridLines="False">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition Width="2*" />
+                            </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition MaxHeight="20" />
                                 <RowDefinition MaxHeight="40" />
@@ -278,18 +282,20 @@
                             Style="{StaticResource TextBoxStyle1}"
                             Text="{Binding DatabasePath}" />-->
                             <TextBlock
+                                Grid.ColumnSpan="2"
                                 Margin="10,0,10,0"
                                 VerticalAlignment="Center"
                                 FontSize="16"
                                 Text="Time (ms)" />
                             <TextBox
                                 Grid.Row="1"
+                                Grid.ColumnSpan="2"
                                 Height="30"
-                                Margin="10,0,10,0"
+                                Margin="10,5,10,6"
                                 FontSize="16"
                                 IsReadOnly="True"
                                 Style="{StaticResource TextBoxStyle1}"
-                                Text="{Binding ProcessingTime}" />
+                                Text="{Binding ProcessingTime, Converter={StaticResource FromEnumtoStringConverter}, ConverterParameter=0}" />
                         </Grid>
 
                         <!--  Database compare format  -->
@@ -328,7 +334,7 @@
                                 Foreground="{Binding CompareResultColor}"
                                 IsReadOnly="True"
                                 Style="{StaticResource TextBoxStyle1}"
-                                Text="{Binding CompareResult, TargetNullValue='', FallbackValue=''}" />
+                                Text="{Binding CompareResult, Converter={StaticResource FromEnumtoStringConverter}, ConverterParameter=0}" />
                         </Grid>
 
                     </Grid>

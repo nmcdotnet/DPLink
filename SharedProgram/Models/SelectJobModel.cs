@@ -21,6 +21,13 @@ namespace SharedProgram.Models
             set { _JobFileList = value; OnPropertyChanged(); }
         }
 
+        private bool _isButtonEnable;
+        public bool IsButtonEnable
+        {
+            get { return _isButtonEnable; }
+            set { _isButtonEnable = value; OnPropertyChanged(); }
+        }
+
 
         private string? _SelectedJob;
 
