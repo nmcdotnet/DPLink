@@ -6,10 +6,9 @@
     xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
     xmlns:local="clr-namespace:DipesLink.Views.SubWindows"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="VerifyAndPrintPODFormat"
     Width="1025"
     Height="600"
-    Icon="pack://application:,,,/DipesLink;component/Images/statistic_1.png"
+    Icon="pack://application:,,,/DipesLink;component/Images/icon.ico"
     ResizeMode="NoResize"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
@@ -26,12 +25,13 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="420" />
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="350" />
             <RowDefinition Height="*" />
 
         </Grid.RowDefinitions>
-
-        <Grid>
+        <TextBlock HorizontalAlignment="Center" FontWeight="Bold" Foreground="Gray" FontSize="20">Verify And Print POD Format</TextBlock>
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="100" />
@@ -160,7 +160,7 @@
             </StackPanel>
         </Grid>
 
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="92*" />
                 <ColumnDefinition Width="113*" />
@@ -174,7 +174,7 @@
                 <TextBox
                     x:Name="txtPrintFields"
                     Width="992"
-                    Height="89"
+                    Height="89" FontSize="16"
                     BorderBrush="#FF688CAF"
                     BorderThickness="1"
                     IsEnabled="False" />
