@@ -10,11 +10,12 @@ namespace SharedProgram.DataTypes
     {
         public enum JobType
         {
+            None,
             AfterProduction,
             OnProduction,
             VerifyAndPrint,
             StandAlone,
-            None,
+            
         }
         public enum CompareType
         {
