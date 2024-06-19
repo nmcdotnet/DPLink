@@ -66,6 +66,7 @@ namespace DipesLink.ViewModels
                 break;
         }
             EnableButtons(ConnectParamsList[stationIndex].LockUISetting);
+            LoadJobListAction(stationIndex);
         }
 
         private SelectJobModel _SelectJob;

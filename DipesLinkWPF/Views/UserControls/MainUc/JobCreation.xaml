@@ -380,13 +380,16 @@
 
         <Border Grid.Column="1">
             <Grid>
-                <TabControl Margin="0 3 0 0" x:Name="TabControlJobSettings" SelectionChanged="TabControlJobSettings_SelectionChanged">
+                <TabControl
+                    x:Name="TabControlJobSettings"
+                    Margin="0,3,0,0"
+                    SelectionChanged="TabControlJobSettings_SelectionChanged">
 
                     <!--  SELECT JOB  -->
 
                     <TabItem x:Name="TabItemSelectJob" DataContext="{Binding SelectJob}">
                         <TabItem.Header>
-                            <TextBlock Text="Select Job"/>
+                            <TextBlock Text="Select Job" />
                         </TabItem.Header>
                         <Grid Margin="10,10,0,0" Background="WhiteSmoke">
                             <Grid.Resources>
@@ -412,7 +415,7 @@
                                     </Style>
                                 </Grid.Resources>
 
-                                <GroupBox Margin="2">
+                                <GroupBox Margin="2" IsEnabled="{Binding IsButtonEnable}">
                                     <GroupBox.Header>
                                         <TextBlock
                                             FontSize="16"
@@ -585,7 +588,8 @@
                                                         Width="150"
                                                         VerticalAlignment="Center"
                                                         Text="Job Type" />
-                                                    <TextBox Width="200"
+                                                    <TextBox
+                                                        Width="200"
                                                         Height="30"
                                                         Margin="10,0,0,0"
                                                         FontSize="16"
