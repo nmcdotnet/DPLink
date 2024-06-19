@@ -5,9 +5,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:DipesLink.Views.SubWindows"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-   Icon="pack://application:,,,/DipesLink;component/Images/statistic_1.png"
     Width="1025"
     Height="600"
+    Icon="pack://application:,,,/DipesLink;component/Images/statistic_1.png"
     ResizeMode="NoResize"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
@@ -19,6 +19,7 @@
                 <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/TextBoxResDict.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/ButtonResDict.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/ComboBoxResDict.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/LabelResDict.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -33,7 +34,9 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             FontSize="25"
-            Text="Jobs Log" />
+            FontWeight="Bold"
+            Foreground="Gray"
+            Text="CHECKED LOG" />
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*" />
@@ -54,14 +57,14 @@
                         <Setter Property="FontSize" Value="18" />
                         <Setter Property="FontFamily" Value="Calibri" />
                         <Setter Property="Margin" Value="10,5,0,1" />
-                        <Setter Property="Foreground" Value="#03071e" />
+                        <Setter Property="Foreground" Value="Black" />
 
                     </Style>
                     <Style x:Key="TextBoxValueStyle" TargetType="TextBlock">
                         <Setter Property="FontSize" Value="20" />
                         <Setter Property="Margin" Value="20,0,0,0" />
                         <Setter Property="FontWeight" Value="Bold" />
-                        <Setter Property="Foreground" Value="#03071e" />
+                        <Setter Property="Foreground" Value="DimGray" />
                     </Style>
                 </Grid.Resources>
                 <!--  Total code  -->
@@ -78,7 +81,19 @@
                         </LinearGradientBrush>
                     </Border.Background>
                     <StackPanel>
-                        <TextBlock Style="{StaticResource TextBoxLabelStyle}" Text="Total code of the job" />
+
+                        <!--<TextBlock Style="{StaticResource TextBoxLabelStyle}" Text="TOTAL" />-->
+                        <StackPanel
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Label
+                          
+                                Background="#00ABE6"
+                                Content="Total"
+                                FontSize="18"
+                                Style="{StaticResource ArrowLabelStyle}" />
+                        </StackPanel>
                         <TextBlock x:Name="TextBlockTotal" Style="{StaticResource TextBoxValueStyle}">
                             2000,000
                         </TextBlock>
@@ -102,7 +117,18 @@
                         </LinearGradientBrush>
                     </Border.Background>
                     <StackPanel>
-                        <TextBlock Style="{StaticResource TextBoxLabelStyle}" Text="Number of printed code" />
+                        <!--<TextBlock Style="{StaticResource TextBoxLabelStyle}" Text="PRINTED" />-->
+                        <StackPanel
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Label
+                               
+                                Background="#17A66E"
+                                Content="Printed "
+                                FontSize="18"
+                                Style="{StaticResource ArrowLabelStyle}" />
+                        </StackPanel>
                         <TextBlock x:Name="TextBlockPrinted" Style="{StaticResource TextBoxValueStyle}">2000,000</TextBlock>
                     </StackPanel>
                 </Border>
@@ -122,7 +148,18 @@
                         </LinearGradientBrush>
                     </Border.Background>
                     <StackPanel>
-                        <TextBlock Style="{StaticResource TextBoxLabelStyle}" Text="Number of verified code" />
+                        <!--<TextBlock Style="{StaticResource TextBoxLabelStyle}" Text="VERIFIED" />-->
+                        <StackPanel
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Label
+                                Width="110"
+                                Background="#0461A9"
+                                Content="Verified"
+                                FontSize="18"
+                                Style="{StaticResource ArrowLabelStyle}" />
+                        </StackPanel>
                         <TextBlock x:Name="TextBlockVerified" Style="{StaticResource TextBoxValueStyle}">2000,000</TextBlock>
                     </StackPanel>
                 </Border>
@@ -142,7 +179,18 @@
                         </LinearGradientBrush>
                     </Border.Background>
                     <StackPanel>
-                        <TextBlock Style="{StaticResource TextBoxLabelStyle}" Text="Number of valid code" />
+                        <!--<TextBlock Style="{StaticResource TextBoxLabelStyle}" Text="VALID" />-->
+                        <StackPanel
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Label
+                            
+                                Background="Green"
+                                Content="Valid"
+                                FontSize="18"
+                                Style="{StaticResource ArrowLabelStyle}" />
+                        </StackPanel>
                         <TextBlock x:Name="TextBlockValid" Style="{StaticResource TextBoxValueStyle}">2000,000</TextBlock>
                     </StackPanel>
                 </Border>
@@ -162,7 +210,18 @@
                         </LinearGradientBrush>
                     </Border.Background>
                     <StackPanel>
-                        <TextBlock Style="{StaticResource TextBoxLabelStyle}" Text="Number of failed code" />
+                        <!--<TextBlock Style="{StaticResource TextBoxLabelStyle}" Text="FAILED" />-->
+                        <StackPanel
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Label
+                          
+                                Background="Red"
+                                Content="Failed"
+                                FontSize="18"
+                                Style="{StaticResource ArrowLabelStyle}" />
+                        </StackPanel>
                         <TextBlock x:Name="TextBlockFailed" Style="{StaticResource TextBoxValueStyle}">2000,000</TextBlock>
                     </StackPanel>
                 </Border>
@@ -172,13 +231,14 @@
                     Margin="10,20,0,0"
                     HorizontalAlignment="Left"
                     FontSize="16"
+                    Foreground="Black"
                     Text="Page # of # (# items)" />
             </Grid>
 
             <!--  Content  -->
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="150" />
+                    <RowDefinition Height="100" />
                     <RowDefinition />
                     <RowDefinition Height="50" />
                 </Grid.RowDefinitions>
@@ -203,6 +263,7 @@
                             <TextBlock
                                 Margin="10,0,0,0"
                                 FontSize="20"
+                                Foreground="Black"
                                 Text="Filter" />
                             <ComboBox
                                 x:Name="ComboBoxFilter"
@@ -381,6 +442,7 @@
                         <TextBlock
                             VerticalAlignment="Center"
                             FontSize="16"
+                            Foreground="Black"
                             Text="Goto Page" />
                         <!--<ComboBox
                         Width="70"

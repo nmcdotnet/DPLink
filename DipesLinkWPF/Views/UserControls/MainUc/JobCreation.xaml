@@ -8,7 +8,7 @@
     xmlns:local="clr-namespace:DipesLink.Views.UserControls.MainUc"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
-    d:Background="red"
+    d:Background="WhiteSmoke"
     d:DesignHeight="740"
     d:DesignWidth="1165"
     FontSize="14"
@@ -21,6 +21,8 @@
                 <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/TextBoxResDict.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/ButtonResDict.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/ListViewResDict.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/TabControlResDict.xaml" />
+
             </ResourceDictionary.MergedDictionaries>
             <!--  Converter  -->
             <converter:PrinterSeriesToBool x:Key="PrinterToBool" />
@@ -159,14 +161,41 @@
 
             <!--  TabControl Style  -->
             <!--  Định nghĩa Style cho TabControl  -->
-            <Style TargetType="TabControl">
+            <!--<Style TargetType="TabControl">
                 <Setter Property="Padding" Value="5" />
                 <Setter Property="Background" Value="WhiteSmoke" />
+            </Style>-->
+            <Style TargetType="TabControl">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TabControl">
+                            <Grid KeyboardNavigation.TabNavigation="Local">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <TabPanel
+                                    Grid.Row="0"
+                                    Panel.ZIndex="1"
+                                    Background="Transparent"
+                                    IsItemsHost="True"
+                                    KeyboardNavigation.TabIndex="1" />
+                                <Border
+                                    Grid.Row="1"
+                                    Background="Transparent"
+                                    BorderBrush="Transparent"
+                                    BorderThickness="0">
+                                    <ContentPresenter ContentSource="SelectedContent" />
+                                </Border>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
 
             <!--  Định nghĩa Style cho TabItem  -->
             <Style TargetType="TabItem">
-                <Setter Property="Foreground" Value="Gray" />
+
                 <Setter Property="FontFamily" Value="Segoe UI" />
                 <Setter Property="FontSize" Value="16" />
                 <Setter Property="Padding" Value="10,4" />
@@ -178,8 +207,8 @@
                                 x:Name="TabBorder"
                                 Height="30"
                                 Padding="0,0,0,3"
-                                Background="Transparent"
-                                BorderBrush="#00ABE6"
+                                Background="LightBlue"
+                                BorderBrush="LightBlue"
                                 BorderThickness="1,1,1,0"
                                 CornerRadius="5,5,0,0">
                                 <ContentPresenter
@@ -191,16 +220,14 @@
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsSelected" Value="True">
-                                    <Setter TargetName="TabBorder" Property="Background" Value="#9EDFF6" />
-                                    <Setter Property="Foreground" Value="Black" />
+                                    <Setter TargetName="TabBorder" Property="Background" Value="#00ABE6" />
+
                                 </Trigger>
                                 <Trigger Property="IsSelected" Value="False">
-                                    <Setter TargetName="TabBorder" Property="Background" Value="LightGray" />
-                                    <Setter Property="Foreground" Value="Black" />
+                                    <Setter TargetName="TabBorder" Property="Background" Value="#C1DAE8" />
+                                    <Setter Property="Foreground" Value="#808080" />
                                 </Trigger>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="TabBorder" Property="Background" Value="#9EDFF6" />
-                                </Trigger>
+
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
@@ -209,9 +236,7 @@
                     <Trigger Property="IsSelected" Value="True">
                         <Setter Property="FontWeight" Value="SemiBold" />
                     </Trigger>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Foreground" Value="Black" />
-                    </Trigger>
+
                 </Style.Triggers>
             </Style>
 
@@ -355,14 +380,14 @@
 
         <Border Grid.Column="1">
             <Grid>
-                <TabControl x:Name="TabControlJobSettings" SelectionChanged="TabControlJobSettings_SelectionChanged">
+                <TabControl Margin="0 3 0 0" x:Name="TabControlJobSettings" SelectionChanged="TabControlJobSettings_SelectionChanged">
 
                     <!--  SELECT JOB  -->
 
-                    <TabItem
-                        x:Name="TabItemSelectJob"
-                        DataContext="{Binding SelectJob}"
-                        Header="Select Job">
+                    <TabItem x:Name="TabItemSelectJob" DataContext="{Binding SelectJob}">
+                        <TabItem.Header>
+                            <TextBlock Text="Select Job"/>
+                        </TabItem.Header>
                         <Grid Margin="10,10,0,0" Background="WhiteSmoke">
                             <Grid.Resources>
                                 <Style TargetType="TextBlock">
@@ -560,8 +585,6 @@
                                                         Width="150"
                                                         VerticalAlignment="Center"
                                                         Text="Job Type" />
-                                                    <TextBox
-                                                        x:Name="test"
                                                         Width="200"
                                                         Height="30"
                                                         Margin="10,0,0,0"

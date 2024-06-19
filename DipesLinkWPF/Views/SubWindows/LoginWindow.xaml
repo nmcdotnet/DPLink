@@ -52,7 +52,7 @@
                                         <ColumnDefinition />
                                     </Grid.ColumnDefinitions>
                                     <Border Width="20" Height="20">
-                                        <fa:IconImage Foreground="Black" Icon="User" />
+                                        <fa:IconImage Foreground="#00ABE6" Icon="User" />
                                     </Border>
                                     <ScrollViewer
                                         x:Name="PART_ContentHost"
@@ -248,7 +248,7 @@
                                         <ColumnDefinition />
                                     </Grid.ColumnDefinitions>
                                     <Border Width="20" Height="20">
-                                        <fa:IconImage Foreground="Black" Icon="Lock" />
+                                        <fa:IconImage Foreground="#00ABE6" Icon="Lock" />
                                     </Border>
                                     <ScrollViewer
                                         x:Name="PART_ContentHost"
@@ -328,7 +328,7 @@
             <TextBlock
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                FontSize="25"
+                FontSize="25" Foreground="#00ABE6"
                 FontWeight="Bold"
                 Text="USER LOGIN" />
             <Grid Grid.Row="1">
@@ -371,7 +371,7 @@
                     Margin="0,15,0,0"
                     Click="ButtonLogin_Click"
                     Content="LOGIN"
-                    Style="{StaticResource ModernButton}" />
+                    Style="{StaticResource ModernButton1}" />
             </Grid>
             <Button
                 Grid.Row="2"

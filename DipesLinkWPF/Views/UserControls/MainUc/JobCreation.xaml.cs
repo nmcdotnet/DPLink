@@ -19,6 +19,7 @@ namespace DipesLink.Views.UserControls.MainUc
         public JobCreation()
         {
             InitializeComponent();
+
         }
 
         public void CallbackCommand(Action<MainViewModel> execute)
@@ -60,8 +61,7 @@ namespace DipesLink.Views.UserControls.MainUc
                 CallbackCommand(vm => vm.LoadJobList(jobIndex)); // Update Job on UI
                 
             }
-            // thinh
-            
+
         }
         //ClearTextBoxes(myGroupBox);
 
