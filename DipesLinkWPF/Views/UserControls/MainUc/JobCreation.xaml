@@ -585,7 +585,7 @@
                                                         Width="150"
                                                         VerticalAlignment="Center"
                                                         Text="Job Type" />
-                                                        Width="200"
+                                                    <TextBox Width="200"
                                                         Height="30"
                                                         Margin="10,0,0,0"
                                                         FontSize="16"

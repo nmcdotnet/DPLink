@@ -14,7 +14,7 @@ namespace SharedProgram.DataTypes
             OnProduction,
             VerifyAndPrint,
             StandAlone,
-           
+            None,
         }
         public enum CompareType
         {
