@@ -236,6 +236,7 @@ namespace DipesLink.Views.UserControls.MainUc
                     switch (integerUpDown.Name)
                     {
                         case "NumDelaySensor":
+                            ViewModelSharedValues.Settings.SystemParamsList[CurrentIndex()].DelaySensor = int.Parse(integerUpDown.ContentText);
                             vm.ConnectParamsList[CurrentIndex()].DelaySensor = int.Parse(integerUpDown.ContentText);
                             break;
                         case "NumDisSensor":
@@ -381,6 +382,17 @@ namespace DipesLink.Views.UserControls.MainUc
             vm.CheckStationChange();
             cbb.SelectedIndex = vm.StationSelectedIndex;
             //vm.StationSelectedIndex = cbb.SelectedIndex;
+        }
+
+        private void NumDelaySensor_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+
+        }
+
+        private void TextBox_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            // Check if the input is a number, if not, handle the event
+            e.Handled = !int.TryParse(e.Text, out _);
         }
     }
 }

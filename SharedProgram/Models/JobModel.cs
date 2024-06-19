@@ -112,7 +112,6 @@ namespace SharedProgram.Models
             set { _JobStatus = value; OnPropertyChanged(); }
         }
 
-
         private SelectJobModel? _SelectJob;
         public SelectJobModel? SelectJob
         {

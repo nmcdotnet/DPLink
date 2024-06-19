@@ -13,11 +13,21 @@ namespace SharedProgram.Models
         public string PrinterPort { get; set; } = "0";
         public string ControllerIP { get; set; } = "127.0.0.1";
         public string ControllerPort { get; set; } = "0";
+
         public int DelaySensor { get; set; } = 0;
         public int DisableSensor { get; set; } = 0;
         public int PulseEncoder { get; set; } = 0;
         public double EncoderDiameter { get; set; } = 0.00;
+
         public bool EnController { get; set; } = false;
+
+        //private int _delaySensor;
+
+        //public int DelaySensor
+        //{
+        //    get { return _delaySensor; }
+        //    set { _delaySensor = value; OnPropertyChanged(); }
+        //}
 
 
 
