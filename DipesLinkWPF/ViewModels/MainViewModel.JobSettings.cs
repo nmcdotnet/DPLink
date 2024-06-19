@@ -24,7 +24,7 @@ namespace DipesLink.ViewModels
     public partial class MainViewModel
     {
         private JobModel _jobModel;
-        private JobModel _createNewJob = new();
+        private JobModel _createNewJob = new() { PrinterSeries = PrinterSeries.Standalone};
         public JobModel CreateNewJob
         {
             get { return _createNewJob; }

@@ -371,7 +371,7 @@
                     Margin="0,15,0,0"
                     Click="ButtonLogin_Click"
                     Content="LOGIN"
-                    Style="{StaticResource ModernButton1}" />
+                    Style="{StaticResource ModernButton2}" />
             </Grid>
             <Button
                 Grid.Row="2"

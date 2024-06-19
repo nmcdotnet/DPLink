@@ -161,42 +161,43 @@ namespace DipesLink.Views.UserControls.MainUc
                 if (vm == null) return;
                 if (vm.ConnectParamsList == null) return;
                 textBox.Text ??= string.Empty;
+                var index = CurrentIndex();
                 switch (textBox.Name)
                 {
                     case "TextBoxPrinterIP":
-                        vm.ConnectParamsList[CurrentIndex()].PrinterIP = textBox.Text;
+                        vm.ConnectParamsList[index].PrinterIP = textBox.Text;
                         break;
                     case "TextBoxPrinterPort":
-                        vm.ConnectParamsList[CurrentIndex()].PrinterPort = textBox.Text;
+                        vm.ConnectParamsList[index].PrinterPort = textBox.Text;
                         break;
                     case "TextBoxCamIP":
-                        vm.ConnectParamsList[CurrentIndex()].CameraIP = textBox.Text;
+                        vm.ConnectParamsList[index].CameraIP = textBox.Text;
                         break;
                     case "TextBoxControllerIP":
-                        vm.ConnectParamsList[CurrentIndex()].ControllerIP = textBox.Text;
+                        vm.ConnectParamsList[index].ControllerIP = textBox.Text;
                         break;
                     case "TextBoxControllerPort":
-                        vm.ConnectParamsList[CurrentIndex()].ControllerPort = textBox.Text;
+                        vm.ConnectParamsList[index].ControllerPort = textBox.Text;
                         break;
                     case "NumDelaySensor":
-                        vm.ConnectParamsList[CurrentIndex()].DelaySensor = int.Parse(textBox.Text);
+                        vm.ConnectParamsList[index].DelaySensor = int.Parse(textBox.Text);
                         break;
                     case "NumDisSensor":
-                        vm.ConnectParamsList[CurrentIndex()].DisableSensor = int.Parse(textBox.Text);
+                        vm.ConnectParamsList[index].DisableSensor = int.Parse(textBox.Text);
                         break;
                     case "NumPulseEncoder":
-                        vm.ConnectParamsList[CurrentIndex()].PulseEncoder = int.Parse(textBox.Text);
+                        vm.ConnectParamsList[index].PulseEncoder = int.Parse(textBox.Text);
                         break;
                     case "NumEncoderDia":
-                        vm.ConnectParamsList[CurrentIndex()].EncoderDiameter = double.Parse(textBox.Text);
+                        vm.ConnectParamsList[index].EncoderDiameter = double.Parse(textBox.Text);
                         break;
                     case "TextBoxErrorField":
-                        vm.ConnectParamsList[CurrentIndex()].FailedDataSentToPrinter = textBox.Text;
+                        vm.ConnectParamsList[index].FailedDataSentToPrinter = textBox.Text;
                         break;
                     default:
                         break;
                 }
-                vm.AutoSaveConnectionSetting(CurrentIndex());
+                vm.AutoSaveConnectionSetting(index);
 
             }), DispatcherPriority.Background);
         }
