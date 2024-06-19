@@ -1335,7 +1335,7 @@ namespace DipesLinkDeviceTransfer
                             // For On Production Mode
                             if (_IsOnProductionMode)
                             {
-                                var checkedResult = ComparisonResult.Null;
+                                var checkedResult = ComparisonResult.None;
 
                                 // Chờ để camera check
                                 lock (_CheckLocker)

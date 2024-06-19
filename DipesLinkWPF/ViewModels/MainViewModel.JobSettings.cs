@@ -12,6 +12,8 @@ using static SharedProgram.DataTypes.CommonDataType;
 using static DipesLink.Views.Enums.ViewEnums;
 using DipesLink.Views.Extension;
 using System;
+using System.Windows.Media;
+using System.Windows.Controls;
 
 namespace DipesLink.ViewModels
 {
@@ -63,6 +65,7 @@ namespace DipesLink.ViewModels
             default:
                 break;
         }
+            EnableButtons(ConnectParamsList[stationIndex].LockUISetting);
         }
 
         private SelectJobModel _SelectJob;
@@ -289,14 +292,32 @@ namespace DipesLink.ViewModels
             ThreadLoadJobList.Start(jobIndex);
         }
 
-        private void LoadJobListAction(object? obj)
+        private void EnableButtons(bool isEnable)
         {
+            // thinh
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
+                SelectJob = new();
+                SelectJob.IsButtonEnable = new();
+                SelectJob.IsButtonEnable = isEnable;
+            }));
+
+            //ConnectParamsList[stationIndex].LockUISetting
+        }
+        public static int numberOfSelectedJobList;
+        private void LoadJobListAction(object? obj)
+        {
+            // thinh 
+            Application.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                numberOfSelectedJobList = 0;
                 int index = (int)obj;
                 SelectJob = new();
                 ObservableCollection<string> templateJobList = GetJobNameList(index);
                 SelectJob.JobFileList = new();
+                // thinh
+                SelectJob.IsButtonEnable = new();
+                SelectJob.IsButtonEnable = ConnectParamsList[index].LockUISetting;
                 foreach (string templateJobName in templateJobList)
                 {
                     JobModel? jobModel = SharedFunctions.GetJob(templateJobName, index);
@@ -311,8 +332,18 @@ namespace DipesLink.ViewModels
                 {
                     SelectJob.SelectedJobFileList.Add(item);
                 }
+                // thinh
+                numberOfSelectedJobList = SelectJob.SelectedJobFileList.Count;
+                //if (SelectJob.SelectedJobFileList.Count <= 0)
+                //{
+                //    //SelectJob.JobType = ;
+                    
+                //}
+
             }));
         }
+        
+
 
         internal void DeleteJobAction(int jobIndex)
         {
@@ -386,6 +417,8 @@ namespace DipesLink.ViewModels
             }
 
             if (jobModel == null) return;
+            // thinh
+            
             SelectJob.Name = jobModel.Name;
             SelectJob.PrinterSeries = jobModel.PrinterSeries;
             SelectJob.JobType = jobModel.JobType;

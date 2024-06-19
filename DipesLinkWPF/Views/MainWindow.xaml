@@ -180,7 +180,7 @@
                     </StackPanel>
                 </ListBoxItem>
 
-                <ListBoxItem Height="{StaticResource MenuItemHeight}" PreviewMouseDown="ListBoxItem_PreviewMouseDown_1">
+                <!--<ListBoxItem Height="{StaticResource MenuItemHeight}" PreviewMouseDown="ListBoxItem_PreviewMouseDown_1">
                     <StackPanel
                         Width="{StaticResource MenuItemSize}"
                         Height="{StaticResource MenuItemSize}"
@@ -194,7 +194,7 @@
                             Foreground="{StaticResource ColorMenuItem}"
                             Icon="Info" />
                     </StackPanel>
-                </ListBoxItem>
+                </ListBoxItem>-->
             </ListBox>
 
             <Button
@@ -376,28 +376,32 @@
                             <TextBlock
                                 Width="70"
                                 VerticalAlignment="Center"
-                                FontSize="14"
-                                Foreground="LightSlateGray"
+                                FontSize="13"
+                                FontWeight="Bold"
+                                Foreground="Gray"
                                 Text="Printer IP: " />
                             <TextBlock
                                 x:Name="TextBlockPrinterIP"
                                 VerticalAlignment="Center"
-                                FontSize="14"
-                                Foreground="LightSlateGray"
+                                FontSize="13"
+                                FontWeight="Bold"
+                                Foreground="Gray"
                                 Text="######" />
                         </StackPanel>
                         <StackPanel Margin="10" Orientation="Horizontal">
                             <TextBlock
                                 Width="70"
                                 VerticalAlignment="Center"
-                                FontSize="14"
-                                Foreground="LightSlateGray"
+                                FontSize="13"
+                                FontWeight="Bold"
+                                Foreground="Gray"
                                 Text="Camera IP: " />
                             <TextBlock
                                 x:Name="TextBlockCamIP"
                                 VerticalAlignment="Center"
-                                FontSize="14"
-                                Foreground="LightSlateGray"
+                                FontSize="13"
+                                FontWeight="Bold"
+                                Foreground="Gray"
                                 Text="######" />
                             <!--<cuscontrol:IpAddressControl
                                 x:Name="TextBoxCamIP"
@@ -409,14 +413,16 @@
                             <TextBlock
                                 Width="85"
                                 VerticalAlignment="Center"
-                                FontSize="14"
-                                Foreground="LightSlateGray"
+                                FontSize="13"
+                                FontWeight="Bold"
+                                Foreground="Gray"
                                 Text="Controller IP: " />
                             <TextBlock
                                 x:Name="TextBlockControllerIP"
                                 VerticalAlignment="Center"
-                                FontSize="14"
-                                Foreground="LightSlateGray"
+                                FontSize="13"
+                                FontWeight="Bold"
+                                Foreground="Gray"
                                 Text="######" />
                         </StackPanel>
                     </StackPanel>

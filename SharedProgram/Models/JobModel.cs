@@ -24,7 +24,7 @@ namespace SharedProgram.Models
             set { _JobType = value; OnPropertyChanged(); }
         }
 
-        private CompareType _compareType = CompareType.Database;
+        private CompareType _compareType = CompareType.None;
         public CompareType CompareType
         {
             get { return _compareType; }
@@ -70,7 +70,7 @@ namespace SharedProgram.Models
             }
         }
 
-        private PrinterSeries _PrinterSeries = PrinterSeries.RynanSeries;
+        private PrinterSeries _PrinterSeries = PrinterSeries.None;
         public PrinterSeries PrinterSeries
         {
             get { return _PrinterSeries; }
@@ -120,7 +120,7 @@ namespace SharedProgram.Models
             set { _SelectJob = value; OnPropertyChanged(); }
         }
 
-        private CompleteCondition _CompleteCondition = CompleteCondition.TotalChecked;
+        private CompleteCondition _CompleteCondition = CompleteCondition.None;
         public CompleteCondition CompleteCondition
         {
             get { return _CompleteCondition; }
