@@ -161,7 +161,7 @@
                         FontSize="35"
                         FontWeight="Bold"
                         Foreground="#29c24f"
-                        Text="{Binding TotalPassed, FallbackValue=#######}" />
+                        Text="{Binding TotalPassed,TargetNullValue=0, FallbackValue=#######}" />
                 </Grid>
             </Border>
 
@@ -192,7 +192,7 @@
                         FontSize="35"
                         FontWeight="Bold"
                         Foreground="#de3502"
-                        Text="{Binding TotalFailed, FallbackValue=#######}" />
+                        Text="{Binding TotalFailed,TargetNullValue=0, FallbackValue=#######}" />
                 </Grid>
             </Border>
         </Grid>

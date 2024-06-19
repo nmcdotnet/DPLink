@@ -308,7 +308,7 @@ namespace DipesLink.Models
         private string _totalPassed = "0";
         public string TotalPassed
         {
-            get { return _totalPassed; }
+            get { if (!int.TryParse(_totalPassed,out _)) return "0"; return _totalPassed;  }
             set
             {
                 if (_totalPassed != value)
@@ -323,7 +323,7 @@ namespace DipesLink.Models
         private string _totalFailed = "0";
         public string TotalFailed
         {
-            get { return _totalFailed; }
+            get { if (!int.TryParse(_totalFailed, out _)) return "0"; return _totalFailed; }
             set
             {
                 if (_totalFailed != value)

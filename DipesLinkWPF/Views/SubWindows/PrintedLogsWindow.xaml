@@ -7,8 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Width="1025"
     Height="600"
-    ResizeMode="NoResize"
     Icon="pack://application:,,,/DipesLink;component/Images/statistic_1.png"
+    ResizeMode="NoResize"
     Topmost="True"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
@@ -20,6 +20,7 @@
                 <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/TextBoxResDict.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/ButtonResDict.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/ComboBoxResDict.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/DipesLink;component/Views/Resources/LabelResDict.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
@@ -30,10 +31,12 @@
         </Grid.RowDefinitions>
         <!--  Title  -->
         <TextBlock
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            FontSize="25"
-            Text="Printed Data" />
+     HorizontalAlignment="Center"
+     VerticalAlignment="Center"
+     FontSize="25"
+     FontWeight="Bold"
+     Foreground="Gray"
+     Text="PRINTED LOG" />
         <!--  Content  -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -61,7 +64,7 @@
                         <Setter Property="FontSize" Value="20" />
                         <Setter Property="Margin" Value="20,0,0,0" />
                         <Setter Property="FontWeight" Value="Bold" />
-                        <Setter Property="Foreground" Value="#03071e" />
+                        <Setter Property="Foreground" Value="DimGray" />
                     </Style>
                 </Grid.Resources>
                 <!--  Total code  -->
@@ -78,7 +81,17 @@
                         </LinearGradientBrush>
                     </Border.Background>
                     <StackPanel>
-                        <TextBlock Style="{StaticResource TextBoxLabelStyle}" Text="Total code of the job" />
+                        <!--<TextBlock Style="{StaticResource TextBoxLabelStyle}" Text="Total code of the job" />-->
+                        <StackPanel
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Label
+                                Background="#00ABE6"
+                                Content="Total" HorizontalAlignment="Left"
+                                FontSize="18"
+                                Style="{StaticResource ArrowLabelStyle}" />
+                        </StackPanel>
                         <TextBlock x:Name="TextBlockTotal" Style="{StaticResource TextBoxValueStyle}">0</TextBlock>
                     </StackPanel>
                 </Border>
@@ -98,7 +111,18 @@
                         </LinearGradientBrush>
                     </Border.Background>
                     <StackPanel>
-                        <TextBlock Style="{StaticResource TextBoxLabelStyle}" Text="Number of printed code" />
+                        <!--<TextBlock Style="{StaticResource TextBoxLabelStyle}" Text="Number of printed code" />-->
+                        <StackPanel
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Label
+                                Background="#17A66E"
+                                Content="Printed"
+                                FontSize="18"
+                                Style="{StaticResource ArrowLabelStyle}" />
+                        </StackPanel>
+
                         <TextBlock x:Name="TextBlockPrinted" Style="{StaticResource TextBoxValueStyle}">0</TextBlock>
                     </StackPanel>
                 </Border>
@@ -118,7 +142,17 @@
                         </LinearGradientBrush>
                     </Border.Background>
                     <StackPanel>
-                        <TextBlock Style="{StaticResource TextBoxLabelStyle}" Text="Wait for printing" />
+                        <!--<TextBlock Style="{StaticResource TextBoxLabelStyle}" Text="Wait for printing" />-->
+                        <StackPanel
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
+                            <Label
+                                Background="#0461A9"
+                                Content="Waiting"
+                                FontSize="18"
+                                Style="{StaticResource ArrowLabelStyle}" />
+                        </StackPanel>
                         <TextBlock x:Name="TextBlockWait" Style="{StaticResource TextBoxValueStyle}">0</TextBlock>
                     </StackPanel>
                 </Border>
@@ -174,7 +208,7 @@
             <!--  Content  -->
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="150" />
+                    <RowDefinition Height="100" />
                     <RowDefinition />
                     <RowDefinition Height="50" />
                 </Grid.RowDefinitions>

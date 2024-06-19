@@ -892,8 +892,6 @@ namespace DipesLink.ViewModels
         {
             try
             {
-             // if(_ipcDeviceToUISharedMemory_RD is null)
-                //    _ipcDeviceToUISharedMemory_RD = new(JobIndex, "DeviceToUISharedMemory_RD", SharedValues.SIZE_100MB, isReceiver:true);
                 using IPCSharedHelper ipc = new(stationIndex, "DeviceToUISharedMemory_RD", SharedValues.SIZE_100MB, isReceiver: true);
                 while (true)
                 {
@@ -1000,6 +998,10 @@ namespace DipesLink.ViewModels
                                 if (compareStatus != null)
                                 {
                                     JobList[stationIndex].CompareResult = (ComparisonResult)compareStatus;
+                                }
+                                if(processTime != null)
+                                {
+                                    JobList[stationIndex].ProcessingTime = (int)processTime;
                                 }
                             }
                         }

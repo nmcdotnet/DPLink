@@ -17,7 +17,11 @@ namespace DipesLink.Views.UserControls.MainUc
         public JobCreation()
         {
             InitializeComponent();
-            
+            Loaded += JobCreation_Loaded;
+        }
+
+        private void JobCreation_Loaded(object sender, RoutedEventArgs e)
+        {
         }
 
         public void CallbackCommand(Action<MainViewModel> execute)
@@ -60,8 +64,8 @@ namespace DipesLink.Views.UserControls.MainUc
                 
             }
 
-           
-                
+          
+
         }
 
         private int CurrentIndex() => ListBoxMenu.SelectedIndex;

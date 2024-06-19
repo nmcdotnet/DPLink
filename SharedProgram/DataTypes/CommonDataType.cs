@@ -10,6 +10,7 @@ namespace SharedProgram.DataTypes
     {
         public enum JobType
         {
+           
             AfterProduction,
             OnProduction,
             VerifyAndPrint,
