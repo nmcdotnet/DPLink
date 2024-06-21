@@ -19,8 +19,10 @@ namespace DipesLink.Views.UserControls.MainUc
         public JobCreation()
         {
             InitializeComponent();
-
+            ViewModelSharedEvents.MainListBoxMenuChange += ViewModelSharedEvents_MainListBoxMenuChange; 
         }
+
+      
 
         public void CallbackCommand(Action<MainViewModel> execute)
         {
@@ -53,15 +55,18 @@ namespace DipesLink.Views.UserControls.MainUc
         }
         private void ListBoxMenu_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var listBox = sender as System.Windows.Controls.ListBox;
-            if (listBox != null)
-            {
-                int jobIndex = listBox.SelectedIndex;
-              //  CallbackCommand(vm => vm.JobCreationSelectionChanged(jobIndex));
-                CallbackCommand(vm => vm.LoadJobList(jobIndex)); // Update Job on UI
-                
-            }
+            LoadJobList();
+        }
+        private void ViewModelSharedEvents_MainListBoxMenuChange(object? sender, EventArgs e)
+        {
+            LoadJobList();
+        }
 
+        private void LoadJobList()
+        {
+                int index = ListBoxMenu.SelectedIndex;
+                CallbackCommand(vm => vm.LoadJobList(index)); // Update Job on UI
+                CurrentViewModel<MainViewModel>()?.LockUI(index);
         }
         //ClearTextBoxes(myGroupBox);
 

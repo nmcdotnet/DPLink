@@ -39,7 +39,9 @@ namespace IPCSharedMemory.Datatypes
             StatisticsCounterReceived,
             StatisticsCounterPrinted,
             ControllerStatus,
-            ControllerResponseMess
+            ControllerResponseMess,
+            LoadingStatus,
+            RestartStatus
         }
         public enum SharedMemoryCommandType
         {

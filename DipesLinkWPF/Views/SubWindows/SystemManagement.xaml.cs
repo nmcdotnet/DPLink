@@ -19,9 +19,15 @@ namespace DipesLink.Views.SubWindows
     /// </summary>
     public partial class SystemManangement : Window
     {
+
         public SystemManangement()
         {
             InitializeComponent();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

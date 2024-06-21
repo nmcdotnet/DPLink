@@ -114,7 +114,7 @@ namespace DipesLink.Models
 
         private int _currentIndex;
 
-        public int CurrentIndex
+        public int CurrentIndexDB
         {
             get { return _currentIndex; }
             set
@@ -505,9 +505,6 @@ namespace DipesLink.Models
         public byte PrinterStsBytes { get; set; }
         public byte ControllerStsBytes { get; set; }
 
-        public byte[] SentNumberBytes { get; set; }
-        public byte[] ReceivedNumberBytes { get; set; }
-        public byte[] PrintedNumberBytes { get; set; }
         public byte[] CheckedStatisticNumberBytes { get; set; }
         public byte[] CurrentPrintedCodeBytes { get; set; }
         public byte[] CurrentChekedCodeBytes { get; set; }
@@ -515,6 +512,10 @@ namespace DipesLink.Models
         public ConcurrentQueue<byte[]> QueueCurrentPrintedCode { get; set; } = new();
         public ConcurrentQueue<byte[]> QueueCurrentCheckedCode { get; set; } = new();
         public ConcurrentQueue<byte[]> QueueCameraDataDetect { get; set; } = new();
+
+        public ConcurrentQueue<byte[]> QueueSentNumberBytes { get; set; } = new();
+        public ConcurrentQueue<byte[]> QueueReceivedNumberBytes { get; set; } = new();
+        public ConcurrentQueue<byte[]> QueuePrintedNumberBytes { get; set; } = new();
 
         public OperationStatus OperationStatus { get; set; } = OperationStatus.Stopped;
 

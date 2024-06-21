@@ -23,5 +23,6 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
         </Grid>
+        <Button Content="Button" Click="Button_Click" HorizontalAlignment="Center" Margin="0,194,0,0" Grid.Row="1" VerticalAlignment="Top" Height="60" Width="140"/>
     </Grid>
 </Window>

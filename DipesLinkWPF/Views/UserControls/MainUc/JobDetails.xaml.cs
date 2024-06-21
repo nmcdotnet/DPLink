@@ -28,7 +28,7 @@ namespace DipesLink.Views.UserControls.MainUc
         CheckedObserHelper _checkedObserHelper = new();
         JobOverview? _currentJob;
         ConcurrentQueue<string[]> _queueCheckedCode = new();
-        public static event EventHandler<int>? OnJobDetailChange;
+     
         
         int count = 0;
         public JobDetails()
@@ -41,22 +41,17 @@ namespace DipesLink.Views.UserControls.MainUc
             Debug.WriteLine("JobDetails !" + ++count);
         }
 
-        private void OnJobDetailChangeHandler()
-        {
-            OnJobDetailChange?.Invoke(this, _currentJob.Index);
-        }
-        private void InitValues()
+
+        public void InitValues()
         {
             TextBlockTotalChecked.Text = "0";
             TextBlockTotalPassed.Text = "0";
             TextBlockTotalFailed.Text = "0";
-
         }
-        private async void StationDetailUc_Loaded(object sender, RoutedEventArgs e)
+        public async void StationDetailUc_Loaded(object sender, RoutedEventArgs e)
         {
             EventRegister();
-            OnJobDetailChangeHandler();
-            
+            ViewModelSharedEvents.OnJobDetailChangeHandler(_currentJob.Index);
             if (!_currentJob.IsDBExist)
             {
                 Debug.WriteLine("Event load database was called: " + _currentJob.Index);
@@ -69,7 +64,7 @@ namespace DipesLink.Views.UserControls.MainUc
             await Task.Delay(1000); // waiting for 3s connection completed
             _currentJob?.RaiseLoadDb(_currentJob.Index);
         }
-        private void EventRegister()
+        public void EventRegister()
         {
             try
             {

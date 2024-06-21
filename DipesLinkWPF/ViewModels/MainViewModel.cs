@@ -6,10 +6,8 @@ using DipesLink.Views.UserControls.MainUc;
 using IPCSharedMemory;
 using SharedProgram.Models;
 using SharedProgram.Shared;
-using System;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
@@ -241,9 +239,7 @@ namespace DipesLink.ViewModels
         /// <param name="stationIndex"></param>
         private async void ListenDatabase(int stationIndex)
         {
-            //if (_ipcDeviceToUISharedMemory_DB is null)
               using IPCSharedHelper ipc = new(stationIndex, "DeviceToUISharedMemory_DB", SharedValues.SIZE_200MB, isReceiver: true);
-            //using IPCSharedHelper ipc = new(stationIndex, "DeviceToUISharedMemory_DB", capacity: 1024 * 1024 * 200, isReceiver: true);
             while (true)
             {
                 bool isCompleteDequeue = ipc.MessageQueue.TryDequeue(out byte[]? result);
@@ -296,7 +292,7 @@ namespace DipesLink.ViewModels
                     int currentPage = (listDatabase.Count > _MaxDatabaseLine) ? (firstWaiting > 0 ? firstWaiting / _MaxDatabaseLine : (firstWaiting == 0 ? 0 : totalCode / _MaxDatabaseLine - 1)) : 0;
 
                     JobList[stationIndex].CurrentPage = currentPage;
-                    JobList[stationIndex].CurrentIndex = firstWaiting - 1;
+                    JobList[stationIndex].CurrentIndexDB = firstWaiting - 1;
                     dbInfo.Add((listDatabase, currentPage));
                     JobList[stationIndex].RaiseLoadCompleteDatabase(dbInfo);
                     JobList[stationIndex].IsDBExist = true;
@@ -349,6 +345,7 @@ namespace DipesLink.ViewModels
                 if (listChecked != null)
                 {
                     JobList[stationIndex].RaiseLoadCompleteCheckedDatabase(listChecked);
+                    JobList[stationIndex].IsShowLoadingChecked = Visibility.Collapsed;
                 }
             }
             catch (Exception)
@@ -362,6 +359,8 @@ namespace DipesLink.ViewModels
         #endregion END GET DATABASE
 
         #region  GET PRINTING PARAMS AND STATUS
+
+        
         private async void ListenProcess(int stationIndex)
         {
             using IPCSharedHelper ipc = new(stationIndex, "DeviceToUISharedMemory_DT", 1024 * 1024 * 1, isReceiver: true);
@@ -403,15 +402,16 @@ namespace DipesLink.ViewModels
 
                                 // Statistics (Sent/Received/Printed number)
                                 case (byte)SharedMemoryType.StatisticsCounterSent:
-                                    JobList[stationIndex].SentNumberBytes = result.Skip(3).ToArray();
+                                    // JobList[stationIndex].SentNumberBytes = result.Skip(3).ToArray();
+                                    JobList[stationIndex].QueueSentNumberBytes.Enqueue(result.Skip(3).ToArray());
                                     // Debug.WriteLine("Sent: " + Encoding.ASCII.GetString(JobList[stationIndex].SentNumberBytes));
                                     break;
                                 case (byte)SharedMemoryType.StatisticsCounterReceived:
-                                    JobList[stationIndex].ReceivedNumberBytes = result.Skip(3).ToArray();
+                                    JobList[stationIndex].QueueReceivedNumberBytes.Enqueue(result.Skip(3).ToArray());
                                     // Debug.WriteLine("Rev: " + Encoding.ASCII.GetString(JobList[stationIndex].ReceivedNumberBytes));
                                     break;
                                 case (byte)SharedMemoryType.StatisticsCounterPrinted:
-                                    JobList[stationIndex].PrintedNumberBytes = result.Skip(3).ToArray();
+                                    JobList[stationIndex].QueuePrintedNumberBytes.Enqueue(result.Skip(3).ToArray());
                                     // Debug.WriteLine("Printed: " + Encoding.ASCII.GetString(JobList[stationIndex].PrintedNumberBytes));
                                     break;
 
@@ -461,6 +461,12 @@ namespace DipesLink.ViewModels
                                 case (byte)SharedMemoryType.ControllerResponseMess:
                                     GetControllerMessageResponse(stationIndex, result);
                                     break;
+                                case (byte)SharedMemoryType.LoadingStatus:
+                                    ShowLoadingImage(stationIndex);
+                                    break;
+                                case (byte)SharedMemoryType.RestartStatus:
+                                    RestartDetect(stationIndex);
+                                    break;
                             }
                             break;
 
@@ -473,6 +479,24 @@ namespace DipesLink.ViewModels
                 }
                 await Task.Delay(5);
             }
+        }
+
+        private void RestartDetect(int index)
+        {
+            if (true)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+
+        private void ShowLoadingImage(int stationIndex)
+        {
+            JobList[stationIndex].IsShowLoadingDB = Visibility.Visible;
+            JobList[stationIndex].IsShowLoadingChecked = Visibility.Visible;
         }
 
         private void GetControllerMessageResponse(int stationIndex, byte[] result)
@@ -605,13 +629,13 @@ namespace DipesLink.ViewModels
             {
                 try
                 {
-                    byte[] resultSent = JobList[stationIndex].SentNumberBytes;
-                    byte[] resultReceived = JobList[stationIndex].ReceivedNumberBytes;
-                    byte[] resultPrinted = JobList[stationIndex].PrintedNumberBytes;
+                   if(!JobList[stationIndex].QueueSentNumberBytes.TryDequeue(out var resultSent)) resultSent = null;
+                    if (!JobList[stationIndex].QueueReceivedNumberBytes.TryDequeue(out var resultReceived)) resultReceived = null;
+                    if (!JobList[stationIndex].QueuePrintedNumberBytes.TryDequeue(out var resultPrinted)) resultPrinted = null;
 
                     Application.Current?.Dispatcher.Invoke(() =>
                     {
-                        var nullString = "\0\0\0\0\0\0\0";
+                        string nullString = "\0\0\0\0\0\0\0";
                         if (resultSent != null)
                         {
                             var numSent = Encoding.ASCII.GetString(resultSent);
@@ -641,7 +665,7 @@ namespace DipesLink.ViewModels
                     Debug.WriteLine("GetStatisticsAsync Error" + ex.Message);
 #endif
                 }
-                await Task.Delay(100);
+                await Task.Delay(1);
             }
         }
 
@@ -664,7 +688,7 @@ namespace DipesLink.ViewModels
                 string curIndex = Encoding.ASCII.GetString(curIndexBytes).Trim();
                 string curPage = Encoding.ASCII.GetString(curPageIndexBytes).Trim();
 
-                JobList[stationIndex].CurrentIndex = int.Parse(curIndex);
+                JobList[stationIndex].CurrentIndexDB = int.Parse(curIndex);
                 JobList[stationIndex].CurrentPage = int.Parse(curPage);
 
                 //Debug.WriteLine($"\nPage: {JobList[stationIndex].CurrentIndex} and Index: {JobList[stationIndex].CurrentPage}");

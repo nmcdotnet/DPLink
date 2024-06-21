@@ -77,6 +77,43 @@ namespace IPCSharedMemory
 
         #region IPC Device Transfer -> UI
 
+        public static void SendLoadingStatusToUI(IPCSharedHelper? ipc, int index, byte[] data)
+        {
+            try
+            {
+                byte[] command = {
+                    (byte)SharedMemoryCommandType.DeviceCommand ,
+                    (byte)index,
+                    (byte)SharedMemoryType.LoadingStatus,
+                };
+                var newCommand = new byte[command.Length + data.Length]; // Create new array
+                Array.Copy(command, 0, newCommand, 0, command.Length); // copy array 1 to new array
+                Array.Copy(data, 0, newCommand, command.Length, data.Length); // copy array 2 to new array start from length array 1
+                                                                              // Console.WriteLine("Send: "+ newCommand.Length);
+                SendCommandToUI(ipc, newCommand); // send memory map file
+            }
+            catch (Exception) { }
+        }
+
+        public static void SendRestartStatusToUI(IPCSharedHelper? ipc, int index, byte[] data)
+        {
+            try
+            {
+                byte[] command = {
+                    (byte)SharedMemoryCommandType.DeviceCommand ,
+                    (byte)index,
+                    (byte)SharedMemoryType.RestartStatus,
+                };
+                var newCommand = new byte[command.Length + data.Length]; // Create new array
+                Array.Copy(command, 0, newCommand, 0, command.Length); // copy array 1 to new array
+                Array.Copy(data, 0, newCommand, command.Length, data.Length); // copy array 2 to new array start from length array 1
+                                                                              // Console.WriteLine("Send: "+ newCommand.Length);
+                SendCommandToUI(ipc, newCommand); // send memory map file
+            }
+            catch (Exception) { }
+        }
+
+
         public static void SendDatabaseToUIFirstTime(IPCSharedHelper? ipc,int index, byte[] data)
         {
             try

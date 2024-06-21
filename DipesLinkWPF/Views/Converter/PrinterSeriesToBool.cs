@@ -18,11 +18,13 @@ namespace DipesLink.Views.Converter
             var par = int.Parse((string)parameter);
             if (par == 0)
             {
+                // || val == PrinterSeries.None
                 if (val == PrinterSeries.RynanSeries) { return true; }
                 else return false;
             }
             else if (par == 1)
             {
+                // || val == PrinterSeries.None
                 if (val == PrinterSeries.RynanSeries) { return false; }
                 else return true;
             }

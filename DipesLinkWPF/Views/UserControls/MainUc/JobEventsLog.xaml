@@ -61,7 +61,7 @@
                                     Height="{StaticResource MenuIconSize}"
                                     Margin="5,0,0,0"
                                     HorizontalAlignment="Left">
-                                    <fa:IconImage Foreground="Gray" Icon="History" />
+                                    <fa:IconImage Foreground="#00ABE6" Icon="History" />
                                 </Viewbox>
                                 <TextBlock
                                     Grid.Column="1"

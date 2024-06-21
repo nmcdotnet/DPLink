@@ -2,7 +2,7 @@
     <Style x:Key="ArrowLabelStyle" TargetType="Label">
         <Setter Property="Foreground" Value="White" />
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Width" Value="110"/>
+        <Setter Property="Width" Value="110" />
         <Setter Property="Padding" Value="10,3" />
         <Setter Property="Margin" Value="5" />
         <Setter Property="FontWeight" Value="Bold" />
@@ -12,21 +12,24 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Label">
-                    <Grid >
+                    <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="90" />
-                            <ColumnDefinition Width="90"/>
+                            <ColumnDefinition Width="80" />
+                            <ColumnDefinition Width="80" />
                         </Grid.ColumnDefinitions>
-                        <Border Width="86" Height="30"
+                        <Border
                             Grid.Column="0"
+                            Width="76"
+                            Height="30"
                             Padding="{TemplateBinding Padding}"
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                             Background="{TemplateBinding Background}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center" />
                         </Border>
-                        <Path Margin="-2 0 0 0"
+                        <Path
                             Grid.Column="1"
+                            Margin="-2,0,0,0"
                             Data="M 0 0 L 15 15 L 0 30 Z"
                             Fill="{TemplateBinding Background}" />
                     </Grid>

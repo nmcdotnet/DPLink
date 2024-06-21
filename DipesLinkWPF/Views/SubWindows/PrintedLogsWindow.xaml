@@ -31,12 +31,12 @@
         </Grid.RowDefinitions>
         <!--  Title  -->
         <TextBlock
-     HorizontalAlignment="Center"
-     VerticalAlignment="Center"
-     FontSize="25"
-     FontWeight="Bold"
-     Foreground="Gray"
-     Text="PRINTED LOG" />
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            FontSize="25"
+            FontWeight="Bold"
+            Foreground="Gray"
+            Text="PRINTED LOG" />
         <!--  Content  -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -87,9 +87,10 @@
                             VerticalAlignment="Center"
                             Orientation="Horizontal">
                             <Label
+                                HorizontalAlignment="Left"
                                 Background="#00ABE6"
-                                Content="Total" HorizontalAlignment="Left"
-                                FontSize="18"
+                                Content="Total"
+                                FontSize="15"
                                 Style="{StaticResource ArrowLabelStyle}" />
                         </StackPanel>
                         <TextBlock x:Name="TextBlockTotal" Style="{StaticResource TextBoxValueStyle}">0</TextBlock>
@@ -119,7 +120,7 @@
                             <Label
                                 Background="#17A66E"
                                 Content="Printed"
-                                FontSize="18"
+                                FontSize="15"
                                 Style="{StaticResource ArrowLabelStyle}" />
                         </StackPanel>
 
@@ -150,7 +151,7 @@
                             <Label
                                 Background="#0461A9"
                                 Content="Waiting"
-                                FontSize="18"
+                                FontSize="15"
                                 Style="{StaticResource ArrowLabelStyle}" />
                         </StackPanel>
                         <TextBlock x:Name="TextBlockWait" Style="{StaticResource TextBoxValueStyle}">0</TextBlock>

@@ -34,7 +34,7 @@ namespace DipesLink.ViewModels
                 ViewModelSharedValues.Settings.SystemParamsList[i].EncoderDiameter = ConnectParamsList[i].EncoderDiameter;
 
                 ViewModelSharedValues.Settings.SystemParamsList[i].PrintFieldForVerifyAndPrint = ConnectParamsList[i].PrintFieldForVerifyAndPrint;
-                ViewModelSharedValues.Settings.SystemParamsList[i].FailedDataSentToPrinter = CurrentConnectParams.FailedDataSentToPrinter;
+                ViewModelSharedValues.Settings.SystemParamsList[i].FailedDataSentToPrinter = ConnectParamsList[i].FailedDataSentToPrinter;
                 ViewModelSharedValues.Settings.SystemParamsList[i].VerifyAndPrintBasicSentMethod = ConnectParamsList[i].VerifyAndPrintBasicSentMethod;
             }
 

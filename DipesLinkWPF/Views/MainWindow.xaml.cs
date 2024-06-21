@@ -37,7 +37,7 @@ namespace DipesLink.Views
 
         private void EventRegister()
         {
-            JobDetails.OnJobDetailChange += JobDetails_OnJobDetailChange;
+            ViewModelSharedEvents.OnJobDetailChange += JobDetails_OnJobDetailChange;
             SizeChanged += MainWindow_SizeChanged;
             Closing += MainWindow_Closing;
             Closed += MainWindow_Closed;
@@ -305,10 +305,12 @@ namespace DipesLink.Views
             //here
             myToggleButton.IsChecked = false;
             IpGridChange.Visibility = Visibility.Visible;
-
+            //var vm = CurrentViewModel<MainViewModel>();
             JobDetails_OnJobDetailChange(sender, currentStation);
-            CurrentViewModel<MainViewModel>().LockUI(currentStation);
-            CurrentViewModel<MainViewModel>().LockChoosingStation();
+
+            //CurrentViewModel<MainViewModel>().ConnectParamsList[currentStation].LockUISetting;
+            // EnableButtons()
+            ViewModelSharedEvents.OnMainListBoxMenuChange();
         }
 
         private void ListBoxItem_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

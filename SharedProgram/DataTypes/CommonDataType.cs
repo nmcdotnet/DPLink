@@ -8,6 +8,15 @@ namespace SharedProgram.DataTypes
 {
     public class CommonDataType
     {
+        public enum RestartStatus
+        {
+            Failed, Successful
+        }
+       public enum LoadDataStatus
+        {
+            StartLoad,
+            Completed
+        }
         public enum JobType
         {
             None,
