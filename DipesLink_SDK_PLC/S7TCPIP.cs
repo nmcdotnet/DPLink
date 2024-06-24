@@ -156,6 +156,7 @@ namespace DipesLink_SDK_PLC
                 var buffer = new byte[1024];
                 int bytesRead;
                 StringBuilder commandBuilder = new();
+                if (_NetworkStream is null) return;
                 while ((bytesRead = _NetworkStream.Read(buffer, 0, buffer.Length)) != 0)
                 {
                     string data = Encoding.ASCII.GetString(buffer, 0, bytesRead);

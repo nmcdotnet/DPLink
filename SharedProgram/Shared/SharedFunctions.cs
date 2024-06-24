@@ -192,7 +192,7 @@ namespace SharedProgram.Shared
 
         public static bool IsValidIPAddress(string ipString, out IPAddress? ipd)
         {
-            IPAddress ip;
+          
             bool isValid = IPAddress.TryParse(ipString, out ipd);
             return isValid;
         }

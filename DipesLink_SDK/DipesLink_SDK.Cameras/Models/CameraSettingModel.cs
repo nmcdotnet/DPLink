@@ -15,8 +15,8 @@ namespace DipesLink_SDK_Cameras.Models
 			set { _index = value; }
 		}
 
-		private string _ipAddress;
-		public string IPAddress
+		private string? _ipAddress;
+		public string? IPAddress
 		{
 			get { return _ipAddress; }
 			set { _ipAddress = value; }

@@ -13,7 +13,7 @@ namespace DipesLinkDeviceTransfer
         public static DatamanCamera? DatamanCameraDeviceHandler;
         public static RynanRPrinterTCPClient? RynanRPrinterDeviceHandler;
         public static S7TCPIP? ControllerDeviceHandler;
-        public static string keyStep;
+        public static string? keyStep;
         private IPCSharedHelper? _ipcDeviceToUISharedMemory_DT;
         private IPCSharedHelper? _ipcUIToDeviceSharedMemory_DT;
         private IPCSharedHelper? _ipcDeviceToUISharedMemory_DB;

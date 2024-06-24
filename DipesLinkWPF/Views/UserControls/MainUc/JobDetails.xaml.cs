@@ -28,7 +28,7 @@ namespace DipesLink.Views.UserControls.MainUc
        
         JobOverview? _currentJob;
         ConcurrentQueue<string[]> _queueCheckedCode = new();
-
+        private CheckedObserHelper _checkedObserHelper = new();
         int count = 0;
         public JobDetails()
         {

@@ -22,11 +22,11 @@ namespace DipesLinkDeviceTransfer
 
         private readonly int _StartIndex = 1;
 
-    
-  
+
+
         private async Task InitDataAsync(JobModel selectedJob)
         {
-          //  Console.WriteLine("Toi bat dau load");
+            //  Console.WriteLine("Toi bat dau load");
 
             if (_SelectedJob == null) return;
             if (selectedJob.CompareType == CompareType.Database)
@@ -40,21 +40,21 @@ namespace DipesLinkDeviceTransfer
                 _ListPrintedCodeObtainFromFile = databaseTsk.Result;
                 _ListCheckedResultCode = checkedResultTsk.Result;
 
-                Task a =  Task.Run(() =>
+                Task a = Task.Run(() =>
                  {
                      //Console.WriteLine("Task a work");
                      MemoryTransfer.SendDatabaseToUIFirstTime(_ipcDeviceToUISharedMemory_DB, JobIndex, DataConverter.ToByteArray(_ListPrintedCodeObtainFromFile)); // Send saved DB to UI
                  });
-                Task b =  Task.Run(() =>
+                Task b = Task.Run(() =>
                 {
                     //Console.WriteLine("Task b work");
                     MemoryTransfer.SendCheckedDatabaseToUIFirstTime(_ipcDeviceToUISharedMemory_DB, JobIndex, DataConverter.ToByteArray(_ListCheckedResultCode)); // Send checked list to UI
                 });
-              
+
                 await Task.WhenAll(a, b);
                 // đi tiếp
 #if DEBUG
-                Console.WriteLine("\nDatabase: {0} raw", _ListPrintedCodeObtainFromFile.Count-1);
+                Console.WriteLine("\nDatabase: {0} raw", _ListPrintedCodeObtainFromFile.Count - 1);
                 Console.WriteLine("Printed: " + _ListPrintedCodeObtainFromFile.Count(item => item.Last() == "Printed")); // show row number was printed
                 Console.WriteLine("Checked: {0}", _ListCheckedResultCode.Count);
 #endif
@@ -67,10 +67,10 @@ namespace DipesLinkDeviceTransfer
                     if (_SelectedJob.CompareType == CompareType.Database)
                     {
                         await InitCompareDataAsync(_ListPrintedCodeObtainFromFile, _ListCheckedResultCode);
-                       
+
 #if DEBUG
                         await Console.Out.WriteLineAsync($"POD filter: {_CodeListPODFormat.Count}");
-                      //  await Console.Out.WriteLineAsync("Complete load !");
+                        //  await Console.Out.WriteLineAsync("Complete load !");
 #endif
                     }
                     _TotalCode = _ListPrintedCodeObtainFromFile.Count; // tổng số dữ liệu
@@ -102,7 +102,7 @@ namespace DipesLinkDeviceTransfer
         {
             // Get path db and printed list
             var pathDatabase = jobModel.DatabasePath;
-            var pathBackupPrintedResponse = SharedPaths.PathPrintedResponse +$"Job{JobIndex+1}\\"+ jobModel.PrintedResponePath;
+            var pathBackupPrintedResponse = SharedPaths.PathPrintedResponse + $"Job{JobIndex + 1}\\" + jobModel.PrintedResponePath;
 
             // Init Databse from file, add index column, status column, and string "Feild"
             List<string[]> tmp = await Task.Run(() => { return InitDatabase(pathDatabase); });
@@ -116,7 +116,7 @@ namespace DipesLinkDeviceTransfer
         }
 
 
-        
+
         /// <summary>
         /// Load database
         /// </summary>
@@ -136,45 +136,48 @@ namespace DipesLinkDeviceTransfer
                 var rexCsvSplitter = path.EndsWith(".csv") ? new Regex(@",(?=(?:[^""]*""[^""]*"")*(?![^""]*""))") : new Regex(@"[\t]");
                 int lineCounter = -1;
                 int columnCount = 0;
-                while (!reader.EndOfStream)
-                {
-                    string[] line = rexCsvSplitter.Split(reader.ReadLine()).Select(x => Csv.Unescape(x)).ToArray();
-                    lineCounter++;
-                    if (lineCounter == 0)
+
+                if (reader.ReadLine() is not null)
+                    while (!reader.EndOfStream)
                     {
-                        // Create additional database columns
-                        var tmp = new string[line.Length + 2];
-                        tmp[0] = "Index"; // thêm cột Index ở đầu
-                        tmp[^1] = "Status"; // Thêm cột status ở cuối (^1 đại diện phần tử cuối)
-                        for (int i = 1; i < tmp.Length - 1; i++)
+                        var readLineRes = reader.ReadLine(); 
+                        if (readLineRes is not null)
                         {
-                            tmp[i] = line[i - 1] + $" - Field{i}"; // Thêm chữ field vào cạnh column
-                        }
-                        columnCount = tmp.Length;
-                        result.Add(tmp);
-                    }
-                    else
-                    {
-                        // ignore empty line 
-                        //if (line.Length == 1 && line[0] == "") continue;
-                        // handle database row before adding
-                        var tmp = new string[columnCount];
-                        tmp[0] = "" + lineCounter;
-                        tmp[columnCount - 1] = "Waiting"; // thêm trạng thái waiting cho trường status
-                        for (int i = 1; i < tmp.Length - 1; i++)
-                        {
-                            if (i - 1 < line.Length)
+                            string[] line = rexCsvSplitter.Split(readLineRes).Select(x => Csv.Unescape(x)).ToArray();
+                            lineCounter++;
+                            if (lineCounter == 0)
                             {
-                                tmp[i] = line[i - 1];
+                                // Create additional database columns
+                                var tmp = new string[line.Length + 2];
+                                tmp[0] = "Index"; // thêm cột Index ở đầu
+                                tmp[^1] = "Status"; // Thêm cột status ở cuối (^1 đại diện phần tử cuối)
+                                for (int i = 1; i < tmp.Length - 1; i++)
+                                {
+                                    tmp[i] = line[i - 1] + $" - Field{i}"; // Thêm chữ field vào cạnh column
+                                }
+                                columnCount = tmp.Length;
+                                result.Add(tmp);
                             }
                             else
                             {
-                                tmp[i] = "";
+                                var tmp = new string[columnCount];
+                                tmp[0] = "" + lineCounter;
+                                tmp[columnCount - 1] = "Waiting"; // thêm trạng thái waiting cho trường status
+                                for (int i = 1; i < tmp.Length - 1; i++)
+                                {
+                                    if (i - 1 < line.Length)
+                                    {
+                                        tmp[i] = line[i - 1];
+                                    }
+                                    else
+                                    {
+                                        tmp[i] = "";
+                                    }
+                                }
+                                result.Add(tmp);
                             }
                         }
-                        result.Add(tmp);
                     }
-                }
             }
             catch (IOException) { _InitDataErrorList.Add(NotifyType.CannotAccessDatabase); }
             catch (Exception) { _InitDataErrorList.Add(NotifyType.DatabaseUnknownError); }
@@ -213,10 +216,10 @@ namespace DipesLinkDeviceTransfer
                             dbList[index][^1] = "Printed"; // Get rows by index and last column ^1 Updated with the content Printed
                         }
                     }
-                  //  await Task.Delay(1);
+                    //  await Task.Delay(1);
                 }
             }
-            catch(IOException) { _InitDataErrorList.Add(NotifyType.CannotAccessPrintedResponse); }
+            catch (IOException) { _InitDataErrorList.Add(NotifyType.CannotAccessPrintedResponse); }
             catch (Exception) { _InitDataErrorList.Add(NotifyType.PrintedStatusUnknownError); }
         }
 
@@ -226,9 +229,9 @@ namespace DipesLinkDeviceTransfer
 
         private async Task<List<string[]>> InitCheckedResultDataAsync(JobModel selectedJob)
         {
-            Console.WriteLine("Job Index: " +selectedJob.Index);
-            string path = SharedPaths.PathCheckedResult +$"Job{JobIndex+1}\\"+ selectedJob.CheckedResultPath; // Get path of checked result file (.csv)
-           // await Console.Out.WriteLineAsync("path checked" + selectedJob.CheckedResultPath);
+            Console.WriteLine("Job Index: " + selectedJob.Index);
+            string path = SharedPaths.PathCheckedResult + $"Job{JobIndex + 1}\\" + selectedJob.CheckedResultPath; // Get path of checked result file (.csv)
+                                                                                                                  // await Console.Out.WriteLineAsync("path checked" + selectedJob.CheckedResultPath);
             if (selectedJob.CheckedResultPath != "")
             {
                 Task<List<string[]>> task = Task.Run(() => { return InitCheckedResultData(path); });
@@ -360,7 +363,7 @@ namespace DipesLinkDeviceTransfer
                             if (_IsVerifyAndPrintMode)
                             {
                                 string tmp = "";
-                                for(int j = 1; j < rowData.Length - 1; j++)
+                                for (int j = 1; j < rowData.Length - 1; j++)
                                 {
                                     var tmpPOD = DeviceSharedValues.VPObject.PrintFieldForVerifyAndPrint.Find(x => x.Index == j);
                                     if (tmpPOD != null)
@@ -368,11 +371,11 @@ namespace DipesLinkDeviceTransfer
                                         tmp += rowData[tmpPOD.Index];
                                     }
                                 }
-                           //     var tryAdd2 = _Emergency.TryAdd(tmp, i);
+                                //     var tryAdd2 = _Emergency.TryAdd(tmp, i);
                             }
                         }
 
-       
+
                     }
                 }
 
@@ -388,8 +391,8 @@ namespace DipesLinkDeviceTransfer
         /// <summary>
         /// Transfer raw code to UI
         /// </summary>
-  
-      
+
+
         private static string GetCompareDataByPODFormat(string[] row, List<PODModel> pODFormat, int addingIndex = 0)
         {
             if (row.Length == 0) return "";
@@ -410,6 +413,6 @@ namespace DipesLinkDeviceTransfer
 
         #endregion INIT COMPARE DATA
 
-        
+
     }
 }

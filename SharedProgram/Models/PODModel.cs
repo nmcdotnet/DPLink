@@ -27,8 +27,8 @@ namespace SharedProgram.Models
 			set { _Index = value; }
 		}
 
-		private string _Value;
-		public string Value
+		private string? _Value;
+		public string? Value
 		{
 			get { return _Value; }
 			set { _Value = value; }

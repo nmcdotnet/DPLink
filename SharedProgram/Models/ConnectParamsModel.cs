@@ -91,9 +91,9 @@ namespace SharedProgram.Models
         }
 
 
-        private string _FormatedPOD;
+        private string? _FormatedPOD;
 
-        public string FormatedPOD
+        public string? FormatedPOD
         {
             get { return _FormatedPOD; }
             set

@@ -31,7 +31,7 @@ namespace DipesLink_SDK_Printers
         private readonly ConcurrentQueue<int> _PackagesQueue = new();
         private CancellationTokenSource _ThreadReceiveDataCts = new();
         IPCSharedHelper? _ipc;
-        private readonly ReceivedType _ReceivedType;
+        private readonly ReceivedType _ReceivedType = ReceivedType.R20;
         public enum ReceivedType
         {
             R20,

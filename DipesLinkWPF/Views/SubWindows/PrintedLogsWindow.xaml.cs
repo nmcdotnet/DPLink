@@ -160,7 +160,7 @@ namespace DipesLink.Views.SubWindows
             try
             {
                 TextBlockTotal.Text = PrintedDataTable?.Rows.Count.ToString();
-                TextBlockPrinted.Text = _currentJob.PrintedDataNumber;
+                TextBlockPrinted.Text = _currentJob?.PrintedDataNumber;
                 if(int.TryParse(TextBlockTotal.Text, out int total) && int.TryParse(TextBlockPrinted.Text, out int printed))
                 {
                     TextBlockWait.Text = (total - printed).ToString();

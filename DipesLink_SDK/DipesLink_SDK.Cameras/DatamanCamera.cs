@@ -23,7 +23,7 @@ namespace DipesLink_SDK_Cameras
 
         private int _index;
         private Thread? _threadCameraStatusChecking;
-        private string? _ipAddress;
+ 
         private bool _IsConnected;
         public bool IsConnected => _IsConnected;
 
@@ -175,7 +175,7 @@ namespace DipesLink_SDK_Cameras
                 _dataManSystem.Disconnect();
                 CleanupConnection();
 
-                _results.ClearCachedResults();
+                _results?.ClearCachedResults();
                 _results = null;
             }
             catch { }

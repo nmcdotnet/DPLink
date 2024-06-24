@@ -148,7 +148,7 @@ namespace DipesLinkDeviceTransfer
         }
 
         private bool _isPauseAction;
-        private bool _isLoadFirstDb;
+      
         private bool _isStopOrPauseAction;
         private async void ActionButtonFromUIProcessingAsync()
         {
@@ -159,7 +159,7 @@ namespace DipesLinkDeviceTransfer
                     case ActionButtonType.LoadDB: // Lệnh load dữ liệu khi UI yêu cầu lần đầu
                         await LoadDatabaseFirst();
                         NotificationProcess(NotifyType.DeviceDBLoaded);
-                        _isLoadFirstDb = true;
+                   
                         await Console.Out.WriteLineAsync("Load Database Action");
                         break;
                     case ActionButtonType.Start:

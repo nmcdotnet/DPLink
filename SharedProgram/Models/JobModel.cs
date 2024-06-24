@@ -234,18 +234,14 @@ namespace SharedProgram.Models
             }
         }
 
-        [ObservableProperty]
-        private string? _DelaySensor;
+       
 
         [ObservableProperty]
         public string? _DisableSensor;
 
-        [ObservableProperty]
-        private string? _PulseEncoder;
+       
 
-        [ObservableProperty]
-        private string? _EncoderDiameter;
-
+        
 
         public static JobModel? LoadFile(string fileName)
         {
