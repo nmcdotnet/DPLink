@@ -316,7 +316,7 @@
                         IsReadOnly="True"
                         MouseDown="DataGridResult_MouseDown"
                         RowDetailsVisibilityMode="Collapsed"
-                        SelectionChanged="DataGridResult_SelectionChanged"
+         
                         VerticalGridLinesBrush="#D3D3D3"
                         VirtualizingPanel.VirtualizationMode="Recycling"
                         VirtualizingStackPanel.IsVirtualizing="True">

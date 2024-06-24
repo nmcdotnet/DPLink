@@ -970,12 +970,12 @@ namespace DipesLink.ViewModels
                         try
                         {
                             string[]? checkedCode = DataConverter.FromByteArray<string[]>(result);
-                            if (checkedCode != null)
-                                foreach (var item in checkedCode)
-                                {
-                                    Debug.Write(item);
-                                }
-                            Debug.WriteLine($"at {stationIndex}\n");
+                            //if (checkedCode != null)
+                            //    foreach (var item in checkedCode)
+                            //    {
+                            //        Debug.Write(item);
+                            //    }
+                            //Debug.WriteLine($"at {stationIndex}\n");
                             if (checkedCode != null)
                             {
                                 JobList[stationIndex].RaiseChangeCheckedCode(checkedCode);

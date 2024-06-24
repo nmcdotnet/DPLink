@@ -1,6 +1,7 @@
 ﻿using DipesLink.Models;
 using DipesLink.Views.Extension;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,12 +16,11 @@ namespace DipesLink.Views.SubWindows
     /// </summary>
     public partial class JobLogsWindow : Window
     {
-
-        JobLogsDataTableHelper? _jobLogsDataTableHelper = new();
+        private JobLogsDataTableHelper? _jobLogsDataTableHelper = new();
+        private CheckedObserHelper? _checkedObserHelper = new();
         public List<string[]>? CheckedResultList { get; set; }
         public DataTable? CheckedDataTable { get; set; }
         private string? _pageInfo;
-
 
         public int Num_TotalChecked { get; set; }
         public int Num_Printed { get; set; }
@@ -28,13 +28,65 @@ namespace DipesLink.Views.SubWindows
         public int Num_Valid { get; set; }
         public int Num_Failed { get; set; }
 
-        private List<string> _imageNameList;   
+        private List<string>? _imageNameList;   
 
-        public JobLogsWindow()
+        public JobLogsWindow(CheckedObserHelper checkedObserHelper)
         {
             InitializeComponent();
+            _checkedObserHelper = checkedObserHelper;
             Loaded += JobLogsWindow_LoadedAsync;
+            Closing += JobLogsWindow_Closing;
         }
+        private async Task CleanupResourcesAsync()
+        {
+            await Task.Run(() =>
+            {
+                if (CheckedDataTable is not null)
+                {
+                    CheckedDataTable.Clear();
+                    CheckedDataTable.Dispose();
+                    CheckedDataTable = null;
+                }
+
+                if (CheckedResultList is not null)
+                {
+                    CheckedResultList.Clear();
+                    CheckedResultList = null;
+                }
+                if (_jobLogsDataTableHelper != null)
+                {
+                    _jobLogsDataTableHelper.Dispose();
+                    _jobLogsDataTableHelper = null;
+                }
+
+                if (_imageNameList is not null)
+                {
+                    _imageNameList.Clear();
+                    _imageNameList = null;
+                }
+
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            });
+        }
+
+
+        private async void JobLogsWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = true; // Cancel the default close operation
+            await Task.Run(async () =>
+            {
+                await CleanupResourcesAsync();
+                Dispatcher.Invoke(() =>  // Close the window on the UI thread after cleanup
+                {
+                    Closing -= JobLogsWindow_Closing; // Prevent re-entry
+                    Close(); // Now close the window
+                });
+            });
+        }
+
+      
+
         private T? CurrentViewModel<T>() where T : class
         {
             if (DataContext is T viewModel)
@@ -48,7 +100,9 @@ namespace DipesLink.Views.SubWindows
         }
         private async void JobLogsWindow_LoadedAsync(object sender, RoutedEventArgs e)
         {
+            Stopwatch? stopwatch = Stopwatch.StartNew();
             if (_jobLogsDataTableHelper == null) return;
+            await Task.Run(()=> { CheckedDataTable = _checkedObserHelper?.GetDataTableDBAsync().Result.Copy(); });
             if (CheckedDataTable != null)
             {
                 await _jobLogsDataTableHelper.InitDatabaseAsync(CheckedDataTable, DataGridResult);
@@ -56,9 +110,12 @@ namespace DipesLink.Views.SubWindows
             UpdateParams();
             UpdatePageInfo();
             _imageNameList = GetImageNameList();
+
+            stopwatch.Stop();
+            Debug.Write($"Time loaded checked data: {stopwatch.ElapsedMilliseconds} ms\n");
+            stopwatch = null;
         }
        
-
         private void UpdateParams()
         {
             try
@@ -120,7 +177,6 @@ namespace DipesLink.Views.SubWindows
             UpdatePageInfo();
         }
 
-       
         private void ButtonPaginationVis()
         {
             if (_jobLogsDataTableHelper == null || _jobLogsDataTableHelper.Paginator == null) return;
@@ -173,7 +229,6 @@ namespace DipesLink.Views.SubWindows
             }
         }
 
-       
         private void ComboBoxFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (_jobLogsDataTableHelper == null || _jobLogsDataTableHelper.Paginator == null) return;
@@ -205,7 +260,7 @@ namespace DipesLink.Views.SubWindows
                 default: break;
             }
            
-            _jobLogsDataTableHelper.DatabaseFiltered(DataGridResult, type);
+            _jobLogsDataTableHelper.DatabaseFilteredAsync(DataGridResult, type);
             UpdatePageInfo();
             ButtonPaginationVis();
         }
@@ -214,7 +269,6 @@ namespace DipesLink.Views.SubWindows
         {
             SearchAction(TextBoxSearch.Text);
         }
-
       
         private void ButtonRF_Click(object sender, RoutedEventArgs e)
         {
@@ -222,7 +276,6 @@ namespace DipesLink.Views.SubWindows
             SearchAction("");
         }
 
-    
         private async void SearchAction(string keyword)
         {
             if (_jobLogsDataTableHelper == null || _jobLogsDataTableHelper.Paginator == null) return;
@@ -349,6 +402,7 @@ namespace DipesLink.Views.SubWindows
             }
             return null;
         }
+
         public static T FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
         {
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
@@ -392,6 +446,5 @@ namespace DipesLink.Views.SubWindows
            
         }
 
-      
     }
 }
