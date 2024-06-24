@@ -14,6 +14,10 @@ using DipesLink.Views.Extension;
 using System;
 using System.Windows.Media;
 using System.Windows.Controls;
+using DipesLink.Views.Models;
+using DipesLink.Views.UserControls.MainUc;
+using DipesLink.Models;
+using System.Collections.Concurrent;
 
 namespace DipesLink.ViewModels
 {
@@ -24,7 +28,16 @@ namespace DipesLink.ViewModels
     public partial class MainViewModel
     {
         private JobModel _jobModel;
-        private JobModel _createNewJob = new() { PrinterSeries = PrinterSeries.Standalone};
+        private JobModel _createNewJob = new()
+        {
+            PrinterSeries = PrinterSeries.RynanSeries,
+            JobType = JobType.AfterProduction,
+            CompareType = CompareType.Database,
+            CompleteCondition = CompleteCondition.TotalChecked,
+        };
+
+
+        //private int currentSettingStations 
         public JobModel CreateNewJob
         {
             get { return _createNewJob; }
@@ -43,28 +56,27 @@ namespace DipesLink.ViewModels
             int t = 0;
             for (int i = 0; i < JobList.Count; i++)
                 if (JobList[i].OperationStatus != OperationStatus.Stopped) t++;
-            
+
             for (int i = 0; i < JobList.Count; i++)
                 ConnectParamsList[i].LockChoosingStation = t <= 0;  // use ternary
         }
 
-
         internal void LockUI(int stationIndex)
         {
-        switch (JobList[stationIndex].OperationStatus)
-        {
-            case OperationStatus.Running:
-                ConnectParamsList[stationIndex].LockUISetting = false;
-                break;
-            case OperationStatus.Processing:
-                ConnectParamsList[stationIndex].LockUISetting = false;
-                break;
-            case OperationStatus.Stopped:
-                ConnectParamsList[stationIndex].LockUISetting = true;
-                break;
-            default:
-                break;
-        }
+            switch (JobList[stationIndex].OperationStatus)
+            {
+                case OperationStatus.Running:
+                    ConnectParamsList[stationIndex].LockUISetting = false;
+                    break;
+                case OperationStatus.Processing:
+                    ConnectParamsList[stationIndex].LockUISetting = false;
+                    break;
+                case OperationStatus.Stopped:
+                    ConnectParamsList[stationIndex].LockUISetting = true;
+                    break;
+                default:
+                    break;
+            }
             EnableButtons(ConnectParamsList[stationIndex].LockUISetting);
             LoadJobListAction(stationIndex);
         }
@@ -142,13 +154,13 @@ namespace DipesLink.ViewModels
                     // Check job name 
                     if (_jobModel.Name == null || _jobModel.Name == "")
                     {
-                       CustomMessageBox checkJobNameMsgBox =  new("Please input Job name", "Job create fail", ButtonStyleMessageBox.OK, ImageStyleMessageBox.Error);
-                       checkJobNameMsgBox.ShowDialog();
-                       return;
+                        CustomMessageBox checkJobNameMsgBox = new("Please input Job name", "Job create fail", ButtonStyleMessageBox.OK, ImageStyleMessageBox.Error);
+                        checkJobNameMsgBox.ShowDialog();
+                        return;
                     }
 
                     // Check params for PrinterSeries is R Printer
-                    if (_jobModel.PrinterSeries == PrinterSeries.RynanSeries) 
+                    if (_jobModel.PrinterSeries == PrinterSeries.RynanSeries)
                     {
                         if (_jobModel.CompareType == CompareType.Database)
                         {
@@ -175,7 +187,7 @@ namespace DipesLink.ViewModels
 #endif
                             // Check printer template
                             if (_jobModel.PrinterTemplate == null ||
-                                _jobModel.PrinterTemplate == "" || 
+                                _jobModel.PrinterTemplate == "" ||
                                 _jobModel.TemplateListFirstFound == null ||
                                 !SharedFunctions.CheckExitTemplate(_jobModel.PrinterTemplate, _jobModel.TemplateListFirstFound))
                             {
@@ -193,7 +205,7 @@ namespace DipesLink.ViewModels
                     // Check Image Export Path 
                     if (_jobModel.IsImageExport == true)
                     {
-                        
+
                         if (_jobModel.ImageExportPath == null || _jobModel.ImageExportPath == "" || !Directory.Exists(_jobModel.ImageExportPath))
                         {
                             CustomMessageBox checkJobMsgBox = new("Please select image export folder path", "Job create fail", ButtonStyleMessageBox.OK, ImageStyleMessageBox.Error);
@@ -202,10 +214,10 @@ namespace DipesLink.ViewModels
                         }
                     }
 
-                    
+
 
                     // Save Job to file
-                    CustomMessageBox saveConfirm = new("Save Job", "Confirm",ButtonStyleMessageBox.OKCancel,ImageStyleMessageBox.Info);
+                    CustomMessageBox saveConfirm = new("Save Job", "Confirm", ButtonStyleMessageBox.OKCancel, ImageStyleMessageBox.Info);
                     var isSaveConfirm = saveConfirm.ShowDialog();
                     if (isSaveConfirm == true)
                     {
@@ -251,7 +263,7 @@ namespace DipesLink.ViewModels
                         if (File.Exists(selectedfilePath)) // Save in Selected Job folder
                         {
                             _jobModel.SaveJobFile(selectedfilePath);
-                           
+
                         }
                         isSaveJob = true;
                         CustomMessageBox saveJobSuccMsgBox = new("Save Job done !", "Notification", ButtonStyleMessageBox.OK, ImageStyleMessageBox.Info);
@@ -293,7 +305,7 @@ namespace DipesLink.ViewModels
             ThreadLoadJobList.Start(jobIndex);
         }
 
-        private void EnableButtons(bool isEnable)
+        public void EnableButtons(bool isEnable)
         {
             // thinh
             Application.Current.Dispatcher.Invoke(new Action(() =>
@@ -338,12 +350,12 @@ namespace DipesLink.ViewModels
                 //if (SelectJob.SelectedJobFileList.Count <= 0)
                 //{
                 //    //SelectJob.JobType = ;
-                    
+
                 //}
 
             }));
         }
-        
+
 
 
         internal void DeleteJobAction(int jobIndex)
@@ -374,7 +386,7 @@ namespace DipesLink.ViewModels
                         //Deleted
                         jobModel.SaveJobFile(filePath);
                     }
-                   
+
                 }
                 catch (Exception)
                 {
@@ -419,7 +431,7 @@ namespace DipesLink.ViewModels
 
             if (jobModel == null) return;
             // thinh
-            
+
             SelectJob.Name = jobModel.Name;
             SelectJob.PrinterSeries = jobModel.PrinterSeries;
             SelectJob.JobType = jobModel.JobType;
@@ -442,9 +454,39 @@ namespace DipesLink.ViewModels
         {
             try
             {
+                //if (SelectJob.SelectedJob == null) return;
+                //// Empty the folder 
+                //string folderPath = SharedPaths.PathSelectedJobApp + $"Job{jobIndex + 1}";
+                //if (!Directory.Exists(folderPath))
+                //{
+                //    Directory.CreateDirectory(folderPath);
+                //}
+                //else
+                //{
+                //    string[] files = Directory.GetFiles(folderPath);
+                //    foreach (string file in files)
+                //    {
+                //        File.Delete(file);
+                //    }
+                //}
                 if (SelectJob.SelectedJob == null) return;
+                DeleteSeletedJob(jobIndex);
+                
+                // Save the selected job 
+                var selectJobName = SelectJob.SelectedJob;
+                JobModel? _jobModel = SharedFunctions.GetJob(selectJobName, jobIndex);
+                string filePath = SharedPaths.PathSelectedJobApp + $"Job{jobIndex + 1}\\" + _jobModel?.Name + SharedValues.Settings.JobFileExtension; // Save Job
+                _jobModel?.SaveJobFile(filePath);
+            }
+            catch (Exception) { }
+        }
+
+        internal void DeleteSeletedJob(int stationIndex)
+        {
+            try
+            {
                 // Empty the folder 
-                string folderPath = SharedPaths.PathSelectedJobApp + $"Job{jobIndex + 1}";
+                string folderPath = SharedPaths.PathSelectedJobApp + $"Job{stationIndex + 1}";
                 if (!Directory.Exists(folderPath))
                 {
                     Directory.CreateDirectory(folderPath);
@@ -457,17 +499,27 @@ namespace DipesLink.ViewModels
                         File.Delete(file);
                     }
                 }
+                JobList[stationIndex].CurrentCodeData = ""; 
+                JobList[stationIndex].CompareResult = ComparisonResult.None;
+                JobList[stationIndex].ProcessingTime = 0;
+                
+                JobList[stationIndex].SentDataNumber = "0";  
+                JobList[stationIndex].ReceivedDataNumber = "0";
+                JobList[stationIndex].PrintedDataNumber = "0";
 
-                // Save the selected job 
-                var selectJobName = SelectJob.SelectedJob;
-                JobModel? _jobModel = SharedFunctions.GetJob(selectJobName, jobIndex);
-                string filePath = SharedPaths.PathSelectedJobApp + $"Job{jobIndex + 1}\\" + _jobModel?.Name + SharedValues.Settings.JobFileExtension; // Save Job
-                _jobModel?.SaveJobFile(filePath);
+                JobOverview jobOverview = new JobOverview();
+                jobOverview.SentDataNumber = "0";
+
+                jobOverview.CompareResult = ComparisonResult.None;
+                jobOverview.ProcessingTime = 0;
+
+
             }
             catch (Exception) { }
         }
 
-      
+
+
 
         internal void SelectImageExportPath()
         {
@@ -484,7 +536,7 @@ namespace DipesLink.ViewModels
         {
             try
             {
-                SharedFunctions.AutoGenerateFileName(index,out string? jobName);
+                SharedFunctions.AutoGenerateFileName(index, out string? jobName);
                 CreateNewJob.Name = jobName;
             }
             catch (Exception) { }
@@ -498,7 +550,7 @@ namespace DipesLink.ViewModels
                 byte[] indexBytes = SharedFunctions.StringToFixedLengthByteArray(stationIndex.ToString(), 1);
                 byte[] actionTypeBytes = SharedFunctions.StringToFixedLengthByteArray(((int)ActionButtonType.ReloadTemplate).ToString(), 1);
                 byte[] combineBytes = SharedFunctions.CombineArrays(indexBytes, actionTypeBytes);
-                MemoryTransfer.SendActionButtonToDevice(listIPCUIToDevice1MB[stationIndex],stationIndex, combineBytes);
+                MemoryTransfer.SendActionButtonToDevice(listIPCUIToDevice1MB[stationIndex], stationIndex, combineBytes);
             }
             catch (Exception) { }
         }

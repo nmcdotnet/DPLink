@@ -88,10 +88,9 @@
                             VerticalAlignment="Center"
                             Orientation="Horizontal">
                             <Label
-                          
                                 Background="#00ABE6"
                                 Content="Total"
-                                FontSize="18"
+                                FontSize="15"
                                 Style="{StaticResource ArrowLabelStyle}" />
                         </StackPanel>
                         <TextBlock x:Name="TextBlockTotal" Style="{StaticResource TextBoxValueStyle}">
@@ -123,10 +122,9 @@
                             VerticalAlignment="Center"
                             Orientation="Horizontal">
                             <Label
-                               
                                 Background="#17A66E"
                                 Content="Printed "
-                                FontSize="18"
+                                FontSize="15"
                                 Style="{StaticResource ArrowLabelStyle}" />
                         </StackPanel>
                         <TextBlock x:Name="TextBlockPrinted" Style="{StaticResource TextBoxValueStyle}">2000,000</TextBlock>
@@ -157,7 +155,7 @@
                                 Width="110"
                                 Background="#0461A9"
                                 Content="Verified"
-                                FontSize="18"
+                                FontSize="15"
                                 Style="{StaticResource ArrowLabelStyle}" />
                         </StackPanel>
                         <TextBlock x:Name="TextBlockVerified" Style="{StaticResource TextBoxValueStyle}">2000,000</TextBlock>
@@ -185,10 +183,9 @@
                             VerticalAlignment="Center"
                             Orientation="Horizontal">
                             <Label
-                            
                                 Background="Green"
                                 Content="Valid"
-                                FontSize="18"
+                                FontSize="15"
                                 Style="{StaticResource ArrowLabelStyle}" />
                         </StackPanel>
                         <TextBlock x:Name="TextBlockValid" Style="{StaticResource TextBoxValueStyle}">2000,000</TextBlock>
@@ -216,10 +213,9 @@
                             VerticalAlignment="Center"
                             Orientation="Horizontal">
                             <Label
-                          
                                 Background="Red"
                                 Content="Failed"
-                                FontSize="18"
+                                FontSize="15"
                                 Style="{StaticResource ArrowLabelStyle}" />
                         </StackPanel>
                         <TextBlock x:Name="TextBlockFailed" Style="{StaticResource TextBoxValueStyle}">2000,000</TextBlock>

@@ -1,8 +1,10 @@
 ﻿using DipesLink.Models;
+using DipesLink.Views.Extension;
 using SharedProgram.Models;
 using SharedProgram.Shared;
 using System.Diagnostics;
 using System.IO;
+using static DipesLink.Views.Enums.ViewEnums;
 
 namespace DipesLink.ViewModels
 {
@@ -124,22 +126,29 @@ namespace DipesLink.ViewModels
 
         public static void KillDeviceTransferByIndex(int index = -1)
         {
-            if (index < 0) //Kill all process
-            {
-                for (int i = 0; i < ViewModelSharedValues.Running.NumberOfStation; i++)
-                {
-                    SharedFunctions.DeviceTransferKillProcess(ViewModelSharedValues.Running.StationList[i].TransferID);
-                }
-            }
-            else // kill by id
-            {
-                SharedFunctions.DeviceTransferKillProcess(ViewModelSharedValues.Running.StationList[index].TransferID);
-            }
+            SharedFunctions.DeviceTransferKillProcess(index);
+            //if (index < 0) //Kill all process
+            //{
+            //    for (int i = 0; i < ViewModelSharedValues.Running.NumberOfStation; i++)
+            //    {
+            //        SharedFunctions.DeviceTransferKillProcess(ViewModelSharedValues.Running.StationList[i].TransferID);
+            //    }
+            //}
+            //else // kill by id
+            //{
+            //    SharedFunctions.DeviceTransferKillProcess(ViewModelSharedValues.Running.StationList[index].TransferID);
+            //}
         }
-        public static void RestartDeviceTransfer(int jobIndex, JobOverview job)
+        public static Task RestartDeviceTransfer(JobOverview? job)
         {
-            KillDeviceTransferByIndex(job.DeviceTransferID); // kill old process
-            InitDeviceTransfer(job.DeviceTransferID); // start new process
+            // Thread t = new Thread(new ThreadStart(() => { })); MultiThread
+
+            return Task.Run(() => 
+             {
+                 KillDeviceTransferByIndex(job.DeviceTransferID); // kill old process
+                //await Task.Delay(5000); // 0.5s
+                job.DeviceTransferID = InitDeviceTransfer(job.Index); // start new process
+             });
         }
     }
 }

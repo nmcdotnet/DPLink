@@ -26,19 +26,33 @@ namespace DipesLinkDeviceTransfer
   
         private async Task InitDataAsync(JobModel selectedJob)
         {
+          //  Console.WriteLine("Toi bat dau load");
+
             if (_SelectedJob == null) return;
             if (selectedJob.CompareType == CompareType.Database)
             {
+                MemoryTransfer.SendLoadingStatusToUI(_ipcDeviceToUISharedMemory_DT, JobIndex, DataConverter.ToByteArray(LoadDataStatus.StartLoad));
                 Task<List<string[]>> databaseTsk = InitDatabaseAndPrintedStatusAsync(selectedJob); //Load database and update print status
                 Task<List<string[]>> checkedResultTsk = InitCheckedResultDataAsync(selectedJob); //Load list of checked result by cameras
                 await Task.WhenAll(databaseTsk, checkedResultTsk); // Wait for the lists to finish loading
+                //Console.WriteLine("Toi da load");
                 // Save to List
                 _ListPrintedCodeObtainFromFile = databaseTsk.Result;
                 _ListCheckedResultCode = checkedResultTsk.Result;
 
-                MemoryTransfer.SendDatabaseToUIFirstTime(_ipcDeviceToUISharedMemory_DB, JobIndex, DataConverter.ToByteArray(_ListPrintedCodeObtainFromFile)); // Send saved DB to UI
-                MemoryTransfer.SendCheckedDatabaseToUIFirstTime(_ipcDeviceToUISharedMemory_DB, JobIndex, DataConverter.ToByteArray(_ListCheckedResultCode)); // Send checked list to UI
-
+                Task a =  Task.Run(() =>
+                 {
+                     //Console.WriteLine("Task a work");
+                     MemoryTransfer.SendDatabaseToUIFirstTime(_ipcDeviceToUISharedMemory_DB, JobIndex, DataConverter.ToByteArray(_ListPrintedCodeObtainFromFile)); // Send saved DB to UI
+                 });
+                Task b =  Task.Run(() =>
+                {
+                    //Console.WriteLine("Task b work");
+                    MemoryTransfer.SendCheckedDatabaseToUIFirstTime(_ipcDeviceToUISharedMemory_DB, JobIndex, DataConverter.ToByteArray(_ListCheckedResultCode)); // Send checked list to UI
+                });
+              
+                await Task.WhenAll(a, b);
+                // đi tiếp
 #if DEBUG
                 Console.WriteLine("\nDatabase: {0} raw", _ListPrintedCodeObtainFromFile.Count-1);
                 Console.WriteLine("Printed: " + _ListPrintedCodeObtainFromFile.Count(item => item.Last() == "Printed")); // show row number was printed

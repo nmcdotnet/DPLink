@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace DipesLink.Views.SubWindows
@@ -16,6 +17,7 @@ namespace DipesLink.Views.SubWindows
             InitializeComponent();
             
             this.Loaded += PrinterWebView_Loaded;
+            this.Closing += PrinterWebView_Closing; // Handle the Closing event
         }
 
         public void SetWindowTitle(string title)
@@ -42,7 +44,21 @@ namespace DipesLink.Views.SubWindows
             {
                 var address = $"http://google.com";
                 webView.Source = new Uri(address);
-            } 
+            }
+        }
+
+        private void PrinterWebView_Closing(object sender, CancelEventArgs e)
+        {
+
+            // Detach event handlers
+            this.Loaded -= PrinterWebView_Loaded;
+            this.Closing -= PrinterWebView_Closing;
+            // Perform cleanup
+            if (webView != null)
+            {
+                webView.Dispose(); // Dispose of the webView if it's disposable
+                webView = null;   // Help the garbage collector by removing references
+            }
         }
     }
 }

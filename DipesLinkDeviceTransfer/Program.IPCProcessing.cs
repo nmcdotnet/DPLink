@@ -22,6 +22,7 @@ namespace DipesLinkDeviceTransfer
                 using IPCSharedHelper ipc = new(JobIndex, "UIToDeviceSharedMemory_DT", SharedValues.SIZE_1MB, isReceiver: true);
                 if (ipc == null) { await Console.Out.WriteLineAsync("Deo co gi"); };
                 await Console.Out.WriteLineAsync(JobIndex.ToString());
+                MemoryTransfer.SendRestartStatusToUI(_ipcDeviceToUISharedMemory_DT, JobIndex, DataConverter.ToByteArray(RestartStatus.Successful));
                 while (true)
                 {
                     bool isCompleteDequeue = ipc.MessageQueue.TryDequeue(out byte[]? result);
@@ -279,7 +280,8 @@ namespace DipesLinkDeviceTransfer
                         "printedPathString",
                         _SelectedJob.PrintedResponePath);
 
-                    await InitDataAsync(_SelectedJob);
+                    Console.WriteLine(" in ra thu: " + _SelectedJob.DatabasePath); 
+                      await InitDataAsync(_SelectedJob);
 
                     // Notify for UI, done load DB
 

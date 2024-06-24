@@ -91,6 +91,7 @@ namespace DipesLinkDeviceTransfer
             // Check list POD code for Print and Check
             if (_CodeListPODFormat == null || _CodeListPODFormat.IsEmpty)
             {
+                Console.WriteLine("_CodeListPODFormat is null" + _CodeListPODFormat);
                 return CheckCondition.MissingParameterActivation;
             }
 

@@ -1,15 +1,17 @@
 ﻿using DipesLink.ViewModels;
+using DipesLink.Views.Extension;
 using DipesLink.Views.SubWindows;
 using DipesLink.Views.UserControls.CustomControl;
 using SharedProgram.Models;
+using System;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
+using static DipesLink.Views.Enums.ViewEnums;
 using TextBox = System.Windows.Controls.TextBox;
-
 namespace DipesLink.Views.UserControls.MainUc
 {
     /// <summary>
@@ -22,14 +24,24 @@ namespace DipesLink.Views.UserControls.MainUc
         public JobSettings()
         {
             InitializeComponent();
+            EventRegister();
+
+
+        }
+
+      private void EventRegister()
+        {
             Loaded += SettingsUc_Loaded;
             TextBoxPrinterIP.TextChanged += TextBox_ParamsChanged;
             TextBoxCamIP.TextChanged += TextBox_ParamsChanged;
             TextBoxControllerIP.TextChanged += TextBox_ParamsChanged;
-           
+            ViewModelSharedEvents.MainListBoxMenuChange += ViewModelSharedEvents_MainListBoxMenuChange;
         }
-      
 
+        private void ViewModelSharedEvents_MainListBoxMenuChange(object? sender, EventArgs e)
+        {
+            CurrentViewModel<MainViewModel>().LockChoosingStation();
+        }
 
         private void SettingsUc_Loaded(object sender, RoutedEventArgs e)
         {
@@ -48,26 +60,6 @@ namespace DipesLink.Views.UserControls.MainUc
             }
          
         }
-
-       
-        //public void CallbackCommand(Action<MainViewModel> execute)
-        //{
-        //    try
-        //    {
-        //        if (DataContext is MainViewModel model)
-        //        {
-        //            execute?.Invoke(model);
-        //        }
-        //        else
-        //        {
-        //            return;
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return;
-        //    }
-        //}
 
         private T? CurrentViewModel<T>() where T : class
         {
@@ -131,6 +123,9 @@ namespace DipesLink.Views.UserControls.MainUc
                     case "TextBoxControllerPort":
                         vm.ConnectParamsList[CurrentIndex()].ControllerPort = textBox.Text;
                         break;
+                    case "TextBoxErrorField":
+                        vm.ConnectParamsList[CurrentIndex()].FailedDataSentToPrinter = textBox.Text;
+                        break;
                     case "NumDelaySensor":
                         vm.ConnectParamsList[CurrentIndex()].DelaySensor = int.Parse(textBox.Text);
                         break;
@@ -143,9 +138,7 @@ namespace DipesLink.Views.UserControls.MainUc
                     case "NumEncoderDia":
                         vm.ConnectParamsList[CurrentIndex()].EncoderDiameter = double.Parse(textBox.Text);
                         break;
-                    case "TextBoxErrorField":
-                        vm.ConnectParamsList[CurrentIndex()].FailedDataSentToPrinter = textBox.Text;
-                        break;
+                    
                     default:
                         break;
                 }
@@ -203,7 +196,7 @@ namespace DipesLink.Views.UserControls.MainUc
         }
         private void ButtonWebView_Click(object sender, RoutedEventArgs e)
         {
-            try
+              try
             {
                 int index = ListBoxMenu.SelectedIndex;
                 var domain = CurrentViewModel<MainViewModel>()?.ConnectParamsList[index].PrinterIP;
@@ -393,6 +386,32 @@ namespace DipesLink.Views.UserControls.MainUc
         {
             // Check if the input is a number, if not, handle the event
             e.Handled = !int.TryParse(e.Text, out _);
+        }
+
+        
+        private async void RestartButton_Click(object sender, RoutedEventArgs e)
+        {
+            var res = CusMsgBox.Show("Do you want to restart ?", "Restart Station", Enums.ViewEnums.ButtonStyleMessageBox.OKCancel, Enums.ViewEnums.ImageStyleMessageBox.Info);
+            if (res)
+            {
+                var vm = CurrentViewModel<MainViewModel>();
+                var job = vm?.JobList[CurrentIndex()];
+                int t = CurrentIndex();
+                vm.DeleteSeletedJob(CurrentIndex());
+                vm.UpdateJobInfo(CurrentIndex());
+                await ViewModelSharedFunctions.RestartDeviceTransfer(job);
+                if(job.DeviceTransferID == null || job.DeviceTransferID == 0)
+                {
+                    CusAlert.Show($"Station {job.Index + 1}: Restart Failed!", ImageStyleMessageBox.Error);
+                }
+                else
+                {
+                    CusAlert.Show($"Station {job.Index + 1}: Restart Successfully!", ImageStyleMessageBox.Info);
+                }
+                vm.AutoSaveConnectionSetting(CurrentIndex());
+                //string f = vm?.JobList[CurrentIndex()]?.CameraIP;
+                //string c = vm?.ConnectParamsList[CurrentIndex()].CameraIP;
+            }
         }
     }
 }

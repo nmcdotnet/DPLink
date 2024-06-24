@@ -282,7 +282,7 @@
                                     Height="{StaticResource MenuIconSize}"
                                     Margin="5,0,0,0"
                                     HorizontalAlignment="Left">
-                                    <fa:IconImage Foreground="Gray" Icon="FileCircleCheck" />
+                                    <fa:IconImage Foreground="#00ABE6" Icon="FileCircleCheck" />
                                 </Viewbox>
                                 <TextBlock
                                     Grid.Column="1"
