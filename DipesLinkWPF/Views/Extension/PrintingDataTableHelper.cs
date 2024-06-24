@@ -17,23 +17,13 @@ namespace DipesLink.Views.Extension
         private int _rowIndex;
         public event EventHandler? OnDetectMissPrintedCode;
         public DataTable? PrintedDataTable { get; private set; }
-        public void RaiseDetectMissPrintedCode()
-        {
-            OnDetectMissPrintedCode?.Invoke(CurrentViewModel?.Index, EventArgs.Empty);
-        }
+        private OptimizedSearch? _optimizedSearch;
+      
 
-        /// <summary>
-        /// Load DB to DataGrid and Limit Row
-        /// </summary>
-        /// <param name="dbList"></param>
-        /// <param name="dataGrid"></param>
-        /// <param name="currentPage"></param>
-        /// <param name="currentViewModel"></param>
         public async Task InitDatabaseAsync(List<string[]> dbList, DataGrid dataGrid, int currentPage, JobOverview? currentViewModel)
         {
-            if(dbList is null || dbList.IsEmpty()) return;
+            if (dbList is null || dbList.IsEmpty()) return;
             PrintedDataTable = new();
-            //DataTable dataTable = new();
             await Task.Run(() =>
             {
                 foreach (var header in dbList[0]) // add column
@@ -45,8 +35,12 @@ namespace DipesLink.Views.Extension
                     PrintedDataTable.Rows.Add(dbList[i]);
                 }
                 _orgDBList = dbList;
+                if (_orgDBList != null)
+                {
+                    InitializeOptimizedSearch(_orgDBList);
+                }
                 CounterPrintedFirstLoad(PrintedDataTable);
-               
+
             });
 
             // Update UI after datatable loaded
@@ -55,45 +49,54 @@ namespace DipesLink.Views.Extension
                 if (currentViewModel == null) return;
                 CurrentViewModel = currentViewModel;
                 dataGrid.Columns.Clear();
-                ProcessMiniPage(dataGrid, PrintedDataTable, currentPage);
+                ProcessMiniPageAsync(dataGrid, PrintedDataTable, currentPage);
                 currentViewModel.IsShowLoadingDB = Visibility.Collapsed;
             });
         }
-      
-        private int FindIndexByData(string[] printedCode, List<string[]> dbList) => dbList
-            .FindIndex(x => x.Take(x.Length - 1).SequenceEqual(printedCode.Take(printedCode.Length - 1))) - 1;
 
         private void CounterPrintedFirstLoad(DataTable dataTable)
         {
             PrintedNumber = dataTable.Select("Status = 'Printed'").Length;
         }
+        
+        public void InitializeOptimizedSearch(List<string[]> dbList)
+        {
+            _optimizedSearch = new OptimizedSearch(dbList);
+        }
 
-        /// <summary>
-        /// Status change 
-        /// </summary>
-        /// <param name="printedCode"></param>
-        /// <param name="currentViewModel"></param>
-        /// <param name="dataGrid"></param>
-        public void ChangeStatusOnDataGrid(string[] printedCode, JobOverview? currentViewModel, DataGrid dataGrid)
+        public async void ChangeStatusOnDataGrid(string[] printedCode, JobOverview? currentViewModel, DataGrid dataGrid)
         {
             if (currentViewModel == null) return;
             string rowIdentifier = printedCode[0];
             string newStatus = printedCode[^1];
             CurrentViewModel = currentViewModel;
             int _rowIndexTotal = 0;
-            if (_orgDBList != null)
-            {
-                _rowIndexTotal = FindIndexByData(printedCode, _orgDBList);
-            }
 
-            // Debug.WriteLine("Page: " + CurrentViewModel.CurrentPage);
-            //  Debug.WriteLine("MyIndex: " + CurrentViewModel.CurrentIndex);
+            if (_optimizedSearch != null)
+            {
+                _rowIndexTotal = _optimizedSearch.FindIndexByData(printedCode);
+            }
+            if (Paginator == null) return;
             int currentPage = Paginator.GetCurrentPageNumber(_rowIndexTotal);
             if (Paginator != null && currentPage != Paginator.CurrentPage)
             {
                 Paginator.CurrentPage = currentPage;
-                UpdateDataGrid(dataGrid);
+                await UpdateDataGridAsync(dataGrid);
             }
+            // Use dictionary for fast lookups if possible
+
+            //Dictionary<string, DataRow> rowLookup = CurrentViewModel.MiniDataTable.Rows
+            //    .Cast<DataRow>()
+            //    .ToDictionary(row => row[0].ToString(), row => row);
+
+            //if (rowLookup.TryGetValue(rowIdentifier, out DataRow rowToUpdate))
+            //{
+            //    rowToUpdate["Status"] = newStatus;
+            //    //if (newStatus != "Printed")
+            //    //{
+
+            //    //}
+            //}
             foreach (DataRow row in CurrentViewModel.MiniDataTable.Rows)
             {
                 _rowIndex = CurrentViewModel.MiniDataTable.Rows.IndexOf(row);
@@ -103,85 +106,100 @@ namespace DipesLink.Views.Extension
                     row["Status"] = newStatus;
                     if (newStatus != "Printed")
                     {
-                        RaiseDetectMissPrintedCode();
+                        //RaiseDetectMissPrintedCode();
                     }
-
                     break;
                 }
             }
             ScrollIntoView(_rowIndex, dataGrid);
         }
 
-        /// <summary>
-        /// Creates a small page of 500 lines of data (default)
-        /// </summary>
-        /// <param name="dataGrid"></param>
-        /// <param name="dataTable"></param>
-        public void ProcessMiniPage(DataGrid dataGrid, DataTable dataTable, int currentPage)
+        public async void ProcessMiniPageAsync(DataGrid dataGrid, DataTable dataTable, int currentPage)
         {
             Paginator = new Paginator(dataTable);
             if (Paginator == null) return;
             Paginator.CurrentPage = currentPage;
-            foreach (DataColumn column in Paginator.GetPage(Paginator.CurrentPage).Columns)
+            DataTable? pageTable = null;
+            try
             {
-                if (column.ColumnName == "Status")
+                pageTable = await Task.Run(() => Paginator.GetPage(Paginator.CurrentPage));
+                foreach (DataColumn column in pageTable.Columns)
                 {
-                    DataGridTemplateColumn templateColumn = new() { Header = column.ColumnName, Width = DataGridLength.Auto };
-                    DataTemplate template = new();
-                    FrameworkElementFactory factory = new(typeof(Image)); // Create Image UI by Code behind instead XAML
-                    Binding binding = new(column.ColumnName) { Converter = new StatusToIconConverter() };
-
-                    factory.SetValue(Image.SourceProperty, binding); // Set binding for Image.
-                    factory.SetValue(Image.HeightProperty, 20.0); // Image Height
-                    factory.SetValue(Image.WidthProperty, 20.0);  // Image Width
-
-                    template.VisualTree = factory; // add UI to VisualTree Template
-                    templateColumn.CellTemplate = template; // CellTemplate = Template
-                    dataGrid.Columns.Add(templateColumn); // Add DataGridTemplateColumn
-                }
-                else
-                {
-                    DataGridTextColumn textColumn = new()
+                    if (column.ColumnName == "Status")
                     {
-                        Header = column.ColumnName,
-                        Binding = new Binding(column.ColumnName),
-                        Width = 100
-                    };
-                    dataGrid.Columns.Add(textColumn);
+                        DataGridTemplateColumn templateColumn = new() { Header = column.ColumnName, Width = DataGridLength.Auto };
+                        DataTemplate template = new();
+                        FrameworkElementFactory factory = new(typeof(Image)); // Create Image UI by Code behind instead XAML
+                        Binding binding = new(column.ColumnName) { Converter = new StatusToIconConverter() };
+
+                        factory.SetValue(Image.SourceProperty, binding); // Set binding for Image.
+                        factory.SetValue(Image.HeightProperty, 20.0); // Image Height
+                        factory.SetValue(Image.WidthProperty, 20.0);  // Image Width
+
+                        template.VisualTree = factory; // add UI to VisualTree Template
+                        templateColumn.CellTemplate = template; // CellTemplate = Template
+                        dataGrid.Columns.Add(templateColumn); // Add DataGridTemplateColumn
+                    }
+                    else
+                    {
+                        DataGridTextColumn textColumn = new()
+                        {
+                            Header = column.ColumnName,
+                            Binding = new Binding(column.ColumnName),
+                            Width = 100
+                        };
+                        dataGrid.Columns.Add(textColumn);
+                    }
                 }
             }
-            UpdateDataGrid(dataGrid);
+            catch (Exception)
+            {
+            }
+            finally
+            {
+                pageTable?.Dispose();
+            }
+
+            await UpdateDataGridAsync(dataGrid);
         }
 
-        /// <summary>
-        /// Update Mini DataGrid 
-        /// </summary>
-        /// <param name="dataGrid"></param>
-        public void UpdateDataGrid(DataGrid dataGrid)
+        public async Task UpdateDataGridAsync(DataGrid dataGrid)
         {
             if (Paginator != null)
             {
                 if (CurrentViewModel == null) return;
-                CurrentViewModel.MiniDataTable = Paginator.GetPage(Paginator.CurrentPage); // Load mini datatable by current page
-                dataGrid.AutoGenerateColumns = false;
-                dataGrid.ItemsSource = CurrentViewModel.MiniDataTable.DefaultView;
+                try
+                {
+                    CurrentViewModel.MiniDataTable = await Task.Run(() => Paginator.GetPage(Paginator.CurrentPage));
+                    Application.Current.Dispatcher.Invoke(() =>  //Update UI Flow
+                    {
+                        dataGrid.AutoGenerateColumns = false;
+                        dataGrid.ItemsSource = CurrentViewModel.MiniDataTable.DefaultView;
+                    });
+                }
+                catch (Exception)
+                {
+                }
+                finally
+                {
+                    CurrentViewModel.MiniDataTable?.Dispose();
+                }
             }
         }
 
-        /// <summary>
-        /// Scroll to row DataGrid
-        /// </summary>
-        /// <param name="rowIndex"></param>
-        /// <param name="dataGrid"></param>
         public static void ScrollIntoView(int rowIndex, DataGrid dataGrid)
         {
             if (rowIndex >= 0 && rowIndex < dataGrid.Items.Count)
             {
                 dataGrid.ScrollIntoView(dataGrid.Items[rowIndex]);
-                dataGrid.SelectedIndex = rowIndex;
-                DataGridRow row = (DataGridRow)dataGrid.ItemContainerGenerator.ContainerFromIndex(rowIndex);
-                row?.Focus();
             }
+            //if (rowIndex >= 0 && rowIndex < dataGrid.Items.Count)
+            //{
+            //    dataGrid.ScrollIntoView(dataGrid.Items[rowIndex]);
+            //    dataGrid.SelectedIndex = rowIndex;
+            //    DataGridRow row = (DataGridRow)dataGrid.ItemContainerGenerator.ContainerFromIndex(rowIndex);
+            //    row?.Focus();
+            //}
         }
 
     }

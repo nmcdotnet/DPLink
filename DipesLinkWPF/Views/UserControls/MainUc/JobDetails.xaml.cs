@@ -25,11 +25,12 @@ namespace DipesLink.Views.UserControls.MainUc
     {
 
         PrintingDataTableHelper _printingDataTableHelper = new();
-        CheckedObserHelper _checkedObserHelper = new();
+       
         JobOverview? _currentJob;
         ConcurrentQueue<string[]> _queueCheckedCode = new();
         public static event EventHandler<int>? OnJobDetailChange;
-        
+        CheckedObserHelper? _checkedObserHelper = new();
+
         int count = 0;
         public JobDetails()
         {
@@ -94,7 +95,7 @@ namespace DipesLink.Views.UserControls.MainUc
 
         private void _printingDataTableHelper_OnDetectMissPrintedCode(object? sender, EventArgs e)
         {
-            _currentJob?.OnStopButtonCommandClick(); // Stop Printer while miss Printed code (this is option)
+          //  _currentJob?.OnStopButtonCommandClick(); // Stop Printer while miss Printed code (this is option)
         }
 
         #region VIEWMODEL HANDLER
@@ -270,32 +271,20 @@ namespace DipesLink.Views.UserControls.MainUc
             try
             {
                 if (_currentJob == null) return;
-                JobLogsWindow jobLogsWindow = new();
-                //{
-                //    DataContext = DataContext as JobOverview,
-                //    CheckedDataTable = _checkedObserHelper?.GetDataTableDB().Copy(),// Copy does not affect the original data
-                //    Num_TotalChecked = _currentJob.TotalRecDb,
-                //    Num_Printed = int.Parse(_currentJob.PrintedDataNumber),
-                //    Num_Failed = int.Parse(_currentJob.TotalFailed),
-                //    Num_Valid = int.Parse(_currentJob.TotalChecked) - int.Parse(_currentJob.TotalFailed),
-                //    Num_Verified = int.Parse(_currentJob.TotalChecked)
-                //};
-                jobLogsWindow.DataContext = DataContext as JobOverview;
-                jobLogsWindow.CheckedDataTable = _checkedObserHelper?.GetDataTableDB().Copy();
-                jobLogsWindow.Num_TotalChecked = _currentJob.TotalRecDb;
+             
+                JobLogsWindow jobLogsWindow = new(_checkedObserHelper)
+                {
+                    DataContext = DataContext as JobOverview,
+                   // CheckedDataTable = _checkedObserHelper?.GetDataTableDB().Copy(),
+                    Num_TotalChecked = _currentJob.TotalRecDb
+                };
 
                 if (int.TryParse(_currentJob.PrintedDataNumber, out int printed))
                 {
                     jobLogsWindow.Num_Printed = printed;
                 }
 
-                //if( int.TryParse(_currentJob.TotalFailed, out int failed)){
-                //    jobLogsWindow.Num_Failed = failed;
-                //    if (int.TryParse(_currentJob.TotalChecked, out int check))
-                //    {
-                //        jobLogsWindow.Num_Valid = check - failed;
-                //    }
-                //}
+        
                 if (int.TryParse(TextBlockTotalChecked.Text, out int totalChecked))
                 {
                     jobLogsWindow.Num_Verified = totalChecked;
@@ -317,8 +306,11 @@ namespace DipesLink.Views.UserControls.MainUc
             try
             {
                 if (_currentJob == null) return;
-                PrintedLogsWindow printedLogsWindow = new(_currentJob);
-                printedLogsWindow.ShowDialog();
+              
+                    PrintedLogsWindow printedLogsWindow = new(_currentJob);
+                    printedLogsWindow.ShowDialog();
+              
+              
             }
             catch (Exception)
             {

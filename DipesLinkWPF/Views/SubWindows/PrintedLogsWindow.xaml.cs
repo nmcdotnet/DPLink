@@ -1,19 +1,19 @@
-﻿using DipesLink.Models;
+﻿using Cloudtoid;
+using DipesLink.Models;
 using DipesLink.Views.Converter;
 using DipesLink.Views.Extension;
 using SharedProgram.Shared;
+using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
-using System.Text.RegularExpressions;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using System.Windows.Media;
-using Cloudtoid;
 using System.Windows.Input;
-using Microsoft.VisualBasic.Devices;
+using System.Windows.Media;
 
 namespace DipesLink.Views.SubWindows
 {
@@ -25,35 +25,56 @@ namespace DipesLink.Views.SubWindows
         JobLogsDataTableHelper? _jobLogsDataTableHelper = new();
         public DataTable? PrintedDataTable { get; set; } = new();
         private string? _pageInfo;
-        private JobOverview _currentJob;
+        private JobOverview? _currentJob;
 
         public PrintedLogsWindow(JobOverview currentJob)
         {
             _currentJob = currentJob;
             InitializeComponent();
-            Loaded += JobLogsWindow_Loaded;
-            Closed += PrintedLogsWindow_Closed;
+            Loaded += PrintedLogsWindow_Loaded;
+            this.Closing += PrintedLogsWindow_Closing;
         }
 
-        private void PrintedLogsWindow_Closed(object? sender, EventArgs e)
+
+
+        private async void PrintedLogsWindow_Closing(object? sender, CancelEventArgs e)
         {
-            if (PrintedDataTable != null)
+            e.Cancel = true; // Cancel the default close operation
+           await Task.Run(async () =>
             {
-                PrintedDataTable.Clear();
-                PrintedDataTable.Dispose();
-                PrintedDataTable = null;
-            }
-
-            if (_jobLogsDataTableHelper != null)
-            {
-                _jobLogsDataTableHelper.Dispose();
-                _jobLogsDataTableHelper = null;
-            }
-
-            _currentJob = null;
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
+                await CleanupResourcesAsync();
+                Dispatcher.Invoke(() =>  // Close the window on the UI thread after cleanup
+                {
+                    Closing -= PrintedLogsWindow_Closing; // Prevent re-entry
+                    Close(); // Now close the window
+                });
+            });
         }
+
+        private async Task CleanupResourcesAsync()
+        {
+            await Task.Run(() =>
+            {
+                if (PrintedDataTable != null)
+                {
+                    PrintedDataTable.Clear();
+                    PrintedDataTable.Dispose();
+                    PrintedDataTable = null;
+                }
+
+                if (_jobLogsDataTableHelper != null)
+                {
+                    _jobLogsDataTableHelper.Dispose();
+                    _jobLogsDataTableHelper = null;
+                }
+
+                _currentJob = null;
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            });
+        }
+
+
 
         private T? CurrentViewModel<T>() where T : class
         {
@@ -144,7 +165,6 @@ namespace DipesLink.Views.SubWindows
                 {
                     TextBlockWait.Text = (total - printed).ToString();
                 }
-              
             }
             catch (Exception)
             {
@@ -152,20 +172,12 @@ namespace DipesLink.Views.SubWindows
             }
            
         }
-        private async void JobLogsWindow_Loaded(object sender, RoutedEventArgs e)
+
+        private async void PrintedLogsWindow_Loaded(object sender, RoutedEventArgs e)
         {
-          
-            _jobLogsDataTableHelper = new JobLogsDataTableHelper();
-
-            var taskLoadPrintedList = InitDatabaseAndPrintedStatusAsync();
-            await taskLoadPrintedList;
-            var listData = taskLoadPrintedList.Result;
-
-            CreateDataTemplate(DataGridResult);
-            var taskCreateDataTable = InitDatabaseAsync(listData);
-            await taskCreateDataTable;
-            PrintedDataTable = taskCreateDataTable.Result;
-
+            Stopwatch? stopwatch = Stopwatch.StartNew();
+            await Task.Run(() => { CreateDataTemplate(DataGridResult);});
+            PrintedDataTable = await InitDatabaseAsync(await InitDatabaseAndPrintedStatusAsync());
             if (_jobLogsDataTableHelper == null) return;
             if (PrintedDataTable != null)
             {
@@ -173,6 +185,9 @@ namespace DipesLink.Views.SubWindows
             }
             UpdateNumber(); 
             UpdatePageInfo();
+            stopwatch.Stop();
+            Debug.Write($"Time loaded printed data: {stopwatch.ElapsedMilliseconds} ms\n");
+            stopwatch = null;
         }
 
         private void UpdatePageInfo()
@@ -182,32 +197,32 @@ namespace DipesLink.Views.SubWindows
             TextBoxPage.Text = (_jobLogsDataTableHelper?.Paginator?.CurrentPage + 1).ToString(); // Get current page for Textbox Page
         }
 
-        private void PageAction_Click(object sender, RoutedEventArgs e)
+        private async void PageAction_Click(object sender, RoutedEventArgs e)
         {
             if (_jobLogsDataTableHelper == null || _jobLogsDataTableHelper.Paginator == null) return;
             Button button = (Button)sender;
             switch (button.Name)
             {
                 case "ButtonFirst":
-                    _jobLogsDataTableHelper.UpdateDataGridAsync(DataGridResult, 1);
+                    await _jobLogsDataTableHelper.UpdateDataGridAsync(DataGridResult, 1);
                     break;
 
                 case "ButtonBack":
                     if (_jobLogsDataTableHelper.Paginator.PreviousPage())
                     {
-                        _jobLogsDataTableHelper.UpdateDataGridAsync(DataGridResult);
+                       await _jobLogsDataTableHelper.UpdateDataGridAsync(DataGridResult);
                     }
                     break;
 
                 case "ButtonNext":
                     if (_jobLogsDataTableHelper.Paginator.NextPage())
                     {
-                        _jobLogsDataTableHelper.UpdateDataGridAsync(DataGridResult);
+                        await _jobLogsDataTableHelper.UpdateDataGridAsync(DataGridResult);
                     }
                     break;
 
                 case "ButtonEnd":
-                    _jobLogsDataTableHelper.UpdateDataGridAsync(DataGridResult, _jobLogsDataTableHelper.Paginator.TotalPages);
+                    await _jobLogsDataTableHelper.UpdateDataGridAsync(DataGridResult, _jobLogsDataTableHelper.Paginator.TotalPages);
                     break;
 
                 case "ButtonGotoPage":
@@ -249,14 +264,14 @@ namespace DipesLink.Views.SubWindows
             }
         }
 
-        private void GotoPageAction()
+        private async void GotoPageAction()
         {
             if (_jobLogsDataTableHelper == null || _jobLogsDataTableHelper.Paginator == null) return;
             if (int.TryParse(TextBoxPage.Text, out int page))
             {
                 if (page > 0 && page <= _jobLogsDataTableHelper.Paginator.TotalPages)
                 {
-                    _jobLogsDataTableHelper.UpdateDataGridAsync(DataGridResult, page);
+                   await _jobLogsDataTableHelper.UpdateDataGridAsync(DataGridResult, page);
                 }
                 else
                 {
@@ -288,7 +303,6 @@ namespace DipesLink.Views.SubWindows
                 default: break;
             }
 
-           // Tác vụ search nặng không hoạt động
             await _jobLogsDataTableHelper.DatabaseFilteredForPrintStatusAsync(DataGridResult, type);
            
             UpdatePageInfo();
@@ -302,38 +316,26 @@ namespace DipesLink.Views.SubWindows
 
         private async Task SearchActionAsync()
         {
-
             if (_jobLogsDataTableHelper == null || _jobLogsDataTableHelper.Paginator == null) return;
-
             await _jobLogsDataTableHelper.DatabaseSearchForPrintStatusAsync(DataGridResult, TextBoxSearch.Text);
-
-            // Cập nhật giao diện người dùng sau khi hoàn thành tìm kiếm
+            
+            // Updates the user interface after completing a search
             Application.Current.Dispatcher.Invoke(() =>
             {
                 UpdatePageInfo();
                 ButtonPaginationVis();
             });
-
-
-
         }
-        private void ButtonRF_Click(object sender, RoutedEventArgs e)
+
+        private async void ButtonRF_Click(object sender, RoutedEventArgs e)
         {
             TextBoxSearch.Text = "";
-            SearchActionAsync();
+            await SearchActionAsync();
         }
-
-      
-
-        private void DataGridResult_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            
-        }
-
 
         #region Get Cell Value
        
-        public static DataGridCell GetCell(DataGrid dataGrid, DataGridRow row, int column)
+        public static DataGridCell? GetCell(DataGrid dataGrid, DataGridRow row, int column)
         {
             if (row != null)
             {
@@ -381,17 +383,14 @@ namespace DipesLink.Views.SubWindows
         private void ButtonRePrint_Click(object sender, RoutedEventArgs e)
         {
             var currentJob = CurrentViewModel<JobOverview>();
-            if (currentJob != null)
-            {
-                currentJob.RaiseReprint(currentJob.Index);
-            }
+            currentJob?.RaiseReprint(currentJob.Index);
         }
 
         private async Task<List<string[]>> InitDatabaseAndPrintedStatusAsync()
         {
             var path = SharedPaths.PathSubJobsApp + $"{_currentJob.Index + 1}\\" + "printedPathString";
-
             var pathstr = SharedFunctions.ReadStringOfPrintedResponePath(path);
+
             // Get path db and printed list
             var pathDatabase = _currentJob?.DatabasePath;
             var pathBackupPrintedResponse = SharedPaths.PathPrintedResponse + $"Job{_currentJob?.Index + 1}\\" + pathstr;
@@ -409,62 +408,57 @@ namespace DipesLink.Views.SubWindows
 
         private static List<string[]> InitDatabase(string? path)
         {
-            List<string[]> result = new(); // List result
-            if (!File.Exists(path))
+            List<(int index, string[] data)> result = new(); // List to store index and data
+            if (path == null || !File.Exists(path))
             {
-                return result;
+                return result.Select(t => t.data).ToList();
             }
+
             try
             {
-
-                using var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite); // Only Read,
-                using var reader = new StreamReader(fileStream, Encoding.UTF8, true);
-                var rexCsvSplitter = path.EndsWith(".csv") ? new Regex(@",(?=(?:[^""]*""[^""]*"")*(?![^""]*""))") : new Regex(@"[\t]");
-                int lineCounter = -1;
+                var lines = File.ReadAllLines(path);
                 int columnCount = 0;
-                while (!reader.EndOfStream)
+                if (lines.Length > 0)
                 {
-                    string[] line = rexCsvSplitter.Split(reader.ReadLine()).Select(x => Csv.Unescape(x)).ToArray();
-                    lineCounter++;
-                    if (lineCounter == 0)
+                    var firstLine = SplitLine(lines[0], path.EndsWith(".csv"));
+                    columnCount = firstLine.Length + 2;
+                    var headerRow = new string[columnCount];
+                    headerRow[0] = "Index";
+                    headerRow[^1] = "Status";
+                    for (int i = 1; i < headerRow.Length - 1; i++)
                     {
-                        // Create additional database columns
-                        var tmp = new string[line.Length + 2];
-                        tmp[0] = "Index"; // thêm cột Index ở đầu
-                        tmp[^1] = "Status"; // Thêm cột status ở cuối (^1 đại diện phần tử cuối)
-                        for (int i = 1; i < tmp.Length - 1; i++)
-                        {
-                            tmp[i] = line[i - 1] + $" - Field{i}"; // Thêm chữ field vào cạnh column
-                        }
-                        columnCount = tmp.Length;
-                        result.Add(tmp);
+                        headerRow[i] = firstLine[i - 1] + $" - Field{i}";
                     }
-                    else
-                    {
-                        // ignore empty line 
-                        //if (line.Length == 1 && line[0] == "") continue;
-                        // handle database row before adding
-                        var tmp = new string[columnCount];
-                        tmp[0] = "" + lineCounter;
-                        tmp[columnCount - 1] = "Waiting"; // thêm trạng thái waiting cho trường status
-                        for (int i = 1; i < tmp.Length - 1; i++)
-                        {
-                            if (i - 1 < line.Length)
-                            {
-                                tmp[i] = line[i - 1];
-                            }
-                            else
-                            {
-                                tmp[i] = "";
-                            }
-                        }
-                        result.Add(tmp);
-                    }
+                    result.Add((0, headerRow));
                 }
+
+                Parallel.ForEach(lines.Skip(1), (line, state, index) =>
+                {
+                    var columns = SplitLine(line, path.EndsWith(".csv"));
+                    var row = new string[columnCount];
+                    row[0] = (index + 1).ToString();
+                    row[^1] = "Waiting";
+                    for (int i = 1; i < row.Length - 1; i++)
+                    {
+                        row[i] = i - 1 < columns.Length ? Csv.Unescape(columns[i - 1]) : "";
+                    }
+                    lock (result)
+                    {
+                        result.Add(((int)index + 1, row));
+                    }
+                });
+
+                result.Sort((a, b) => a.index.CompareTo(b.index)); // Sort by index
             }
             catch (IOException) { }
             catch (Exception) { }
-            return result;
+
+            return result.Select(t => t.data).ToList(); // Return sorted data
+        }
+
+        private static string[] SplitLine(string line, bool isCsv)
+        {
+            return isCsv ? line.Split(',') : line.Split('\t');
         }
 
         private static void InitPrintedStatus(string pathBackupPrinted, List<string[]> dbList)
@@ -473,48 +467,38 @@ namespace DipesLink.Views.SubWindows
             {
                 return;
             }
-            try
+
+            // Use FileStream with buffering
+            using FileStream fs = new(pathBackupPrinted, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.SequentialScan);
+            using StreamReader reader = new(fs, Encoding.UTF8, true);
+
+            // Read all lines at once
+            var lines = reader.ReadToEnd().Split(Environment.NewLine);
+
+            if (lines.Length < 2) return; // If there are less than 2 lines, there's nothing to process
+
+            // Skip the first line (header) and process the rest in parallel
+            Parallel.For(1, lines.Length, i =>
             {
-                using StreamReader reader = new(pathBackupPrinted, Encoding.UTF8, true);
-                int i = -1;
-                var rexCsvSplitter = pathBackupPrinted.EndsWith(".csv") ? new Regex(@",(?=(?:[^""]*""[^""]*"")*(?![^""]*""))") : new Regex(@"[\t]");
-                while (!reader.EndOfStream)
+                if (string.IsNullOrWhiteSpace(lines[i])) return;
+                string line = lines[i];
+                var columns = line.Split(',');
+                if (columns.Length > 0)
                 {
-                    i++;
-                    if (i == 0) // Leave out the first row
+                    string indexString = Csv.Unescape(columns[0]);
+                    if (int.TryParse(indexString, out int index))
                     {
-                        reader.ReadLine();
-                    }
-                    else
-                    {
-                        string line = Csv.Unescape(rexCsvSplitter.Split(reader.ReadLine())[0]);
-                        if (int.TryParse(line, out int index))
-                        {
-                            dbList[index][^1] = "Printed"; // Get rows by index and last column ^1 Updated with the content Printed
-                        }
+                        dbList[index][^1] = "Printed"; // Get rows by index and update the last column with "Printed"
                     }
                 }
-            }
-            catch (IOException) { }
-            catch (Exception) { }
+            });
         }
 
-        //private async Task TextBoxSearch_KeyDownAsync(object sender, System.Windows.Input.KeyEventArgs e)
-        //{
-        //    if (e.Key == Key.Enter)
-        //    {
-        //        await ButtonSearch_ClickAsync(sender, e);
-        //    }
-
-        //}
-
-     
-
-        private void TextBoxSearch_KeyDownAsync(object sender, KeyEventArgs e)
+        private async void TextBoxSearch_KeyDownAsync(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                SearchActionAsync();
+               await SearchActionAsync();
             }
         }
     }

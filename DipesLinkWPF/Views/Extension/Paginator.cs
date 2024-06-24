@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace DipesLink.Views.Extension
 {
-    public class Paginator
+    public class Paginator : IDisposable
     {
+        private bool disposedValue;
+
         public DataTable SourceData { get; set; }
 
         public static int PageSize { get; private set; }
@@ -65,6 +67,26 @@ namespace DipesLink.Views.Extension
         public bool IsLastRowInPage(int rowIndex)
         {
             return rowIndex % PageSize == PageSize - 1;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    SourceData?.Dispose();
+                }
+
+                // Release unmanaged resources here.
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }
