@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
+using static DipesLink.Views.Enums.ViewEnums;
 using TextBox = System.Windows.Controls.TextBox;
 namespace DipesLink.Views.UserControls.MainUc
 {
@@ -195,7 +196,7 @@ namespace DipesLink.Views.UserControls.MainUc
         }
         private void ButtonWebView_Click(object sender, RoutedEventArgs e)
         {
-            try
+              try
             {
                 int index = ListBoxMenu.SelectedIndex;
                 var domain = CurrentViewModel<MainViewModel>()?.ConnectParamsList[index].PrinterIP;
@@ -399,6 +400,14 @@ namespace DipesLink.Views.UserControls.MainUc
                 vm.DeleteSeletedJob(CurrentIndex());
                 vm.UpdateJobInfo(CurrentIndex());
                 await ViewModelSharedFunctions.RestartDeviceTransfer(job);
+                if(job.DeviceTransferID == null || job.DeviceTransferID == 0)
+                {
+                    CusAlert.Show($"Station {job.Index + 1}: Restart Failed!", ImageStyleMessageBox.Error);
+                }
+                else
+                {
+                    CusAlert.Show($"Station {job.Index + 1}: Restart Successfully!", ImageStyleMessageBox.Info);
+                }
                 vm.AutoSaveConnectionSetting(CurrentIndex());
                 //string f = vm?.JobList[CurrentIndex()]?.CameraIP;
                 //string c = vm?.ConnectParamsList[CurrentIndex()].CameraIP;

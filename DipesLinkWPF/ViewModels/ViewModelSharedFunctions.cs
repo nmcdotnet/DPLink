@@ -1,8 +1,10 @@
 ﻿using DipesLink.Models;
+using DipesLink.Views.Extension;
 using SharedProgram.Models;
 using SharedProgram.Shared;
 using System.Diagnostics;
 using System.IO;
+using static DipesLink.Views.Enums.ViewEnums;
 
 namespace DipesLink.ViewModels
 {
@@ -140,14 +142,13 @@ namespace DipesLink.ViewModels
         public static Task RestartDeviceTransfer(JobOverview? job)
         {
             // Thread t = new Thread(new ThreadStart(() => { })); MultiThread
-           
+
             return Task.Run(() => 
              {
                  KillDeviceTransferByIndex(job.DeviceTransferID); // kill old process
                 //await Task.Delay(5000); // 0.5s
                 job.DeviceTransferID = InitDeviceTransfer(job.Index); // start new process
-            });
-           
+             });
         }
     }
 }
