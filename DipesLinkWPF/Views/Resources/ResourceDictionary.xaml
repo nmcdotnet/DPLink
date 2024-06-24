@@ -25,7 +25,7 @@
     <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="#FF26A0DA" />
     <SolidColorBrush x:Key="Item.SelectedInactive.Background" Color="#44C2ED" />
     <SolidColorBrush x:Key="Item.SelectedInactive.Border" Color="Transparent" />
-    
+
     <Style x:Key="ListBoxItemStyleMenu" TargetType="{x:Type ListBoxItem}">
         <Setter Property="SnapsToDevicePixels" Value="True" />
         <Setter Property="Padding" Value="4,12,0,0" />
@@ -119,7 +119,7 @@
                             <Setter TargetName="Bd" Property="Background" Value="{StaticResource ListBox.Disabled.Background}" />
                             <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource ListBox.Disabled.Border}" />
                         </Trigger>
-                       
+
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="IsGrouping" Value="true" />
@@ -128,7 +128,7 @@
                             <Setter Property="ScrollViewer.CanContentScroll" Value="false" />
                         </MultiTrigger>
 
-                        
+
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

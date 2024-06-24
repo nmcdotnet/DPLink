@@ -333,7 +333,7 @@ namespace DipesLink.ViewModels
                 {
                     SelectJob.SelectedJobFileList.Add(item);
                 }
-                // thinh
+            
                 numberOfSelectedJobList = SelectJob.SelectedJobFileList.Count;
                 //if (SelectJob.SelectedJobFileList.Count <= 0)
                 //{

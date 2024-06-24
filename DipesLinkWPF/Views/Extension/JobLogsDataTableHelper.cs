@@ -18,7 +18,7 @@ namespace DipesLink.Views.Extension
         public Paginator? Paginator { get; set; }
         private DataTable? _miniDataTable;
         private DataTable? _originalDataTable;
-
+        private bool disposedValue = false;
         public int NumberItemInCurPage;
 
         public async Task InitDatabaseAsync(DataTable dataTable, DataGrid dataGrid, JobOverview currentViewModel = null)
@@ -27,16 +27,15 @@ namespace DipesLink.Views.Extension
             await ProcessMiniPageAsync(dataGrid, dataTable);
         }
 
-
         public async Task DatabaseSearchForPrintStatusAsync(DataGrid dataGrid, string keyword)
         {
-            DataTable searchTable = null;
+            DataTable? searchTable = null;
             try
             {
                 searchTable = await Task.Run(() =>
                 {
                     // Creates a list containing filter condition strings
-                    List<string> filterConditions = new List<string>();
+                    List<string> filterConditions = new();
 
                     // Browse through all columns in the DataTable
                     foreach (DataColumn column in _originalDataTable.Columns)
@@ -65,18 +64,13 @@ namespace DipesLink.Views.Extension
             catch (Exception) { }
             finally
             {
-                // Giải phóng tài nguyên
-                if (searchTable != null)
-                {
-                    searchTable.Dispose();
-                }
+                searchTable?.Dispose();
             }
         }
 
-
         public async Task DatabaseSearchAsync(DataGrid dataGrid,string keyword)
         {
-            DataTable searchTable = null;
+            DataTable? searchTable = null;
             try
             {
                 searchTable = await Task.Run(() =>
@@ -96,14 +90,6 @@ namespace DipesLink.Views.Extension
                     });
                     return dataView.ToTable();
                 });
-                //string filterString = $"Index LIKE '%{keyword}%' OR ResultData LIKE '%{keyword}%' OR Result LIKE '%{keyword}%' OR ProcessingTime LIKE '%{keyword}%' OR DateTime LIKE '%{keyword}%'";
-                //if (keyword == "") filterString = ""; // Refresh button
-                //DataView dataView = new(_originalDataTable)
-                //{
-                //    RowFilter = filterString
-                //};
-                //DataTable searchTable = dataView.ToTable();
-                //dataGrid.Columns.Clear();
                 await ProcessMiniPageAsync(dataGrid, searchTable);
             }
             catch (Exception){ }
@@ -156,7 +142,7 @@ namespace DipesLink.Views.Extension
             });
         }
 
-        public void DatabaseFiltered(DataGrid dataGrid, FilteredKeyword keyword)
+        public async Task DatabaseFilteredAsync(DataGrid dataGrid, FilteredKeyword keyword)
         {
             try
             {
@@ -205,23 +191,21 @@ namespace DipesLink.Views.Extension
                 }
                 DataTable filteredTable = dataView.ToTable();
                 dataGrid.Columns.Clear();
-                ProcessMiniPageAsync(dataGrid, filteredTable);
+                await ProcessMiniPageAsync(dataGrid, filteredTable);
             }
             catch (Exception) { }
         }
-
-
 
         public async Task ProcessMiniPageAsync(DataGrid dataGrid, DataTable dataTable)
         {
             Paginator = new Paginator(dataTable);
             if (Paginator == null) return;
-            DataTable pageTable = null;
+            DataTable? pageTable = null;
             try
             {
                 pageTable = await Task.Run(() => Paginator.GetPage(Paginator.CurrentPage));
 
-                foreach (DataColumn column in Paginator.GetPage(Paginator.CurrentPage).Columns)
+                foreach (DataColumn column in pageTable.Columns)
                 {
                     if (column.ColumnName == "Result" || column.ColumnName == "Status")
                     {
@@ -270,25 +254,19 @@ namespace DipesLink.Views.Extension
             await UpdateDataGridAsync(dataGrid);
         }
 
-
         public async Task UpdateDataGridAsync(DataGrid dataGrid, int customPage = 0)
         {
             if (Paginator != null)
             {
                 if (customPage == 0) { }
-                else
-                {
-                    Paginator.CurrentPage = customPage - 1;
-                }
+                else Paginator.CurrentPage = customPage - 1;
                 try
                 {
                     _miniDataTable = await Task.Run(() => Paginator.GetPage(Paginator.CurrentPage)); // Load mini datatable by current page
                     if (_miniDataTable != null)
                     {
-                       // NumberItemInCurPage = _miniDataTable.Rows.Count;
                         Interlocked.Exchange(ref NumberItemInCurPage, _miniDataTable.Rows.Count);
-                        // Cập Nhật Luồng UI
-                        Application.Current.Dispatcher.Invoke(() =>
+                        Application.Current.Dispatcher.Invoke(() =>  //Update UI Flow
                         {
                             dataGrid.AutoGenerateColumns = false;
                             dataGrid.ItemsSource = _miniDataTable.DefaultView;
@@ -305,20 +283,23 @@ namespace DipesLink.Views.Extension
                 }
             }
         }
-
-        private bool disposedValue = false;
-
+       
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
                 if (disposing)
                 {
-                    // Giải phóng các tài nguyên được quản lý (managed resources) ở đây.
+                    // Free managed resources (managed resources) here.
+                    _miniDataTable?.Dispose();
+                    _originalDataTable?.Dispose();
+                    _miniDataTable = null;
+                    _originalDataTable = null;
+                    Paginator?.Dispose();
+                    Paginator = null;
                 }
 
-                // Giải phóng các tài nguyên không được quản lý (unmanaged resources) ở đây.
-
+                // Release unmanaged resources here.
                 disposedValue = true;
             }
         }

@@ -9,7 +9,7 @@ using System.Windows.Data;
 
 namespace DipesLink.Views.Extension
 {
-    public class CheckedObserHelper : ViewModelBase
+    public class CheckedObserHelper : ViewModelBase, IDisposable
     {
         #region Declarations    
 
@@ -56,58 +56,79 @@ namespace DipesLink.Views.Extension
             GetStatistic();
         }
 
-        public DataTable GetDataTableDB()
+        //public DataTable GetDataTableDB()
+        //{
+        //    string[] columnNames = new string[5] { "Index", "ResultData", "Result", "ProcessingTime", "DateTime" }; // Default header col
+        //    var dataTable = new DataTable();
+        //    var list = CheckedList?.ToList();
+        //    if (list == null) return dataTable;
+
+        //    try
+        //    {
+        //            // Add Header columns
+        //            foreach (var columnName in columnNames)
+        //            {
+        //                dataTable.Columns.Add(columnName);
+        //            }
+
+        //            // Add rows
+        //            foreach (CheckedResultModel array in list)
+        //            {
+        //                DataRow row = dataTable.NewRow();
+
+        //                row["Index"] = array.Index != null ? array.Index : DBNull.Value;
+        //                row["ResultData"] = array.ResultData != null ? array.ResultData : DBNull.Value;
+        //                row["Result"] = array.Result != null ? array.Result : DBNull.Value;
+        //                row["ProcessingTime"] = array.ProcessingTime != null ? array.ProcessingTime : DBNull.Value;
+        //                row["DateTime"] = array.DateTime != null ? array.DateTime : DBNull.Value;
+
+        //                dataTable.Rows.Add(row);
+        //            }
+        //        return dataTable;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return dataTable;
+        //    }
+        //}
+
+        public async Task<DataTable> GetDataTableDBAsync()
         {
-            string[] columnNames = new string[5] { "Index", "ResultData", "Result", "ProcessingTime", "DateTime" }; // Default header col
-            var DataTable = new DataTable();
-            var list = CheckedList?.ToList();
-            if (list == null) return DataTable;
-            try
+            return await Task.Run(() =>
             {
-                // Add Header column
-                int numberOfColumns = 5; // or get dynamic with list[0].Length;
-                for (int i = 0; i < numberOfColumns; i++)
-                {
-                    string columnName = columnNames.Length > i ? columnNames[i] : $"Column{i + 1}";
-                    DataTable.Columns.Add(columnName);
-                }
+                string[] columnNames = new string[5] { "Index", "ResultData", "Result", "ProcessingTime", "DateTime" }; // Default header col
+                var dataTable = new DataTable();
+                var list = CheckedList?.ToList();
+                if (list == null) return dataTable;
 
-                // Add row
-                foreach (CheckedResultModel? array in list)
+                try
                 {
-                    DataRow row = DataTable.NewRow();
-                    var properties = typeof(CheckedResultModel).GetProperties();
-
-                    for (int i = 0; i < columnNames.Length; i++)
+                    // Add Header columns
+                    foreach (var columnName in columnNames)
                     {
-                        object data = new();
-                        switch (i)
-                        {
-                            case 0:
-                                if (array.Index != null) data = array.Index;
-                                break;
-                            case 1:
-                                if (array.ResultData != null) data = array.ResultData;
-                                break;
-                            case 2:
-                                if (array.Result != null) data = array.Result;
-                                break;
-                            case 3:
-                                if (array.ProcessingTime != null) data = array.ProcessingTime;
-                                break;
-                            case 4:
-                                if (array.DateTime != null) data = array.DateTime;
-                                break;
-                            default:
-                                break;
-                        }
-                        row[i] = data;
+                        dataTable.Columns.Add(columnName);
                     }
-                    DataTable.Rows.Add(row);
+
+                    // Add rows
+                    foreach (CheckedResultModel array in list)
+                    {
+                        DataRow row = dataTable.NewRow();
+
+                        row["Index"] = array.Index != null ? array.Index : DBNull.Value;
+                        row["ResultData"] = array.ResultData != null ? array.ResultData : DBNull.Value;
+                        row["Result"] = array.Result != null ? array.Result : DBNull.Value;
+                        row["ProcessingTime"] = array.ProcessingTime != null ? array.ProcessingTime : DBNull.Value;
+                        row["DateTime"] = array.DateTime != null ? array.DateTime : DBNull.Value;
+
+                        dataTable.Rows.Add(row);
+                    }
+                    return dataTable;
                 }
-                return DataTable;
-            }
-            catch (Exception) { return DataTable; }
+                catch (Exception)
+                {
+                    return dataTable;
+                }
+            });
         }
 
         public void CreateDataTemplate(DataGrid dataGrid)
@@ -182,6 +203,39 @@ namespace DipesLink.Views.Extension
                 }
             }
         }
+
+        private bool disposedValue = false;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // Release managed resources here.
+                    CheckedList?.Clear();
+                    CheckedList = null;
+
+                    Application.Current.Dispatcher?.Invoke(() =>
+                    {
+                        DisplayList?.Clear();
+                        DisplayList = null;
+
+                    });
+                }
+
+                // Release unmanaged resources here.
+
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+
         #endregion
     }
 }
