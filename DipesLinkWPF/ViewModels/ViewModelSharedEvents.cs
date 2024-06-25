@@ -20,5 +20,17 @@ namespace DipesLink.ViewModels
         {
             OnJobDetailChange?.Invoke(null, currentJob);
         }
+
+        public static event EventHandler<int>? OnRestartStation;
+        public static void OnRestartStationHandler(int currentStation)
+        {
+            OnRestartStation?.Invoke(null, currentStation);
+        }
+
+        public static event EventHandler? OnListBoxMenuSelectionChange;
+        public static void OnListBoxMenuSelectionChangeHandler(int index)
+        {
+            OnListBoxMenuSelectionChange?.Invoke(index, EventArgs.Empty);
+        }
     }
 }

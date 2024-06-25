@@ -128,7 +128,7 @@ namespace IPCSharedMemory
                 Array.Copy(data, 0, newCommand, command.Length, data.Length); // copy array 2 to new array start from length array 1
                                                                               // Console.WriteLine("Send: "+ newCommand.Length);
                 SendDatabaseCommandToUI(ipc, newCommand); // send memory map file
-                Console.WriteLine("Send DB:" + newCommand.Length);
+              //  Console.WriteLine("Send DB:" + newCommand.Length);
             }
             catch (Exception) { }
         }

@@ -35,8 +35,8 @@ namespace DipesLink.Views.UserControls.MainUc
             {
                 var uc = new OverviewJobUc
                 {
-                    Margin = new Thickness(0, 5, 0, 0),
-                    Height = 200,
+                    Margin = new Thickness(0, 10, 0, 0),
+                    Height = 210,
                     ViewModel = vm
                 };
                 ItemsPanel.Children.Add(uc);

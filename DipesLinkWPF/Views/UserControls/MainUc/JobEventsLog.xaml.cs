@@ -17,7 +17,7 @@ namespace DipesLink.Views.UserControls.MainUc
         {
             InitializeComponent();
             this.Loaded += JobEventsLog_Loaded;
-            MainWindow.ListBoxMenuSelectionChange += MainWindow_ListBoxMenuSelectionChange;
+           ViewModelSharedEvents.OnListBoxMenuSelectionChange += MainWindow_ListBoxMenuSelectionChange;
         }
 
         private void MainWindow_ListBoxMenuSelectionChange(object? sender, EventArgs e)
