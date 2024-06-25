@@ -22,7 +22,7 @@ namespace DipesLink.Views
     {
         public static event EventHandler<EventArgs>? MainWindowSizeChangeCustomEvent;
         public static SplashScreenLoading? SplashScreenLoading = new();
-        public static event EventHandler? ListBoxMenuSelectionChange;
+       
         public static int currentStation = 0;
         public MainWindow()
         {
@@ -68,7 +68,8 @@ namespace DipesLink.Views
 
         private void ListBoxMenu_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            ListBoxMenuSelectionChange?.Invoke(ListBoxMenu.SelectedIndex, EventArgs.Empty);
+     
+            ViewModelSharedEvents.OnListBoxMenuSelectionChangeHandler(ListBoxMenu.SelectedIndex);
             if (ListBoxMenu.SelectedIndex != -1)
                 ComboBoxSelectView.SelectedIndex = 0;
             if (sender is ListBox lb)

@@ -575,19 +575,10 @@
                                                         PreviewTextInput="TextBox_PreviewTextInput"
                                                         Text="{Binding DelaySensor, FallbackValue=0000}"
                                                         TextChanged="TextBox_ParamsChanged" />
-                                                    <!--<NumUd:NumericUpDown
-                                                        x:Name="NumDelaySensor"
-                                                        Width="100"
-                                                        Height="30"
+                                                    <TextBlock
+                                                        Width="170"
                                                         VerticalAlignment="Center"
-                                                        BorderBrush="LightBlue"
-                                                        DecimalPlaces="0"
-                                                        Increment="1"
-                                                        Maximum="1000"
-                                                        Minimum="0"
-                                                        PreviewTextInput="NumDelaySensor_PreviewTextInput"
-                                                        ValueChanged="Integer_ValueChanged"
-                                                        Value="{Binding DelaySensor}" />-->
+                                                        Text="mm" />
                                                 </StackPanel>
 
                                                 <StackPanel Margin="0,3,0,0" Orientation="Horizontal">
@@ -605,6 +596,10 @@
                                                         PreviewTextInput="TextBox_PreviewTextInput"
                                                         Text="{Binding DisableSensor, FallbackValue=0000}"
                                                         TextChanged="TextBox_ParamsChanged" />
+                                                    <TextBlock
+                                                        Width="170"
+                                                        VerticalAlignment="Center"
+                                                        Text="mm" />
                                                 </StackPanel>
 
                                                 <StackPanel Margin="0,3,0,0" Orientation="Horizontal">
@@ -622,6 +617,10 @@
                                                         PreviewTextInput="TextBox_PreviewTextInput"
                                                         Text="{Binding PulseEncoder, FallbackValue=0000}"
                                                         TextChanged="TextBox_ParamsChanged" />
+                                                    <TextBlock
+                                                        Width="170"
+                                                        VerticalAlignment="Center"
+                                                        Text="mm" />
                                                 </StackPanel>
 
                                                 <StackPanel Margin="0,3,0,0" Orientation="Horizontal">
@@ -639,6 +638,10 @@
                                                         PreviewTextInput="TextBox_PreviewTextInput"
                                                         Text="{Binding EncoderDiameter, FallbackValue=0000}"
                                                         TextChanged="TextBox_ParamsChanged" />
+                                                    <TextBlock
+                                                        Width="170"
+                                                        VerticalAlignment="Center"
+                                                        Text="mm" />
                                                 </StackPanel>
 
                                                 <!--<StackPanel Margin="0,3,0,0">

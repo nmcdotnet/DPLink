@@ -20,8 +20,6 @@ namespace DipesLinkDeviceTransfer
             {
               
                 using IPCSharedHelper ipc = new(JobIndex, "UIToDeviceSharedMemory_DT", SharedValues.SIZE_1MB, isReceiver: true);
-                if (ipc == null) { await Console.Out.WriteLineAsync("Deo co gi"); };
-                await Console.Out.WriteLineAsync(JobIndex.ToString());
                 MemoryTransfer.SendRestartStatusToUI(_ipcDeviceToUISharedMemory_DT, JobIndex, DataConverter.ToByteArray(RestartStatus.Successful));
                 while (true)
                 {
@@ -35,7 +33,6 @@ namespace DipesLinkDeviceTransfer
                                 {
                                     // Get Params Setting for Connection (IP, Port) device 
                                     case (byte)SharedMemoryType.ParamsSetting:
-                                        await Console.Out.WriteLineAsync("Co Vao Day Khong");
                                         GetConenctionParams(result);
                                         break;
 
@@ -212,7 +209,6 @@ namespace DipesLinkDeviceTransfer
             Task<int> connectionCode = CheckDeviceConnectionAsync();
             if (connectionCode == null) return;
             int code = connectionCode.Result;
-           // if (code == 1) code = 0; // bypass check cam connection
             if (code == 0)
             {
                 if (startWithDB)
@@ -248,19 +244,15 @@ namespace DipesLinkDeviceTransfer
         {
             try
             {
-
-
                 string? selectedJobName = SharedFunctions.GetSelectedJobNameList(JobIndex).FirstOrDefault();
                 _SelectedJob = SharedFunctions.GetJobSelected(selectedJobName, JobIndex);
-                await Console.Out.WriteLineAsync(_SelectedJob.Index.ToString());
+                await Console.Out.WriteLineAsync(_SelectedJob?.Index.ToString());
                 if (_SelectedJob != null)
                 {
-                    //Lấy trạng thái cho các mode lưu vào biến
                     _IsAfterProductionMode = _SelectedJob.JobType == JobType.AfterProduction;
                     _IsOnProductionMode = _SelectedJob.JobType == JobType.OnProduction;
                     _IsVerifyAndPrintMode = _SelectedJob.JobType == JobType.VerifyAndPrint;
 
-                    //Reset các biến
                     _TotalCode = 0;
                     NumberOfSentPrinter = 0;
                     ReceivedCode = 0;
@@ -270,7 +262,6 @@ namespace DipesLinkDeviceTransfer
                     NumberOfCheckPassed = 0;
                     NumberOfCheckFailed = 0;
 
-                    // Làm rỗng các danh sách
                     _ListCheckedResultCode.Clear();
                     _ListPrintedCodeObtainFromFile.Clear();
                     _CodeListPODFormat.Clear();
@@ -279,19 +270,12 @@ namespace DipesLinkDeviceTransfer
                         SharedPaths.PathSubJobsApp + $"{JobIndex + 1}\\",
                         "printedPathString",
                         _SelectedJob.PrintedResponePath);
-
-                    Console.WriteLine(" in ra thu: " + _SelectedJob.DatabasePath); 
                       await InitDataAsync(_SelectedJob);
-
-                    // Notify for UI, done load DB
-
-                    //MemoryTransfer.SendMessageJobStatusToUI(JobIndex, DataConverter.ToByteArray(tmp));
-
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                await Console.Out.WriteLineAsync(ex.Message);
+
             }
         }
         private void NotificationProcess(NotifyType notifyType)

@@ -494,10 +494,7 @@ namespace DipesLink.ViewModels
                 else
                 {
                     string[] files = Directory.GetFiles(folderPath);
-                    foreach (string file in files)
-                    {
-                        File.Delete(file);
-                    }
+                    foreach (string file in files) { File.Delete(file); }
                 }
                 JobList[stationIndex].CurrentCodeData = ""; 
                 JobList[stationIndex].CompareResult = ComparisonResult.None;
@@ -507,13 +504,12 @@ namespace DipesLink.ViewModels
                 JobList[stationIndex].ReceivedDataNumber = "0";
                 JobList[stationIndex].PrintedDataNumber = "0";
 
-                JobOverview jobOverview = new JobOverview();
-                jobOverview.SentDataNumber = "0";
-
-                jobOverview.CompareResult = ComparisonResult.None;
-                jobOverview.ProcessingTime = 0;
-
-
+                JobOverview jobOverview = new()
+                {
+                    SentDataNumber = "0",
+                    CompareResult = ComparisonResult.None,
+                    ProcessingTime = 0
+                };
             }
             catch (Exception) { }
         }

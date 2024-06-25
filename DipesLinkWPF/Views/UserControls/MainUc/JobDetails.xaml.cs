@@ -15,6 +15,7 @@ using System.Windows;
 using System.Windows.Controls;
 using static SharedProgram.DataTypes.CommonDataType;
 using System.Data;
+using System.Threading.Channels;
 
 namespace DipesLink.Views.UserControls.MainUc
 {
@@ -24,22 +25,43 @@ namespace DipesLink.Views.UserControls.MainUc
     public partial class JobDetails : UserControl
     {
 
-        PrintingDataTableHelper _printingDataTableHelper = new();
-       
-        JobOverview? _currentJob;
-        ConcurrentQueue<string[]> _queueCheckedCode = new();
+        private PrintingDataTableHelper? _printingDataTableHelper;
+        private JobOverview? _currentJob;
+        private ConcurrentQueue<string[]> _queueCheckedCode = new();
         private CheckedObserHelper _checkedObserHelper = new();
-        int count = 0;
+        private ConcurrentQueue<string[]> _queuePrintedCode = new();
+        private int count = 0;
+        private CancellationTokenSource ctsGetPrintedCode = new();
         public JobDetails()
         {
             InitializeComponent();
             Loaded += StationDetailUc_Loaded;
+            ViewModelSharedEvents.OnRestartStation += ViewModelSharedEvents_OnRestartStation;
+            ViewModelSharedEvents.OnListBoxMenuSelectionChange += ViewModelSharedEvents_OnListBoxMenuSelectionChange;
             InitValues();
             Task.Run(() => { TaskAddDataAsync(); });
-            Task.Run(() => { TaskChangePrintStatusAsync(); });
-            Debug.WriteLine("JobDetails !" + ++count);
+            Task.Run(()=> { TaskChangePrintStatusAsync(); });
         }
 
+        private void ViewModelSharedEvents_OnListBoxMenuSelectionChange(object? sender, EventArgs e)
+        {
+            EventRegister();
+        }
+
+        private void ViewModelSharedEvents_OnRestartStation(object? sender, int e)
+        {
+            if(_currentJob is not null && _currentJob.Index == e)
+            {
+                _printingDataTableHelper?.Dispose();
+                _printingDataTableHelper = null;
+                InitValues();
+                DataGridDB.ItemsSource=null;
+                DataGridDB.Columns.Clear(); 
+                DataGridResult.ItemsSource=null;
+                DataGridResult.Columns.Clear();
+                _currentJob = null;
+            }
+        }
 
         public void InitValues()
         {
@@ -47,6 +69,7 @@ namespace DipesLink.Views.UserControls.MainUc
             TextBlockTotalPassed.Text = "0";
             TextBlockTotalFailed.Text = "0";
         }
+
         public async void StationDetailUc_Loaded(object sender, RoutedEventArgs e)
         {
             EventRegister();
@@ -58,11 +81,13 @@ namespace DipesLink.Views.UserControls.MainUc
             }
 
         }
+
         private async Task PerformLoadDbAfterDelay()
         {
             await Task.Delay(1000); // waiting for 3s connection completed
             _currentJob?.RaiseLoadDb(_currentJob.Index);
         }
+
         public void EventRegister()
         {
             try
@@ -80,16 +105,15 @@ namespace DipesLink.Views.UserControls.MainUc
                     _currentJob.OnChangePrintedCode += Shared_OnChangePrintedCode;
                     _currentJob.OnLoadCompleteCheckedDatabase += Shared_OnLoadCompleteCheckedDatabase;
                     _currentJob.OnChangeCheckedCode += Shared_OnChangeCheckedCode;
+                    _printingDataTableHelper = new();
+
+
                 }
-                _printingDataTableHelper.OnDetectMissPrintedCode += _printingDataTableHelper_OnDetectMissPrintedCode;
+              
             }
             catch (Exception) { }
         }
 
-        private void _printingDataTableHelper_OnDetectMissPrintedCode(object? sender, EventArgs e)
-        {
-          //  _currentJob?.OnStopButtonCommandClick(); // Stop Printer while miss Printed code (this is option)
-        }
 
         #region VIEWMODEL HANDLER
 
@@ -111,6 +135,7 @@ namespace DipesLink.Views.UserControls.MainUc
                 return;
             }
         }
+
         private T? CurrentViewModel<T>() where T : class
         {
             if (DataContext is T viewModel)
@@ -123,15 +148,11 @@ namespace DipesLink.Views.UserControls.MainUc
             }
         }
 
+
         #endregion VIEWMODEL HANDLER
 
         #region DATAGRID FOR DATABASE
 
-        /// <summary>
-        /// Detect Firstload Database
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void Shared_OnLoadCompleteDatabase(object? sender, EventArgs e)
         {
             Application.Current.Dispatcher.Invoke(async () =>
@@ -144,13 +165,6 @@ namespace DipesLink.Views.UserControls.MainUc
             });
         }
 
-        ConcurrentQueue<string[]> _queuePrintedCode = new();
-
-        /// <summary>
-        /// Detect new Printed Code
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void Shared_OnChangePrintedCode(object? sender, EventArgs e)
         {
             if (sender is string[] printedCode)
@@ -158,31 +172,38 @@ namespace DipesLink.Views.UserControls.MainUc
                 _queuePrintedCode.Enqueue(printedCode);
             }
         }
-        private void TaskChangePrintStatusAsync()
+
+       
+        private async void TaskChangePrintStatusAsync()
         {
-            Application.Current.Dispatcher.Invoke(new Action(async () =>
+            try
             {
                 while (true)
                 {
+                    if (ctsGetPrintedCode.IsCancellationRequested && _queuePrintedCode.IsEmpty)
+                    {
+                        ctsGetPrintedCode.Token.ThrowIfCancellationRequested();
+                    }
                     if (_queuePrintedCode.TryDequeue(out var code))
                     {
-                        _printingDataTableHelper.ChangeStatusOnDataGrid(code, CurrentViewModel<JobOverview>(), DataGridDB);
+                        Application.Current.Dispatcher.Invoke(() =>  //Update UI Flow
+                        {
+                            _printingDataTableHelper?.ChangeStatusOnDataGrid(code, CurrentViewModel<JobOverview>(), DataGridDB);
+                        });
                     }
                     await Task.Delay(5);
                 }
-            }));
-
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.WriteLine("The task getting printed is stopped !");
+            }
         }
 
         #endregion DATAGRID FOR AFTER PRODUCTION
 
         #region DATAGRID FOR CHECKED CODE
 
-        /// <summary>
-        /// First load checked DB
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void Shared_OnLoadCompleteCheckedDatabase(object? sender, EventArgs e)
         {
             var listChecked = sender as List<string[]>;
@@ -212,11 +233,6 @@ namespace DipesLink.Views.UserControls.MainUc
             }
         }
 
-        /// <summary>
-        /// Detect new checked code 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void Shared_OnChangeCheckedCode(object? sender, EventArgs e)
         {
             if (sender is string[] checkedCode && checkedCode != null)
@@ -309,13 +325,6 @@ namespace DipesLink.Views.UserControls.MainUc
             {
             }
         }
-
-     
        
-
-        //private void Border_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        //{
-        //    _currentJob?.OnStopButtonCommandClick();
-        //}
     }
 }
