@@ -24,7 +24,9 @@ namespace DipesLink.Views.Extension
         public async Task InitDatabaseAsync(List<string[]> dbList, DataGrid dataGrid, int currentPage, JobOverview? currentViewModel)
         {
             if (dbList is null || dbList.IsEmpty()) return;
+           // PrintedDataTable = null;
             PrintedDataTable = new();
+            
             await Task.Run(() =>
             {
                 foreach (var header in dbList[0]) // add column
@@ -201,12 +203,13 @@ namespace DipesLink.Views.Extension
                 {
                     Paginator?.Dispose();
                     _orgDBList?.Clear();
+                    PrintedDataTable?.Clear();
                     PrintedDataTable?.Dispose();
                     _optimizedSearch?.Dispose();
 
                     Paginator = null;
                     _orgDBList = null;
-                    PrintedDataTable=null;
+                   
                     _optimizedSearch = null;
                 }
                 disposedValue = true;
