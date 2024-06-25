@@ -44,14 +44,12 @@ namespace DipesLink.ViewModels
 
         public MainViewModel()
         {
-          
             ViewModelSharedFunctions.LoadSetting();
             _NumberOfStation = ViewModelSharedValues.Settings.NumberOfStation;
             StationSelectedIndex = _NumberOfStation > 0 ? _NumberOfStation - 1 : StationSelectedIndex;
             InitDir();
             InitJobConnectionSettings();
             InitStations(_NumberOfStation);
-
         }
 
         List<IPCSharedHelper> listIPCUIToDevice1MB = new();
@@ -144,6 +142,7 @@ namespace DipesLink.ViewModels
             job = jobModel;
             return true;
         }
+
         internal void GetCurrentJobDetail(int index)
         {
             JobModel? jobModel;
@@ -281,6 +280,7 @@ namespace DipesLink.ViewModels
                 };
                 Debug.WriteLine("Reload Database for job: " + stationIndex);
                 JobList[stationIndex].IsShowLoadingDB = Visibility.Visible;
+                JobList[stationIndex].IsStartButtonEnable = false;
                 byte[] listBytes = result.Skip(3).ToArray();
                 List<string[]>? listDatabase = DataConverter.FromByteArray<List<string[]>>(listBytes);
                 List<(List<string[]>, int)> dbInfo = new(1);
@@ -769,7 +769,8 @@ namespace DipesLink.ViewModels
                     CusMsgBox.Show("Database do not exist !", "Notification", ButtonStyleMessageBox.OK, ImageStyleMessageBox.Error);
                     break;
                 case NotifyType.CheckedResultDoNotExist:
-                    CusMsgBox.Show("Checked result do not exist !", "Notification", ButtonStyleMessageBox.OK, ImageStyleMessageBox.Error);
+                    // CusMsgBox.Show("Checked result do not exist !", "Notification", ButtonStyleMessageBox.OK, ImageStyleMessageBox.Error);
+                    CusAlert.Show($"Station {stationIndex + 1}: Checked result do not exist !", ImageStyleMessageBox.Warning);
                     break;
                 case NotifyType.PrintedResponseDoNotExist:
                     CusMsgBox.Show("Printed response do not exist !", "Notification", ButtonStyleMessageBox.OK, ImageStyleMessageBox.Error);

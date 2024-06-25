@@ -25,7 +25,6 @@ namespace DipesLink.Views.UserControls.MainUc
     {
 
         PrintingDataTableHelper _printingDataTableHelper = new();
-       
         JobOverview? _currentJob;
         ConcurrentQueue<string[]> _queueCheckedCode = new();
         private CheckedObserHelper _checkedObserHelper = new();

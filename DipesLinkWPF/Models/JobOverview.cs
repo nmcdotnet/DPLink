@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using DipesLink.Views.Extension;
 using DipesLink.Views.Models;
+using IPCSharedMemory.Datatypes;
 using SharedProgram.Models;
 using System.Collections.Concurrent;
 using System.Data;
@@ -481,6 +483,21 @@ namespace DipesLink.Models
                 if (_IsShowLoadingDB != value)
                 {
                     _IsShowLoadingDB = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private bool _IsStartButtonEnable = false;
+
+        public bool IsStartButtonEnable
+        {
+            get { return _IsStartButtonEnable; }
+            set
+            {
+                if (_IsStartButtonEnable != value)
+                {
+                    _IsStartButtonEnable = value;
                     OnPropertyChanged();
                 }
             }

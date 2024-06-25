@@ -51,6 +51,7 @@ namespace DipesLink.Views.Extension
                 dataGrid.Columns.Clear();
                 ProcessMiniPageAsync(dataGrid, PrintedDataTable, currentPage);
                 currentViewModel.IsShowLoadingDB = Visibility.Collapsed;
+                currentViewModel.IsStartButtonEnable = true;
             });
         }
 

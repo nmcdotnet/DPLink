@@ -4,14 +4,11 @@ using DipesLink.ViewModels;
 using DipesLink.Views.Extension;
 using DipesLink.Views.SubWindows;
 using DipesLink.Views.UserControls.MainUc;
-using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Windows;
-using DipesLink.Views.Models;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
+using static DipesLink.Views.Enums.ViewEnums;
 using Application = System.Windows.Application;
-using System;
 
 namespace DipesLink.Views
 {
@@ -57,12 +54,36 @@ namespace DipesLink.Views
             currentStation = e;
         }
 
+        private bool CanApplicationClose()
+        {
+            var viewModel = CurrentViewModel<MainViewModel>();
+            if (viewModel == null) return false;  // Ensure viewModel is not null
+
+            // Count the number of running stations
+            int runningPrintersCount = viewModel.PrinterStateList.Count(printerState => printerState.State != "Stopped");
+
+            if (runningPrintersCount > 0)
+            {
+                CusAlert.Show($"Please stop all running stations!", ImageStyleMessageBox.Warning);
+                return false;  // Prevent the window from closing
+            }
+
+            // Confirm with the user before closing the application
+            bool isExit = CusMsgBox.Show("Do you want to exit the application?", "Exit Application", Enums.ViewEnums.ButtonStyleMessageBox.YesNo, Enums.ViewEnums.ImageStyleMessageBox.Warning);
+            return isExit;  // Return true if user confirms to exit, else false
+        }
+
+
         private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
         {
-            var isExit = CusMsgBox.Show("Do you want to exit the application ?", "Exit Application", Enums.ViewEnums.ButtonStyleMessageBox.YesNo, Enums.ViewEnums.ImageStyleMessageBox.Warning);
-            if (!isExit)
+            e.Cancel = !CanApplicationClose();
+        }
+
+        private void ButtonExitApp_Click(object sender, RoutedEventArgs e)
+        {
+            if (CanApplicationClose())
             {
-                e.Cancel = true;
+                Application.Current.Shutdown();  // Or this.Close() if it's from a window class
             }
         }
 
@@ -170,14 +191,7 @@ namespace DipesLink.Views
             MainWindowSizeChangeCustomEvent?.Invoke(ActualWidth, EventArgs.Empty);
         }
 
-        private void ButtonExitApp_Click(object sender, RoutedEventArgs e)
-        {
-            var isExit = CusMsgBox.Show("Do you want to exit the application ?", "Exit Application", Enums.ViewEnums.ButtonStyleMessageBox.YesNo, Enums.ViewEnums.ImageStyleMessageBox.Warning);
-            if (isExit)
-            {
-                Application.Current?.Shutdown();
-            }
-        }
+       
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
