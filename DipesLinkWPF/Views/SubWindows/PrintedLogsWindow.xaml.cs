@@ -68,6 +68,7 @@ namespace DipesLink.Views.SubWindows
                     _jobLogsDataTableHelper = null;
                 }
 
+                    // thinh comment lai
                 _currentJob = null;
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
