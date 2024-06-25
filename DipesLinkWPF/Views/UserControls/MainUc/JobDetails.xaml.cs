@@ -25,9 +25,10 @@ namespace DipesLink.Views.UserControls.MainUc
     public partial class JobDetails : UserControl
     {
 
-        private PrintingDataTableHelper? _printingDataTableHelper;
-        private JobOverview? _currentJob;
-        private ConcurrentQueue<string[]> _queueCheckedCode = new();
+        PrintingDataTableHelper _printingDataTableHelper = new();
+       
+        JobOverview? _currentJob;
+        ConcurrentQueue<string[]> _queueCheckedCode = new();
         private CheckedObserHelper _checkedObserHelper = new();
         private ConcurrentQueue<string[]> _queuePrintedCode = new();
         private int count = 0;

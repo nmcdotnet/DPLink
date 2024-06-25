@@ -14,6 +14,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Linq;
 
 namespace DipesLink.Views.SubWindows
 {
@@ -55,22 +56,31 @@ namespace DipesLink.Views.SubWindows
         {
             await Task.Run(() =>
             {
-                if (PrintedDataTable != null)
+                try
                 {
-                    PrintedDataTable.Clear();
-                    PrintedDataTable.Dispose();
-                    PrintedDataTable = null;
-                }
+                    if (PrintedDataTable != null)
+                    {
+                        PrintedDataTable?.Clear();
+                        PrintedDataTable?.Dispose();
+                        PrintedDataTable = null;
+                    }
 
-                if (_jobLogsDataTableHelper != null)
+                    if (_jobLogsDataTableHelper != null)
+                    {
+                        _jobLogsDataTableHelper.Dispose();
+                        _jobLogsDataTableHelper = null;
+                    }
+
+                    // thinh comment lai
+                    _currentJob = null;
+                    GC.Collect();
+                    //GC.WaitForPendingFinalizers();
+                }
+                catch (Exception)
                 {
-                    _jobLogsDataTableHelper.Dispose();
-                    _jobLogsDataTableHelper = null;
-                }
 
-                _currentJob = null;
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
+                }
+              
             });
         }
 
@@ -173,19 +183,48 @@ namespace DipesLink.Views.SubWindows
 
         private async void PrintedLogsWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            Stopwatch? stopwatch = Stopwatch.StartNew();
-            await Task.Run(() => { CreateDataTemplate(DataGridResult);});
-            PrintedDataTable = await InitDatabaseAsync(await InitDatabaseAndPrintedStatusAsync());
-            if (_jobLogsDataTableHelper == null) return;
-            if (PrintedDataTable != null)
+            //Stopwatch? stopwatch = Stopwatch.StartNew();
+            //await Task.Run(() => { CreateDataTemplate(DataGridResult); });
+            //PrintedDataTable = await InitDatabaseAsync(await InitDatabaseAndPrintedStatusAsync());
+            //if (_jobLogsDataTableHelper == null) return;
+            //if (PrintedDataTable != null)
+            //{
+            //    await _jobLogsDataTableHelper.InitDatabaseAsync(PrintedDataTable, DataGridResult);
+            //}
+            //UpdateNumber();
+            //UpdatePageInfo();
+            //stopwatch.Stop();
+            //Debug.Write($"Time loaded printed data: {stopwatch.ElapsedMilliseconds} ms\n");
+            //stopwatch = null;
+
+            // thinh
+            ImageLoadingPrintedLog.Visibility = Visibility.Visible;
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            // Start both independent tasks
+            var createTemplateTask = Task.Run(() => CreateDataTemplate(DataGridResult));
+            var printedStatusTask = InitDatabaseAndPrintedStatusAsync();
+
+            // Wait for the printed status to be fetched before initializing the database with it
+            var printedStatus = await printedStatusTask;
+            PrintedDataTable = await InitDatabaseAsync(printedStatus);
+
+            // Wait for the template creation to finish if it hasn't already
+            await createTemplateTask;
+
+            // Proceed only if the DataTableHelper is initialized and the PrintedDataTable is not null
+            if (_jobLogsDataTableHelper != null && PrintedDataTable != null)
             {
-                await _jobLogsDataTableHelper.InitDatabaseAsync(PrintedDataTable, DataGridResult);
+                // Initialize database asynchronously and update UI concurrently
+                var dbInitTask = _jobLogsDataTableHelper.InitDatabaseAsync(PrintedDataTable, DataGridResult);
+                await dbInitTask; // Ensure database initialization is completed before finishing
+                ImageLoadingPrintedLog.Visibility = Visibility.Hidden;
             }
-            UpdateNumber(); 
+            UpdateNumber();
             UpdatePageInfo();
+            ImageLoadingPrintedLog.Visibility = Visibility.Hidden;
             stopwatch.Stop();
-            Debug.Write($"Time loaded printed data: {stopwatch.ElapsedMilliseconds} ms\n");
-            stopwatch = null;
+            Debug.WriteLine($"Time loaded printed data: {stopwatch.ElapsedMilliseconds} ms");
         }
 
         private void UpdatePageInfo()
@@ -407,6 +446,7 @@ namespace DipesLink.Views.SubWindows
         private static List<string[]> InitDatabase(string? path)
         {
             List<(int index, string[] data)> result = new(); // List to store index and data
+
             if (path == null || !File.Exists(path))
             {
                 return result.Select(t => t.data).ToList();
@@ -445,14 +485,21 @@ namespace DipesLink.Views.SubWindows
                         result.Add(((int)index + 1, row));
                     }
                 });
-
+                
                 result.Sort((a, b) => a.index.CompareTo(b.index)); // Sort by index
             }
             catch (IOException) { }
             catch (Exception) { }
 
             return result.Select(t => t.data).ToList(); // Return sorted data
+            //thinh
+            //var sortedAndTransformed = result.AsParallel()
+            //                     .OrderBy(item => item.index)
+            //                     .Select(item => item.data)
+            //                     .ToList();
+            //return sortedAndTransformed;
         }
+
 
         private static string[] SplitLine(string line, bool isCsv)
         {

@@ -20,7 +20,9 @@ namespace DipesLink.ViewModels
         private void StopButtonCommandEventHandler(object? sender, EventArgs e) 
         {
             int index = sender != null ? (int)sender : -1;
-            ActionButtonProcess(index, ActionButtonType.Stop);
+            var cusMessForStop = CusMsgBox.Show($"Ban muon stop station {index}", "", Views.Enums.ViewEnums.ButtonStyleMessageBox.OKCancel, Views.Enums.ViewEnums.ImageStyleMessageBox.Warning);
+            if (cusMessForStop)
+                ActionButtonProcess(index, ActionButtonType.Stop);
         }
        
 

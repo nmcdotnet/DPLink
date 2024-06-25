@@ -342,12 +342,13 @@
 
 
             </Grid>
-
+            <!--  thinh  -->
             <Grid
                 Grid.Row="1"
                 Margin="0,0,0,5"
                 VerticalAlignment="Bottom"
                 Background="AliceBlue"
+                IsEnabled="{Binding IsStartButtonEnable}"
                 ShowGridLines="False">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />

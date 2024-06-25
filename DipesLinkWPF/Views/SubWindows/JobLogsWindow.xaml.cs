@@ -101,6 +101,7 @@ namespace DipesLink.Views.SubWindows
         private async void JobLogsWindow_LoadedAsync(object sender, RoutedEventArgs e)
         {
             Stopwatch? stopwatch = Stopwatch.StartNew();
+            ImageLoadingJobLog.Visibility = Visibility.Visible;
             if (_jobLogsDataTableHelper == null) return;
             await Task.Run(()=> { CheckedDataTable = _checkedObserHelper?.GetDataTableDBAsync().Result.Copy(); });
             if (CheckedDataTable != null)
@@ -110,7 +111,7 @@ namespace DipesLink.Views.SubWindows
             UpdateParams();
             UpdatePageInfo();
             _imageNameList = GetImageNameList();
-
+            ImageLoadingJobLog.Visibility = Visibility.Hidden;
             stopwatch.Stop();
             Debug.Write($"Time loaded checked data: {stopwatch.ElapsedMilliseconds} ms\n");
             stopwatch = null;
