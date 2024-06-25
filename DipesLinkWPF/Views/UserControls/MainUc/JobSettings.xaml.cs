@@ -3,9 +3,7 @@ using DipesLink.Views.Extension;
 using DipesLink.Views.SubWindows;
 using DipesLink.Views.UserControls.CustomControl;
 using SharedProgram.Models;
-using System;
 using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -25,8 +23,6 @@ namespace DipesLink.Views.UserControls.MainUc
         {
             InitializeComponent();
             EventRegister();
-
-
         }
 
       private void EventRegister()
@@ -40,7 +36,7 @@ namespace DipesLink.Views.UserControls.MainUc
 
         private void ViewModelSharedEvents_MainListBoxMenuChange(object? sender, EventArgs e)
         {
-            CurrentViewModel<MainViewModel>().LockChoosingStation();
+            CurrentViewModel<MainViewModel>()?.LockChoosingStation();
         }
 
         private void SettingsUc_Loaded(object sender, RoutedEventArgs e)
@@ -76,9 +72,10 @@ namespace DipesLink.Views.UserControls.MainUc
 
         private void ListBoxMenu_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            CurrentViewModel<MainViewModel>()?.SelectionChangeSystemSettings(CurrentIndex());
-            CurrentViewModel<MainViewModel>().LockUI(CurrentIndex());// Lock UI when running
-            CurrentViewModel<MainViewModel>().LockChoosingStation();
+            var vm = CurrentViewModel<MainViewModel>();
+            vm?.SelectionChangeSystemSettings(CurrentIndex());
+            vm?.LockUI(CurrentIndex());// Lock UI when running
+            vm?.LockChoosingStation();
         }
 
         private int CurrentIndex() => ListBoxMenu.SelectedIndex;
@@ -146,6 +143,7 @@ namespace DipesLink.Views.UserControls.MainUc
 
             }), DispatcherPriority.Background);
         }
+
         private void TextBoxNormalParamsHandler(TextBox textBox)
         {
             textBox?.Dispatcher.BeginInvoke(new Action(() => // Use BeginInvoke to Update Input Last Value 
@@ -194,6 +192,7 @@ namespace DipesLink.Views.UserControls.MainUc
 
             }), DispatcherPriority.Background);
         }
+
         private void ButtonWebView_Click(object sender, RoutedEventArgs e)
         {
               try
@@ -209,10 +208,6 @@ namespace DipesLink.Views.UserControls.MainUc
             }
             catch (Exception) { }
         }
-
-
-
-
 
         private void Integer_ValueChanged(object sender, RoutedPropertyChangedEventArgs<decimal> e)
         {
@@ -242,7 +237,7 @@ namespace DipesLink.Views.UserControls.MainUc
                             break;
                     }
                     Debug.WriteLine("Vao day 1");
-                    vm.AutoSaveConnectionSetting(CurrentIndex());
+                    vm?.AutoSaveConnectionSetting(CurrentIndex());
 
                 }), DispatcherPriority.Background);
             }
@@ -374,7 +369,6 @@ namespace DipesLink.Views.UserControls.MainUc
             vm.StationSelectedIndex = cbb.SelectedIndex;
             vm.CheckStationChange();
             cbb.SelectedIndex = vm.StationSelectedIndex;
-            //vm.StationSelectedIndex = cbb.SelectedIndex;
         }
 
         private void NumDelaySensor_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
@@ -388,30 +382,29 @@ namespace DipesLink.Views.UserControls.MainUc
             e.Handled = !int.TryParse(e.Text, out _);
         }
 
-        
         private async void RestartButton_Click(object sender, RoutedEventArgs e)
         {
-            var res = CusMsgBox.Show("Do you want to restart ?", "Restart Station", Enums.ViewEnums.ButtonStyleMessageBox.OKCancel, Enums.ViewEnums.ImageStyleMessageBox.Info);
+            var res = CusMsgBox.Show("Do you want to restart ?", "Restart Station", ButtonStyleMessageBox.OKCancel, ImageStyleMessageBox.Info);
             if (res)
             {
                 var vm = CurrentViewModel<MainViewModel>();
                 var job = vm?.JobList[CurrentIndex()];
-                int t = CurrentIndex();
-                vm.DeleteSeletedJob(CurrentIndex());
-                vm.UpdateJobInfo(CurrentIndex());
                 await ViewModelSharedFunctions.RestartDeviceTransfer(job);
-                if(job.DeviceTransferID == null || job.DeviceTransferID == 0)
+
+                if(job?.DeviceTransferID == null || job?.DeviceTransferID == 0)
                 {
-                    CusAlert.Show($"Station {job.Index + 1}: Restart Failed!", ImageStyleMessageBox.Error);
+                    CusAlert.Show($"Station {job?.Index + 1}: Restart Failed!", ImageStyleMessageBox.Error);
                 }
                 else
                 {
-                    CusAlert.Show($"Station {job.Index + 1}: Restart Successfully!", ImageStyleMessageBox.Info);
+                    vm?.DeleteSeletedJob(CurrentIndex());
+                    vm?.UpdateJobInfo(CurrentIndex());
+                    ViewModelSharedEvents.OnRestartStationHandler(CurrentIndex()); // event trigger for clear data job detail
+                    CusAlert.Show($"Station {job?.Index + 1}: Restart Successfully!", ImageStyleMessageBox.Info);
                 }
-                vm.AutoSaveConnectionSetting(CurrentIndex());
-                //string f = vm?.JobList[CurrentIndex()]?.CameraIP;
-                //string c = vm?.ConnectParamsList[CurrentIndex()].CameraIP;
+                vm?.AutoSaveConnectionSetting(CurrentIndex());
             }
         }
+
     }
 }

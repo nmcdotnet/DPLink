@@ -320,7 +320,7 @@ namespace DipesLink.Views.SubWindows
                 var curJob = CurrentViewModel<JobOverview>();
                 if (curJob != null)
                 {
-                    string? imgFileName = _imageNameList.Find(x => x.Contains(imageId));
+                    string? imgFileName = _imageNameList?.Find(x => x.Contains(imageId));
                     if(imgFileName == null) { curJob.PathOfFailedImage = "pack://application:,,,/Images/Image_Not_Found.jpg"; return; }
                     string? imgPath =
                            curJob.ImageExportPath +

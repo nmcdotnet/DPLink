@@ -5,10 +5,11 @@ using System.Data;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Media;
 
 namespace DipesLink.Views.Extension
 {
-    public class PrintingDataTableHelper
+    public class PrintingDataTableHelper : IDisposable
     {
         public Paginator? Paginator { get; set; }
         public JobOverview? CurrentViewModel { get; private set; }
@@ -84,20 +85,7 @@ namespace DipesLink.Views.Extension
                 Paginator.CurrentPage = currentPage;
                 await UpdateDataGridAsync(dataGrid);
             }
-            // Use dictionary for fast lookups if possible
-
-            //Dictionary<string, DataRow> rowLookup = CurrentViewModel.MiniDataTable.Rows
-            //    .Cast<DataRow>()
-            //    .ToDictionary(row => row[0].ToString(), row => row);
-
-            //if (rowLookup.TryGetValue(rowIdentifier, out DataRow rowToUpdate))
-            //{
-            //    rowToUpdate["Status"] = newStatus;
-            //    //if (newStatus != "Printed")
-            //    //{
-
-            //    //}
-            //}
+       
             foreach (DataRow row in CurrentViewModel.MiniDataTable.Rows)
             {
                 _rowIndex = CurrentViewModel.MiniDataTable.Rows.IndexOf(row);
@@ -193,15 +181,42 @@ namespace DipesLink.Views.Extension
             if (rowIndex >= 0 && rowIndex < dataGrid.Items.Count)
             {
                 dataGrid.ScrollIntoView(dataGrid.Items[rowIndex]);
+                dataGrid.SelectedIndex = rowIndex;
+
+                dataGrid.Dispatcher.InvokeAsync(() =>
+                {
+                    DataGridRow row = (DataGridRow)dataGrid.ItemContainerGenerator.ContainerFromIndex(rowIndex);
+                    row?.Focus();
+                }, System.Windows.Threading.DispatcherPriority.Background);
             }
-            //if (rowIndex >= 0 && rowIndex < dataGrid.Items.Count)
-            //{
-            //    dataGrid.ScrollIntoView(dataGrid.Items[rowIndex]);
-            //    dataGrid.SelectedIndex = rowIndex;
-            //    DataGridRow row = (DataGridRow)dataGrid.ItemContainerGenerator.ContainerFromIndex(rowIndex);
-            //    row?.Focus();
-            //}
         }
 
+
+        private bool disposedValue = false;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    Paginator?.Dispose();
+                    _orgDBList?.Clear();
+                    PrintedDataTable?.Dispose();
+                    _optimizedSearch?.Dispose();
+
+                    Paginator = null;
+                    _orgDBList = null;
+                    PrintedDataTable=null;
+                    _optimizedSearch = null;
+                }
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this); // gọi nếu sử dụng dispose trực tiếp và nói với Finalizer đừng xếp việc thu gom rác vào hàng đợi cho đối tượng này
+        }
     }
 }

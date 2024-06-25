@@ -84,8 +84,6 @@ namespace DipesLink.Views.SubWindows
             });
         }
 
-
-
         private T? CurrentViewModel<T>() where T : class
         {
             if (DataContext is T viewModel)
