@@ -41,9 +41,12 @@
             <Grid Background="Transparent">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50" />
-                    <RowDefinition />
-                    <RowDefinition />
-
+                    <RowDefinition Height="8" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="8" />
                 </Grid.RowDefinitions>
                 <Grid Background="#00ABE6">
                     <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
@@ -61,6 +64,70 @@
                             Text="{Binding Index, Converter={StaticResource AddOneConverter}}" />
                     </StackPanel>
 
+                </Grid>
+                <Grid Grid.Row="2">
+                    <StackPanel Margin="4,0,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="13"
+                            Foreground="#00ABE6"
+                            Text="Job Name: " />
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="13"
+                            Foreground="#00ABE6"
+                            Text="{Binding Name}" />
+                    </StackPanel>
+                </Grid>
+                <Grid Grid.Row="3">
+                    <StackPanel Margin="4,0,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="13"
+                            Foreground="#00ABE6"
+                            Text="Job Type: " />
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="13"
+                            Foreground="#00ABE6"
+                            Text="{Binding JobType}" />
+                    </StackPanel>
+                </Grid>
+                <Grid Grid.Row="4">
+                    <StackPanel Margin="4,0,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="13"
+                            Foreground="#00ABE6"
+                            Text="Total Record: " />
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="13"
+                            Foreground="#00ABE6"
+                            Text="{Binding TotalRecDb}" />
+                    </StackPanel>
+                </Grid>
+                <Grid Grid.Row="5">
+                    <StackPanel Margin="4,0,0,0" Orientation="Horizontal">
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="13"
+                            Foreground="#00ABE6"
+                            Text="Status: " />
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="13"
+                            Foreground="#00ABE6"
+                            Text="{Binding OperationStatus}" />
+                    </StackPanel>
                 </Grid>
             </Grid>
 
@@ -161,7 +228,7 @@
                         FontSize="35"
                         FontWeight="Bold"
                         Foreground="#29c24f"
-                        Text="{Binding TotalPassed,TargetNullValue=0, FallbackValue=#######}" />
+                        Text="{Binding TotalPassed, TargetNullValue=0, FallbackValue=#######}" />
                 </Grid>
             </Border>
 
@@ -192,7 +259,7 @@
                         FontSize="35"
                         FontWeight="Bold"
                         Foreground="#de3502"
-                        Text="{Binding TotalFailed,TargetNullValue=0, FallbackValue=#######}" />
+                        Text="{Binding TotalFailed, TargetNullValue=0, FallbackValue=#######}" />
                 </Grid>
             </Border>
         </Grid>
