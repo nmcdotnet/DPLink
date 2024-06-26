@@ -29,6 +29,7 @@ namespace SharedProgram.Shared
         public static void RaiseOnCameraReadDataChangeEvent(DetectModel detectModel)
         {
             OnCameraReadDataChange?.Invoke(detectModel, EventArgs.Empty);
+           
         }
 
         public static event EventHandler? OnCameraOutputSignalChange;

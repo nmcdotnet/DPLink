@@ -223,21 +223,21 @@ namespace DipesLink_SDK_Cameras
                 {
                     switch (simpleResult.Id.Type)
                     {
-                        case ResultTypes.Image: // Hình ảnh chụp từ camera
+                        case ResultTypes.Image: //Image taken from camera
                             imageData = simpleResult.Data;
                             imageResult = SharedFunctions.GetImageFromImageByte(simpleResult.Data);
                             break;
 
-                        case ResultTypes.ImageGraphics: // Hình ảnh polygon xác định đối tượng của camera, ngoài ra còn các thông tin của mã đọc về (lấy gần như đủ)
+                        case ResultTypes.ImageGraphics: //The polygon image identifies the camera's object, in addition to the information the code reads (this is almost enough).
                             resultData = simpleResult.Data;
                             imageGraphics.Add(simpleResult.GetDataAsString());
                             break;
 
-                        case ResultTypes.ReadString: // Dữ liệu đọc về từ code
+                        case ResultTypes.ReadString: //Data read from code
                             strResult = Encoding.UTF8.GetString(simpleResult.Data);
                             break;
 
-                        case ResultTypes.ReadXml: //  Dữ liệu đọc về từ code (lấy từ xml)
+                        case ResultTypes.ReadXml: // Data read from code (taken from xml)
                             strResult = SharedFunctions.GetReadStringFromResultXml(simpleResult.GetDataAsString());
                             break;
 
@@ -246,7 +246,7 @@ namespace DipesLink_SDK_Cameras
                     }
                 }
             }
-           // Console.WriteLine("Co Chup Anh");
+         
             var points = GetResultFromXmlString(imageGraphics.FirstOrDefault()); // Get polygon result
             DetectModel detectModel = new()
             {
@@ -255,7 +255,7 @@ namespace DipesLink_SDK_Cameras
                 ImageData = imageData,
                 Image = GetImageWithFocusRectangle(imageResult, imageGraphics)
             };
-            Console.WriteLine("Capture Image !");
+          
             SharedEvents.RaiseOnCameraReadDataChangeEvent(detectModel); // Send data via Event
         }
 

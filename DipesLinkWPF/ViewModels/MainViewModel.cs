@@ -35,13 +35,15 @@ namespace DipesLink.ViewModels
         // Singleton init
         private static MainViewModel? _instance;
         public static int StationNumber = 4;
+        private bool _detectCamDisconnected;
+        private bool _detectPrinterDisconnected;
+        List<IPCSharedHelper> listIPCUIToDevice1MB = new();
         public static MainViewModel GetIntance()
         {
             _instance ??= new MainViewModel();
             return _instance;
         }
         #endregion
-
 
         public MainViewModel()
         {
@@ -52,14 +54,13 @@ namespace DipesLink.ViewModels
             InitJobConnectionSettings();
             InitStations(_NumberOfStation);
         }
-
-        List<IPCSharedHelper> listIPCUIToDevice1MB = new();
+       
         private void InitInstanceIPC(int index)
         {
             listIPCUIToDevice1MB.Add(new(index, "UIToDeviceSharedMemory_DT", SharedValues.SIZE_1MB));
-           // _ipcDeviceToUISharedMemory_DT = new(JobIndex, "DeviceToUISharedMemory_DT", SharedValues.SIZE_1MB);
-           // _ipcUIToDeviceSharedMemory_DT = new(JobIndex, "UIToDeviceSharedMemory_DT", SharedValues.SIZE_1MB);
-           
+            // _ipcDeviceToUISharedMemory_DT = new(JobIndex, "DeviceToUISharedMemory_DT", SharedValues.SIZE_1MB);
+            // _ipcUIToDeviceSharedMemory_DT = new(JobIndex, "UIToDeviceSharedMemory_DT", SharedValues.SIZE_1MB);
+
         }
 
         private void InitDir()
@@ -91,28 +92,26 @@ namespace DipesLink.ViewModels
         public void ListenDeviceTransferDataAsync(int stationIndex)
         {
             CreateMultiObjects(stationIndex);
-            
-            Task.Run(() => { ListenDatabase(stationIndex); });
 
-           // Task.Run(() => { ListenCheckedResultDatabase(stationIndex); });
+            Task.Run(() => ListenDatabase(stationIndex));
 
-            Task.Run(() => { ListenProcess(stationIndex); });
+            Task.Run(() => ListenProcess(stationIndex));
 
-            Task.Run(() => { ListenDetectModel(stationIndex); });
+            Task.Run(() => ListenDetectModel(stationIndex));
 
-            Task.Run(() => { GetOperationStatus(stationIndex); });
+            Task.Run(() => GetOperationStatus(stationIndex));
 
-            Task.Run(() => { GetStatisticsAsync(stationIndex); });
+            Task.Run(() => GetStatisticsAsync(stationIndex));
 
-            Task.Run(() => { DevicesStatusChange(stationIndex); });
+            Task.Run(() => DevicesStatusChange(stationIndex));
 
-            Task.Run(() => { GetCurrentPrintedCodeAsync(stationIndex); });
+            Task.Run(() => GetCurrentPrintedCodeAsync(stationIndex));
 
-            Task.Run(() => { GetCheckedCodeAsync(stationIndex); });
+            Task.Run(() => GetCheckedCodeAsync(stationIndex));
 
-            Task.Run(() => { GetCameraData(stationIndex); });
+            Task.Run(() =>  GetCameraDataAsync(stationIndex));
 
-            Task.Run(() => { GetCheckedStatistics(stationIndex); });
+            Task.Run(() => GetCheckedStatistics(stationIndex));
         }
 
         private void CreateMultiObjects(int i)
@@ -120,7 +119,7 @@ namespace DipesLink.ViewModels
             int deviceTransferIDProc = ViewModelSharedFunctions.InitDeviceTransfer(i);
             JobList.Add(new JobOverview() { DeviceTransferID = deviceTransferIDProc, Index = i, JobTitleName = $"Station {i + 1}" }); // Job List Creation
             JobDeviceStatusList.Add(new JobDeviceStatus() { Index = i, Name = $"Devices{i + 1}" }); // Device Status List Creation
-            PrinterStateList.Add(new PrinterState() { Name = $"{i+1}:", State = "" }); // Printer State List Creation
+            PrinterStateList.Add(new PrinterState() { Name = $"{i + 1}:", State = "" }); // Printer State List Creation
 
         }
 
@@ -217,29 +216,13 @@ namespace DipesLink.ViewModels
             }
         }
 
-        //public void InitDeviceTransfer(int index)
-        //{
-        //    string fullPath = SharedPaths.AppPath + SharedValues.DeviceTransferName;
-        //    JobModel? jm = GetJobById(index);
-        //    string arguments = "";
-        //    arguments += "";
-        //    arguments += index; // Index 
-        //    arguments += "  " + jm?.CameraIP; // Camera IP Address 
-        //    arguments += "  " + jm?.PrinterIP; // Printer IP Address 
-        //    arguments += "  " + jm?.PrinterPort; // Printer Port
-        //    ViewModelSharedValues.Running.StationList[index].TransferID = SharedFunctions.DeviceTransferStartProcess(index, fullPath, arguments);
-        //}
-
 
         #region GET DATABASE
 
-        /// <summary>
-        /// Get Printing Database from Device Transfer
-        /// </summary>
-        /// <param name="stationIndex"></param>
+       
         private async void ListenDatabase(int stationIndex)
         {
-              using IPCSharedHelper ipc = new(stationIndex, "DeviceToUISharedMemory_DB", SharedValues.SIZE_200MB, isReceiver: true);
+            using IPCSharedHelper ipc = new(stationIndex, "DeviceToUISharedMemory_DB", SharedValues.SIZE_200MB, isReceiver: true);
             while (true)
             {
                 bool isCompleteDequeue = ipc.MessageQueue.TryDequeue(out byte[]? result);
@@ -254,7 +237,7 @@ namespace DipesLink.ViewModels
                             }
                             switch (result[2])
                             {
-                                
+
                                 case (byte)SharedMemoryType.DatabaseList:
                                     GetDatabaseList(stationIndex, result);
                                     break;
@@ -307,36 +290,6 @@ namespace DipesLink.ViewModels
             }
         }
 
-        /// <summary>
-        /// Get Checked list firstime to UI
-        /// </summary>
-        /// <param name="stationIndex"></param>
-        private async void ListenCheckedResultDatabase(int stationIndex)
-        {
-            //if (_ipcDeviceToUISharedMemory_DB is null)
-            //    _ipcDeviceToUISharedMemory_DB = new(JobIndex, "DeviceToUISharedMemory_DB", SharedValues.SIZE_200MB, isReceiver: true);
-            ////using IPCSharedHelper ipc = new(stationIndex, "DeviceToUISharedMemory_CheckedDB", capacity: 1024 * 1024 * 200, isReceiver: true);
-            //while (true)
-            //{
-            //    bool isCompleteDequeue = _ipcDeviceToUISharedMemory_DB.MessageQueue.TryDequeue(out byte[]? result);
-            //    if (result != null && isCompleteDequeue)
-            //    {
-            //        switch (result[0])
-            //        {
-            //            case (byte)SharedMemoryCommandType.DeviceCommand:
-            //                switch (result[2])
-            //                {
-            //                    case (byte)SharedMemoryType.CheckedList:
-            //                        GetCheckedList(stationIndex, result);
-            //                        break;
-            //                }
-            //                break;
-            //        }
-            //    }
-            //    await Task.Delay(100);
-            //}
-        }
-
         private void GetCheckedList(int stationIndex, byte[] result)
         {
             try
@@ -361,124 +314,106 @@ namespace DipesLink.ViewModels
 
         #region  GET PRINTING PARAMS AND STATUS
 
-        
+
         private async void ListenProcess(int stationIndex)
         {
             using IPCSharedHelper ipc = new(stationIndex, "DeviceToUISharedMemory_DT", 1024 * 1024 * 1, isReceiver: true);
             while (true)
             {
-
-                bool isCompleteDequeue = ipc.MessageQueue.TryDequeue(out byte[]? result);
-                if (stationIndex == 0)
+                while (ipc.MessageQueue.TryDequeue(out byte[]? result))
                 {
-                    // Debug.WriteLine(ipc.countRec);
+                   // Debug.WriteLine("Elements Queue: " + ipc.MessageQueue.Count);
+                    _ = Task.Run(() => ProcessItem(result, stationIndex)); // handle tasks concurrently, Don't wait for the previous tasks to complete
                 }
-                if (isCompleteDequeue && result != null)
-                {
-                    switch (result[0])
+                await Task.Delay(1);
+            }
+        }
+
+        private void ProcessItem(byte[] result, int stationIndex)
+        {
+            switch (result[0])
+            {
+                case (byte)SharedMemoryCommandType.DeviceCommand:
+
+                    switch (result[2]) // Shared Memory Type
                     {
-                        case (byte)SharedMemoryCommandType.DeviceCommand:
+                        // Camera Status
+                        case (byte)SharedMemoryType.CamStatus:
+                            JobList[stationIndex].CameraStsBytes = result[3];
+                            break;
 
-                            switch (result[2]) // Shared Memory Type
+                        // Printer Status
+                        case (byte)SharedMemoryType.PrinterStatus:
+                            JobList[stationIndex].PrinterStsBytes = result[3];
+                            break;
+
+                        // Controller Status
+                        case (byte)SharedMemoryType.ControllerStatus:
+                            JobList[stationIndex].ControllerStsBytes = result[3];
+                            break;
+
+                        // Printer Template
+                        case (byte)SharedMemoryType.PrinterTemplate:
+                            GetPrinterTemplateName(result);
+                            break;
+
+                        // Statistics (Sent/Received/Printed number)
+                        case (byte)SharedMemoryType.StatisticsCounterSent:
+                            JobList[stationIndex].QueueSentNumberBytes.Enqueue(result.Skip(3).ToArray());
+                            break;
+                        case (byte)SharedMemoryType.StatisticsCounterReceived:
+                            JobList[stationIndex].QueueReceivedNumberBytes.Enqueue(result.Skip(3).ToArray());
+                            break;
+                        case (byte)SharedMemoryType.StatisticsCounterPrinted:
+                            JobList[stationIndex].QueuePrintedNumberBytes.Enqueue(result.Skip(3).ToArray());
+                            break;
+
+                        //Current Index and Current Page in Database
+                        case (byte)SharedMemoryType.CurrentPosDb:
+                            GetCurrentPosDb(stationIndex, result);
+                            break;
+
+                        // Printed code
+                        case (byte)SharedMemoryType.PrintedCodeRaw:
+                            JobList[stationIndex].QueueCurrentPrintedCode.Enqueue(result.Skip(3).ToArray());
+                            break;
+
+                        case (byte)SharedMemoryType.JobMessageStatus:
+                            byte[] notifyType = result.Skip(3).ToArray();
+                            try
                             {
-                                // Camera Status
-                                case (byte)SharedMemoryType.CamStatus:
-                                    JobList[stationIndex].CameraStsBytes = result[3];
-                                    break;
-
-                                // Printer Status
-                                case (byte)SharedMemoryType.PrinterStatus:
-                                    JobList[stationIndex].PrinterStsBytes = result[3];
-                                    break;
-
-                                // Controller Status
-                                case (byte)SharedMemoryType.ControllerStatus:
-                                    JobList[stationIndex].ControllerStsBytes = result[3];
-                                    break;
-
-                                // Printer Template
-                                case (byte)SharedMemoryType.PrinterTemplate:
-                                    GetPrinterTemplateName(result);
-                                    break;
-
-                                // Statistics (Sent/Received/Printed number)
-                                case (byte)SharedMemoryType.StatisticsCounterSent:
-                                    // JobList[stationIndex].SentNumberBytes = result.Skip(3).ToArray();
-                                    JobList[stationIndex].QueueSentNumberBytes.Enqueue(result.Skip(3).ToArray());
-                                    // Debug.WriteLine("Sent: " + Encoding.ASCII.GetString(JobList[stationIndex].SentNumberBytes));
-                                    break;
-                                case (byte)SharedMemoryType.StatisticsCounterReceived:
-                                    JobList[stationIndex].QueueReceivedNumberBytes.Enqueue(result.Skip(3).ToArray());
-                                    // Debug.WriteLine("Rev: " + Encoding.ASCII.GetString(JobList[stationIndex].ReceivedNumberBytes));
-                                    break;
-                                case (byte)SharedMemoryType.StatisticsCounterPrinted:
-                                    JobList[stationIndex].QueuePrintedNumberBytes.Enqueue(result.Skip(3).ToArray());
-                                    // Debug.WriteLine("Printed: " + Encoding.ASCII.GetString(JobList[stationIndex].PrintedNumberBytes));
-                                    break;
-
-                                //Current Index and Current Page in Database
-                                case (byte)SharedMemoryType.CurrentPosDb:
-                                    GetCurrentPosDb(stationIndex, result);
-                                    break;
-
-                                // Printed code
-                                case (byte)SharedMemoryType.PrintedCodeRaw:
-                                    JobList[stationIndex].QueueCurrentPrintedCode.Enqueue(result.Skip(3).ToArray());
-                                    break;
-
-                                case (byte)SharedMemoryType.JobMessageStatus:
-                                    byte[] notifyType = result.Skip(3).ToArray();
-                                    try
-                                    {
-                                        NotifyType ntp = DataConverter.FromByteArray<NotifyType>(notifyType);
-                                        if (ntp != NotifyType.Unk)
-                                        {
-                                            JobMessageStatusProcess(stationIndex, ntp);
-                                        }
-                                    }
-                                    catch (Exception ex)
-                                    {
-#if DEBUG
-                                        Debug.WriteLine($"JobMessageStatus failed {ex.Message}");
-#endif
-                                    }
-
-                                    break;
-
-                                case (byte)SharedMemoryType.JobOperationStatus:
-                                    byte[] resOper = result.Skip(3).ToArray();
-                                    try
-                                    {
-                                        var stsBtn = DataConverter.FromByteArray<OperationStatus>(resOper);
-                                        JobList[stationIndex].OperationStatus = stsBtn;
-                                    }
-                                    catch (Exception)
-                                    {
-#if DEBUG
-                                        Debug.WriteLine("JobOperationStatus failed");
-#endif
-                                    }
-                                    break;
-                                case (byte)SharedMemoryType.ControllerResponseMess:
-                                    GetControllerMessageResponse(stationIndex, result);
-                                    break;
-                                case (byte)SharedMemoryType.LoadingStatus:
-                                    ShowLoadingImage(stationIndex);
-                                    break;
-                                case (byte)SharedMemoryType.RestartStatus:
-                                    RestartDetect(stationIndex);
-                                    break;
+                                NotifyType ntp = DataConverter.FromByteArray<NotifyType>(notifyType);
+                                if (ntp != NotifyType.Unk) JobMessageStatusProcess(stationIndex, ntp);
                             }
+                            catch (Exception) { }
                             break;
 
-                        case 1:
+                        case (byte)SharedMemoryType.JobOperationStatus:
+                            byte[] resOper = result.Skip(3).ToArray();
+                            try
+                            {
+                                var stsBtn = DataConverter.FromByteArray<OperationStatus>(resOper);
+                                JobList[stationIndex].OperationStatus = stsBtn;
+                            }
+                            catch (Exception) { }
                             break;
-
-                        default:
+                        case (byte)SharedMemoryType.ControllerResponseMess:
+                            GetControllerMessageResponse(stationIndex, result);
+                            break;
+                        case (byte)SharedMemoryType.LoadingStatus:
+                            ShowLoadingImage(stationIndex);
+                            break;
+                        case (byte)SharedMemoryType.RestartStatus:
+                            RestartDetect(stationIndex);
                             break;
                     }
-                }
-                await Task.Delay(5);
+                    break;
+
+                case 1:
+                    break;
+
+                default:
+                    break;
             }
         }
 
@@ -522,9 +457,7 @@ namespace DipesLink.ViewModels
 #endif
             }
         }
-
-        private bool _detectCamDisconnected;
-        private bool _detectPrinterDisconnected;
+       
         private void DevicesStatusChange(int stationIndex)
         {
             Application.Current?.Dispatcher.Invoke(async () =>
@@ -552,7 +485,7 @@ namespace DipesLink.ViewModels
                             JobDeviceStatusList[stationIndex].CameraStatusColor = new SolidColorBrush(Colors.Red); // Camera offline
                             JobDeviceStatusList[stationIndex].IsCamConnected = false;
                             // If Running but Camera Disconnected => Show Alert
-                            if(JobList[stationIndex].OperationStatus != OperationStatus.Stopped && !_detectCamDisconnected)
+                            if (JobList[stationIndex].OperationStatus != OperationStatus.Stopped && !_detectCamDisconnected)
                             {
                                 CusAlert.Show("Camera's Disconnected !", ImageStyleMessageBox.Error);
                                 _detectCamDisconnected = true;
@@ -630,7 +563,7 @@ namespace DipesLink.ViewModels
             {
                 try
                 {
-                   if(!JobList[stationIndex].QueueSentNumberBytes.TryDequeue(out var resultSent)) resultSent = null;
+                    if (!JobList[stationIndex].QueueSentNumberBytes.TryDequeue(out var resultSent)) resultSent = null;
                     if (!JobList[stationIndex].QueueReceivedNumberBytes.TryDequeue(out var resultReceived)) resultReceived = null;
                     if (!JobList[stationIndex].QueuePrintedNumberBytes.TryDequeue(out var resultPrinted)) resultPrinted = null;
 
@@ -736,7 +669,7 @@ namespace DipesLink.ViewModels
             }
         }
 
-        private void JobMessageStatusProcess(int stationIndex, NotifyType nt)
+        private static void JobMessageStatusProcess(int stationIndex, NotifyType nt)
         {
             switch (nt)
             {
@@ -923,36 +856,12 @@ namespace DipesLink.ViewModels
                 using IPCSharedHelper ipc = new(stationIndex, "DeviceToUISharedMemory_RD", SharedValues.SIZE_100MB, isReceiver: true);
                 while (true)
                 {
-                    bool isCompleteDequeue = ipc.MessageQueue.TryDequeue(out byte[]? result);
-                    if (!isCompleteDequeue)
+                    while (ipc.MessageQueue.TryDequeue(out byte[]? result))
                     {
-                        await Task.Delay(1); continue;
+                       // Debug.WriteLine("Elements Queue: " + ipc.MessageQueue.Count);
+                        _ = Task.Run(() => ProcessItemDetectModel(result, stationIndex));
                     }
-                    if (result != null)
-                    {
-                        switch (result[0])
-                        {
-                            case (byte)SharedMemoryCommandType.DeviceCommand:
-                                switch (result[2])
-                                {
-                                    // Camera detect model
-                                    case (byte)SharedMemoryType.DetectModel:
-                                        JobList[stationIndex].QueueCameraDataDetect.Enqueue(result.Skip(3).ToArray());
-                                        break;
-
-                                    // Checked code
-                                    case (byte)SharedMemoryType.CheckedResultRaw:
-                                        JobList[stationIndex].QueueCurrentCheckedCode.Enqueue(result.Skip(3).ToArray());
-                                        break;
-
-                                    // Checked Statistics (total, passed, failed)
-                                    case (byte)SharedMemoryType.CheckedStatistics:
-                                        JobList[stationIndex].CheckedStatisticNumberBytes = result.Skip(3).ToArray();
-                                        break;
-                                }
-                                break;
-                        }
-                    }
+                    await Task.Delay(1);
                 }
             }
             catch (Exception)
@@ -960,6 +869,32 @@ namespace DipesLink.ViewModels
 #if DEBUG
                 Debug.WriteLine("ListenDetectModel Fail");
 #endif
+            }
+        }
+
+        private void ProcessItemDetectModel(byte[] result, int stationIndex)
+        {
+            switch (result[0])
+            {
+                case (byte)SharedMemoryCommandType.DeviceCommand:
+                    switch (result[2])
+                    {
+                        // Camera detect model
+                        case (byte)SharedMemoryType.DetectModel:
+                            JobList[stationIndex].QueueCameraDataDetect.Enqueue(result.Skip(3).ToArray());
+                            break;
+
+                        // Checked code
+                        case (byte)SharedMemoryType.CheckedResultRaw:
+                            JobList[stationIndex].QueueCurrentCheckedCode.Enqueue(result.Skip(3).ToArray());
+                            break;
+
+                        // Checked Statistics (total, passed, failed)
+                        case (byte)SharedMemoryType.CheckedStatistics:
+                            JobList[stationIndex].CheckedStatisticNumberBytes = result.Skip(3).ToArray();
+                            break;
+                    }
+                    break;
             }
         }
 
@@ -974,12 +909,6 @@ namespace DipesLink.ViewModels
                         try
                         {
                             string[]? checkedCode = DataConverter.FromByteArray<string[]>(result);
-                            //if (checkedCode != null)
-                            //    foreach (var item in checkedCode)
-                            //    {
-                            //        Debug.Write(item);
-                            //    }
-                            //Debug.WriteLine($"at {stationIndex}\n");
                             if (checkedCode != null)
                             {
                                 JobList[stationIndex].RaiseChangeCheckedCode(checkedCode);
@@ -991,48 +920,34 @@ namespace DipesLink.ViewModels
                             Debug.WriteLine("GetCheckedCodeAsync Error !");
 #endif  
                         }
-
                     }
                 }
                 await Task.Delay(1);
             }
         }
 
-        private void GetCameraData(int stationIndex)
+        private async void GetCameraDataAsync(int stationIndex)
         {
-            _ = Application.Current?.Dispatcher.Invoke(async () =>
-            {
                 while (true)
                 {
                     try
                     {
-                        if (JobList[stationIndex].QueueCameraDataDetect.TryDequeue(out byte[]? result))
+                        while(JobList[stationIndex].QueueCameraDataDetect.TryDequeue(out byte[]? result))
                         {
-                            if (result != null)
+                            DetectModel? dm = DataConverter.FromByteArray<DetectModel>(result);
+                            System.Drawing.Image img = SharedFunctions.GetImageFromImageByte(dm?.ImageData); // Image Result
+                            string? currentCode = dm?.Text;
+                            long? processTime = dm?.CompareTime;
+                            ComparisonResult? compareStatus = dm?.CompareResult;
+
+                            Application.Current?.Dispatcher.Invoke(() =>
                             {
-                                DetectModel? dm = DataConverter.FromByteArray<DetectModel>(result);
-                                System.Drawing.Image img = SharedFunctions.GetImageFromImageByte(dm?.ImageData); // Image Result
-                                string? currentCode = dm?.Text;
-                                long? processTime = dm?.CompareTime;
-                                ComparisonResult? compareStatus = dm?.CompareResult;
-                                if (img != null)
-                                {
-                                    JobList[stationIndex].ImageResult = SharedFunctions.ConvertToBitmapImage(img);
-                                }
-                                if (currentCode != null)
-                                {
-                                    JobList[stationIndex].CurrentCodeData = currentCode;
-                                }
-                                if (compareStatus != null)
-                                {
-                                    JobList[stationIndex].CompareResult = (ComparisonResult)compareStatus;
-                                }
-                                if(processTime != null)
-                                {
-                                    JobList[stationIndex].ProcessingTime = (int)processTime;
-                                }
-                            }
-                        }
+                                if (img != null) JobList[stationIndex].ImageResult = SharedFunctions.ConvertToBitmapImage(img);
+                                if (currentCode != null) JobList[stationIndex].CurrentCodeData = currentCode;
+                                if (compareStatus != null) JobList[stationIndex].CompareResult = (ComparisonResult)compareStatus;
+                                if (processTime != null) JobList[stationIndex].ProcessingTime = (int)processTime;
+                        });
+                    }
                     }
                     catch (Exception)
                     {
@@ -1040,9 +955,8 @@ namespace DipesLink.ViewModels
                         Debug.WriteLine("Get Image Failed !");
 #endif
                     }
-                    await Task.Delay(5);
+                    await Task.Delay(1);
                 }
-            });
         }
 
         private void GetCheckedStatistics(int stationIndex)
@@ -1076,7 +990,7 @@ namespace DipesLink.ViewModels
                             //Update Percent
                             UpdatePercentForCircleChart(stationIndex);
                         }
-                        await Task.Delay(100);
+                        await Task.Delay(1);
                     }
                 }
                 catch (Exception ex)
@@ -1090,7 +1004,7 @@ namespace DipesLink.ViewModels
 
         private void UpdatePercentForCircleChart(int stationIndex)
         {
-            
+
             if (int.TryParse(JobList[stationIndex].TotalChecked, out int totalChecked))
             {
                 try
