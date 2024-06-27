@@ -244,6 +244,8 @@ namespace DipesLink.Views.UserControls.MainUc
             
             int jobIndex = ListBoxMenu.SelectedIndex;
             CurrentViewModel<MainViewModel>()?.DeleteJobAction(jobIndex);
+            CurrentViewModel<MainViewModel>()?.UpdateJobInfo(jobIndex);
+            ViewModelSharedEvents.OnRestartStationHandler(jobIndex);
             CallbackCommand(vm => vm.LoadJobList(jobIndex)); // Update Job on UI
         }
 
