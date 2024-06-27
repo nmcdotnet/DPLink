@@ -295,14 +295,14 @@ namespace DipesLink.Views
             ListBoxMenu.SelectedIndex = ListBoxMenu.SelectedIndex != -1 ? -1 : 0;
             if (ListBoxMenu.SelectedIndex != -1)
             {
-                IpGridChange.Visibility = Visibility.Visible;
+                StackPanelIPDisplay.Visibility = Visibility.Visible;
                 myToggleButton.IsChecked = false; // This will trigger the setter for True
 
             }
             else
             {
                 // or
-                IpGridChange.Visibility = Visibility.Hidden;
+                StackPanelIPDisplay.Visibility = Visibility.Hidden;
                 myToggleButton.IsChecked = true; // This will trigger the setter for False
 
             }
@@ -319,7 +319,7 @@ namespace DipesLink.Views
         {
             //here
             myToggleButton.IsChecked = false;
-            IpGridChange.Visibility = Visibility.Visible;
+            StackPanelIPDisplay.Visibility = Visibility.Visible;
             //var vm = CurrentViewModel<MainViewModel>();
             JobDetails_OnJobDetailChange(sender, currentStation);
 

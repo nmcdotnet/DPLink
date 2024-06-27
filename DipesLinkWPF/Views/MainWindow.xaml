@@ -383,7 +383,7 @@
                 </ListBox>
                 <Grid Grid.Column="1" Background="White">
 
-                    <StackPanel x:Name="IpGridChange" Orientation="Horizontal">
+                    <StackPanel x:Name="StackPanelIPDisplay" Orientation="Horizontal">
 
                         <StackPanel Margin="10,0,0,0" Orientation="Horizontal">
                             <TextBlock
