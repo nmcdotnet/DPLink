@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converter="clr-namespace:DipesLink.Views.Converter"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
     xmlns:local="clr-namespace:DipesLink.Views.UserControls.MainUc"
     xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -41,12 +42,11 @@
             <Grid Background="Transparent">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="50" />
-                    <RowDefinition Height="8" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
-                    <RowDefinition Height="8" />
+                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid Background="#00ABE6">
                     <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
@@ -65,7 +65,7 @@
                     </StackPanel>
 
                 </Grid>
-                <Grid Grid.Row="2">
+                <Grid Grid.Row="1">
                     <StackPanel Margin="4,0,0,0" Orientation="Horizontal">
                         <TextBlock
                             HorizontalAlignment="Center"
@@ -81,7 +81,7 @@
                             Text="{Binding Name}" />
                     </StackPanel>
                 </Grid>
-                <Grid Grid.Row="3">
+                <Grid Grid.Row="2">
                     <StackPanel Margin="4,0,0,0" Orientation="Horizontal">
                         <TextBlock
                             HorizontalAlignment="Center"
@@ -97,7 +97,7 @@
                             Text="{Binding JobType}" />
                     </StackPanel>
                 </Grid>
-                <Grid Grid.Row="4">
+                <Grid Grid.Row="3">
                     <StackPanel Margin="4,0,0,0" Orientation="Horizontal">
                         <TextBlock
                             HorizontalAlignment="Center"
@@ -113,7 +113,7 @@
                             Text="{Binding TotalRecDb}" />
                     </StackPanel>
                 </Grid>
-                <Grid Grid.Row="5">
+                <Grid Grid.Row="4">
                     <StackPanel Margin="4,0,0,0" Orientation="Horizontal">
                         <TextBlock
                             HorizontalAlignment="Center"
@@ -128,6 +128,28 @@
                             Foreground="#00ABE6"
                             Text="{Binding OperationStatus}" />
                     </StackPanel>
+                </Grid>
+                <Grid Grid.Row="5">
+
+                    <Button
+                        Background="Transparent"
+                        Click="Export_Button_Click"
+                        Tag="{Binding Index}">
+                        <StackPanel Margin="4,0,0,0" Orientation="Horizontal">
+                            <fa:IconImage
+                                Width="20"
+                                VerticalAlignment="Center"
+                                Foreground="#00ABE6"
+                                Icon="FileExport" />
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="13"
+                                Foreground="#00ABE6"
+                                Text="Export File" />
+                        </StackPanel>
+                    </Button>
+
                 </Grid>
             </Grid>
 

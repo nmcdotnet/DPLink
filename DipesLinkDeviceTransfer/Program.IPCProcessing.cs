@@ -266,11 +266,10 @@ namespace DipesLinkDeviceTransfer
                     _ListPrintedCodeObtainFromFile.Clear();
                     _CodeListPODFormat.Clear();
 
-                    SharedFunctions.SaveStringOfPrintedResponePath(
-                        SharedPaths.PathSubJobsApp + $"{JobIndex + 1}\\",
-                        "printedPathString",
-                        _SelectedJob.PrintedResponePath);
-                      await InitDataAsync(_SelectedJob);
+                    SharedFunctions.SaveStringOfPrintedResponePath(SharedPaths.PathSubJobsApp + $"{JobIndex + 1}\\","printedPathString", _SelectedJob.PrintedResponePath);
+                    SharedFunctions.SaveStringOfCheckedPath(SharedPaths.PathCheckedResult + $"Job{JobIndex + 1}\\", "checkedPathString", _SelectedJob.CheckedResultPath);
+                    
+                    await InitDataAsync(_SelectedJob);
                 }
             }
             catch (Exception)

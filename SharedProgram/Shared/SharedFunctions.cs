@@ -266,5 +266,15 @@ namespace SharedProgram.Shared
             writer.Write(content);
         }
 
+        public static void SaveStringOfCheckedPath(string directoryPath, string fileName, string content)
+        {
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+            string filePath = System.IO.Path.Combine(directoryPath, fileName);
+            using var writer = new StreamWriter(filePath, false, Encoding.UTF8);
+            writer.Write(content);
+        }
     }
 }

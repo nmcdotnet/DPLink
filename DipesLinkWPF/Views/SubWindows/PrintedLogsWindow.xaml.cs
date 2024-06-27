@@ -183,19 +183,7 @@ namespace DipesLink.Views.SubWindows
 
         private async void PrintedLogsWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            //Stopwatch? stopwatch = Stopwatch.StartNew();
-            //await Task.Run(() => { CreateDataTemplate(DataGridResult); });
-            //PrintedDataTable = await InitDatabaseAsync(await InitDatabaseAndPrintedStatusAsync());
-            //if (_jobLogsDataTableHelper == null) return;
-            //if (PrintedDataTable != null)
-            //{
-            //    await _jobLogsDataTableHelper.InitDatabaseAsync(PrintedDataTable, DataGridResult);
-            //}
-            //UpdateNumber();
-            //UpdatePageInfo();
-            //stopwatch.Stop();
-            //Debug.Write($"Time loaded printed data: {stopwatch.ElapsedMilliseconds} ms\n");
-            //stopwatch = null;
+           
 
             // thinh
             ImageLoadingPrintedLog.Visibility = Visibility.Visible;
@@ -203,10 +191,10 @@ namespace DipesLink.Views.SubWindows
 
             // Start both independent tasks
             var createTemplateTask = Task.Run(() => CreateDataTemplate(DataGridResult));
-            var printedStatusTask = InitDatabaseAndPrintedStatusAsync();
+            Task<List<string[]>> printedStatusTask = InitDatabaseAndPrintedStatusAsync();
 
             // Wait for the printed status to be fetched before initializing the database with it
-            var printedStatus = await printedStatusTask;
+            List<string[]> printedStatus = await printedStatusTask;
             PrintedDataTable = await InitDatabaseAsync(printedStatus);
 
             // Wait for the template creation to finish if it hasn't already
@@ -499,7 +487,6 @@ namespace DipesLink.Views.SubWindows
             //                     .ToList();
             //return sortedAndTransformed;
         }
-
 
         private static string[] SplitLine(string line, bool isCsv)
         {

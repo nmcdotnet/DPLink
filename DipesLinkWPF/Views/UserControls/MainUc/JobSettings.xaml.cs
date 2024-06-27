@@ -32,11 +32,13 @@ namespace DipesLink.Views.UserControls.MainUc
             TextBoxCamIP.TextChanged += TextBox_ParamsChanged;
             TextBoxControllerIP.TextChanged += TextBox_ParamsChanged;
             ViewModelSharedEvents.MainListBoxMenuChange += ViewModelSharedEvents_MainListBoxMenuChange;
+            //ViewModelSharedEvents.MainListBoxMenuChange += ListBoxMenu_SelectionChanged;
         }
 
         private void ViewModelSharedEvents_MainListBoxMenuChange(object? sender, EventArgs e)
         {
             CurrentViewModel<MainViewModel>()?.LockChoosingStation();
+            ListBoxMenu_SelectionChanged(sender, null);
         }
 
         private void SettingsUc_Loaded(object sender, RoutedEventArgs e)
