@@ -83,6 +83,20 @@ namespace DipesLink.Models
             }
         }
 
+       // public OperationStatus OperationStatus { get; set; } = OperationStatus.Stopped;
+        public OperationStatus _operationStatus = OperationStatus.Stopped;
+        public OperationStatus OperationStatus
+        {
+            get { return _operationStatus; }
+            set
+            {
+                if (_operationStatus != value)
+                {
+                    _operationStatus = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         private string _receivedDataNumber = "0";
         public string ReceivedDataNumber
@@ -159,6 +173,21 @@ namespace DipesLink.Models
                 }
             }
         }
+
+        private string? _StationStatus;
+        public string? StationStatus
+        {
+            get { return _StationStatus; }
+            set
+            {
+                if (_StationStatus != value)
+                {
+                    _StationStatus = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
 
 
         private List<PODModel> _podModel;
@@ -534,7 +563,7 @@ namespace DipesLink.Models
         public ConcurrentQueue<byte[]> QueueReceivedNumberBytes { get; set; } = new();
         public ConcurrentQueue<byte[]> QueuePrintedNumberBytes { get; set; } = new();
 
-        public OperationStatus OperationStatus { get; set; } = OperationStatus.Stopped;
+        
 
         public JobSystemSettings JobSystemSettings { get; set; }
 

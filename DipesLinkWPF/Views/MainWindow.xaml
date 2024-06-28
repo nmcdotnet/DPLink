@@ -381,12 +381,9 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
-                <Grid
-                    x:Name="IpGridChange"
-                    Grid.Column="1"
-                    Background="White">
+                <Grid Grid.Column="1" Background="White">
 
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel x:Name="StackPanelIPDisplay" Orientation="Horizontal">
 
                         <StackPanel Margin="10,0,0,0" Orientation="Horizontal">
                             <TextBlock
@@ -417,12 +414,10 @@
                             <TextBlock
                                 Width="85"
                                 VerticalAlignment="Center"
-
                                 Text="Controller IP: " />
                             <TextBlock
                                 x:Name="TextBlockControllerIP"
                                 VerticalAlignment="Center"
-
                                 Text="######" />
                         </StackPanel>
                     </StackPanel>

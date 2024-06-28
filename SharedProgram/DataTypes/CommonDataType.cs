@@ -82,9 +82,10 @@ namespace SharedProgram.DataTypes
         }
         public enum OperationStatus
         {
+           
+            Stopped,
             Running,
             Processing,
-            Stopped,
             Startup
         }
         public enum PrinterStatus

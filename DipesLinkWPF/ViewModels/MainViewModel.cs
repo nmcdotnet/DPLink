@@ -162,7 +162,8 @@ namespace DipesLink.ViewModels
             JobList[index].CameraSeries = jobModel.CameraSeries;
             JobList[index].ImageExportPath = jobModel.ImageExportPath;
             JobList[index].PODFormat = jobModel.PODFormat;
-
+            // thinh them status
+            //JobList[index].OperationStatus = jobModel.OperationStatus;
 
             // Events for Button Start/Stop/Trigger
             JobList[index].StartButtonCommand -= StartButtonCommandEventHandler;
@@ -180,7 +181,6 @@ namespace DipesLink.ViewModels
             JobList[index].OnPercentageChange += PercentageChangeHandler;
             JobList[index].OnReprint += ReprintHandler;
             JobList[index].OnLoadDb += LoadDbEventHandler;
-
 
         }
 
@@ -808,19 +808,21 @@ namespace DipesLink.ViewModels
                     bool isRunningCmp = false;
                     while (true)
                     {
-
                         PrinterStateList[stationIndex].State = JobList[stationIndex].OperationStatus.ToString();
+   
                         switch (JobList[stationIndex].OperationStatus)
                         {
                             case OperationStatus.Processing:
                             case OperationStatus.Running:
                                 JobList[stationIndex].StatusStartButton = false;
+                                JobList[stationIndex].OperationStatus = JobList[stationIndex].OperationStatus;
                                 JobList[stationIndex].StatusStopButton = true;
                                 isRunningCmp = true;
 
                                 break;
                             case OperationStatus.Stopped:
                                 JobList[stationIndex].StatusStartButton = true;
+                                JobList[stationIndex].OperationStatus = JobList[stationIndex].OperationStatus;
                                 JobList[stationIndex].StatusStopButton = false;
                                 isRunningCmp = false;
                                 break;

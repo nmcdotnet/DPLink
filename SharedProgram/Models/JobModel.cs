@@ -30,8 +30,7 @@ namespace SharedProgram.Models
             get { return _compareType; }
             set { _compareType = value; OnPropertyChanged(); }
         }
-
-
+        
         private string? _StaticText;
         public string? StaticText
         {
@@ -110,6 +109,13 @@ namespace SharedProgram.Models
         {
             get { return _JobStatus; }
             set { _JobStatus = value; OnPropertyChanged(); }
+        }
+
+        private PrinterStatus _PrinterStatus;
+        public PrinterStatus PrinterStatus
+        {
+            get { return _PrinterStatus; }
+            set { _PrinterStatus = value; OnPropertyChanged(); }
         }
 
         private SelectJobModel? _SelectJob;
