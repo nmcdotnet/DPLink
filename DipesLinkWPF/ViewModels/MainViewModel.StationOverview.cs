@@ -1,4 +1,5 @@
-﻿using DipesLink.Models;
+﻿using DipesLink.Languages;
+using DipesLink.Models;
 using DipesLink.Views.Converter;
 using DipesLink.Views.Extension;
 using SharedProgram.Models;
@@ -11,7 +12,7 @@ namespace DipesLink.ViewModels
 {
     public partial class MainViewModel
     {
-     
+
         internal void CheckStationChange()
         {
             if (StationSelectedIndex + 1 != ViewModelSharedValues.Settings.NumberOfStation)
@@ -35,6 +36,9 @@ namespace DipesLink.ViewModels
                 }
             }
         }
+
+       
+
 
         #region Button Control
 
@@ -74,6 +78,10 @@ namespace DipesLink.ViewModels
 
         internal void ChangeTitleMainWindow(TitleAppContext titleType)
         {
+            // thinh is fixing.
+            var lg = new LanguageModel();
+            //var t = lg.GetResource("Setting_Apply");
+            var a = LanguageModel.Language?["Setting_Apply"];
             switch (titleType)
             {
                 case TitleAppContext.Overview:

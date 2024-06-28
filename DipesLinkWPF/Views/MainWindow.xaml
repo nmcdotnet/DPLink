@@ -6,6 +6,7 @@
     xmlns:cuscontrol="clr-namespace:DipesLink.Views.UserControls.CustomControl"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
+    xmlns:lg="clr-namespace:DipesLink.Languages"
     xmlns:local="clr-namespace:DipesLink"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
@@ -75,7 +76,8 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100" />
-            <ColumnDefinition />
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="25*" />
         </Grid.ColumnDefinitions>
 
         <!--#region ListBox Menu-->
@@ -195,41 +197,7 @@
                             Text="Logs" />
                     </StackPanel>
                 </ListBoxItem>
-                <ListBoxItem Height="{StaticResource MenuItemHeight}" PreviewMouseDown="Thinh_MouseDown">
-                    <StackPanel
-                        Width="{StaticResource MenuItemSize}"
-                        Height="{StaticResource MenuItemSize}"
-                        Margin="{StaticResource CommonMenuMargin}"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center">
-                        <fa:IconImage
-                            Width="{StaticResource MenuIconSize}"
-                            Height="{StaticResource MenuIconSize}"
-                            VerticalAlignment="Center"
-                            Foreground="{StaticResource ColorMenuItem}"
-                            Icon="FileExport" />
-                        <TextBlock
-                            HorizontalAlignment="Center"
-                            Foreground="White"
-                            Text="Export File" />
-                    </StackPanel>
-                </ListBoxItem>
 
-                <!--<ListBoxItem Height="{StaticResource MenuItemHeight}" PreviewMouseDown="ListBoxItem_PreviewMouseDown_1">
-                    <StackPanel
-                        Width="{StaticResource MenuItemSize}"
-                        Height="{StaticResource MenuItemSize}"
-                        Margin="{StaticResource CommonMenuMargin}"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center">
-                        <fa:IconImage
-                            Width="{StaticResource MenuIconSize}"
-                            Height="{StaticResource MenuIconSize}"
-                            VerticalAlignment="Center"
-                            Foreground="{StaticResource ColorMenuItem}"
-                            Icon="Info" />
-                    </StackPanel>
-                </ListBoxItem>-->
             </ListBox>
 
             <Button
@@ -259,7 +227,10 @@
         </Grid>
         <!--#endregion ListBox Menu-->
 
-        <Grid Grid.Column="1" Background="AliceBlue">
+        <Grid
+            Grid.Column="1"
+            Grid.ColumnSpan="2"
+            Background="AliceBlue">
             <Grid.RowDefinitions>
                 <RowDefinition Height="40" />
                 <RowDefinition />
@@ -282,6 +253,16 @@
                     FontWeight="Bold"
                     Foreground="Gray"
                     Text="{Binding TitleApp}" />
+                <TextBlock Text="{DynamicResource ResourceKey=Setting_Choose_Your_Language}" />
+                <Button Width="100" Click="Eng_Button_Click">
+                    <TextBlock VerticalAlignment="Center" Text="English" />
+                </Button>
+                <Button
+                    Width="100"
+                    Margin="300,0,0,0"
+                    Click="Vi_Button_Click">
+                    <TextBlock VerticalAlignment="Center" Text="Vietnamese" />
+                </Button>
                 <StackPanel
                     Grid.Column="2"
                     Margin="0,0,10,0"

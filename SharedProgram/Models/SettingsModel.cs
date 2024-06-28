@@ -13,7 +13,7 @@ namespace SharedProgram.Models
     {
         public int NumberOfStation {  get; set; }
         public string JobFileExtension { get; set; } = ".rvis";
-
+        public string Language { get; set; } = "en-US";
         //public List<ConnectParamsModel> SystemParamsList { get; set; } = new();
 
         private List<ConnectParamsModel> _SystemParamsList = new();

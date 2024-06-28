@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Microsoft.Win32;
+using static DipesLink.Views.Enums.ViewEnums;
 namespace DipesLink.Views.Extension
 {
     public class ExportResult
@@ -35,16 +36,10 @@ namespace DipesLink.Views.Extension
                 {
                     outputCsvPath += ".csv";
                 }
-                //if (namePrintedFilePath == "" || nameCheckedFilePath == "")
-                //{
-
-                //}
                 try
                 {
-                 
                     ExportNewFile(namePrintedFilePath, nameCheckedFilePath, outputCsvPath);
                 }
-               
                 catch (IOException file)
                 {
                     CusMsgBox.Show("File not found !", "File Error", Enums.ViewEnums.ButtonStyleMessageBox.OK, Enums.ViewEnums.ImageStyleMessageBox.Warning);
@@ -110,6 +105,7 @@ namespace DipesLink.Views.Extension
 
             // Write the output CSV
             File.WriteAllLines(outputCsvPath, outputCsv);
+            CusAlert.Show($"Export File Successfully", ImageStyleMessageBox.Info,true);
             sw.Stop();
             Debug.WriteLine($"The Export Result is done within {sw.ElapsedMilliseconds} ms");
         }

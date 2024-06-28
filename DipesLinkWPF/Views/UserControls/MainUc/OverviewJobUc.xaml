@@ -8,12 +8,16 @@
     xmlns:local="clr-namespace:DipesLink.Views.UserControls.MainUc"
     xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="clr-namespace:DipesLink.Models"
+    xmlns:models1="clr-namespace:SharedProgram.Models;assembly=SharedProgram"
+    d:DataContext="{d:DesignInstance Type=models:JobDeviceStatus}"
     d:DesignHeight="200"
     d:DesignWidth="800"
     Background="White"
     mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
+            <converter:OperationStatusToBool x:Key="OperationStatusToBool" />
             <converter:AddOne x:Key="AddOneConverter" />
             <Color x:Key="DataTagColorGraTop">AliceBlue</Color>
             <Color x:Key="DataTagColorGraMid">WhiteSmoke</Color>
@@ -130,10 +134,12 @@
                     </StackPanel>
                 </Grid>
                 <Grid Grid.Row="5">
-
+                    <!--  IsEnabled="{Binding OperationStatus}"  -->
                     <Button
+                        d:DataContext="{d:DesignInstance Type=models1:ConnectParamsModel}"
                         Background="Transparent"
                         Click="Export_Button_Click"
+                        IsEnabled="{Binding OperationStatus, Converter={StaticResource OperationStatusToBool}}"
                         Tag="{Binding Index}">
                         <StackPanel Margin="4,0,0,0" Orientation="Horizontal">
                             <fa:IconImage

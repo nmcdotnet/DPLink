@@ -43,6 +43,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Languages\Common\" />
     <Folder Include="Libraries\Cameras\Cognex\Dataman\" />
     <Folder Include="Libraries\NugetPackages\" />
     <Folder Include="Libraries\NugetPackages\" />

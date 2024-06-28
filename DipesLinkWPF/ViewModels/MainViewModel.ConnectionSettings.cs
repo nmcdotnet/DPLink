@@ -41,8 +41,6 @@ namespace DipesLink.ViewModels
 
             ViewModelSharedValues.Settings.NumberOfStation = StationSelectedIndex + 1;
             ViewModelSharedFunctions.SaveSetting();
-
-            
         }
 
         internal void AutoSaveConnectionSetting(int index) // Auto save Connection Setting according to Textbox change

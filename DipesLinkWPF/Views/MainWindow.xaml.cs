@@ -1,10 +1,12 @@
 ﻿using DipesLink.Extensions;
+using DipesLink.Languages;
 using DipesLink.Models;
 using DipesLink.ViewModels;
 using DipesLink.Views.Extension;
 using DipesLink.Views.SubWindows;
 using DipesLink.Views.UserControls.MainUc;
 using System.Diagnostics;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using static DipesLink.Views.Enums.ViewEnums;
@@ -30,6 +32,8 @@ namespace DipesLink.Views
             {
                 ComboBoxSelectView.IsEnabled = false;
             }
+            var lg = new LanguageModel();
+            lg.UpdateApplicationLanguage("");
         }
 
         private void EventRegister()
@@ -340,9 +344,16 @@ namespace DipesLink.Views
             aboutPopup.ShowDialog();
         }
 
-        private void Thinh_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void Eng_Button_Click(object sender, RoutedEventArgs e)
         {
-            ExportResult.ExportNewResult(0);
+            var lg = new LanguageModel();
+            lg.UpdateApplicationLanguage("en-US");
+        }
+
+        private void Vi_Button_Click(object sender, RoutedEventArgs e)
+        {
+            var lg = new LanguageModel();
+            lg.UpdateApplicationLanguage("vi-VN");
         }
     }
 }

@@ -395,14 +395,14 @@ namespace DipesLink.Views.UserControls.MainUc
 
                 if(job?.DeviceTransferID == null || job?.DeviceTransferID == 0)
                 {
-                    CusAlert.Show($"Station {job?.Index + 1}: Restart Failed!", ImageStyleMessageBox.Error);
+                    CusAlert.Show($"Station {job?.Index + 1}: Restart Failed!", ImageStyleMessageBox.Error, true);
                 }
                 else
                 {
                     vm?.DeleteSeletedJob(CurrentIndex());
                     vm?.UpdateJobInfo(CurrentIndex());
                     ViewModelSharedEvents.OnRestartStationHandler(CurrentIndex()); // event trigger for clear data job detail
-                    CusAlert.Show($"Station {job?.Index + 1}: Restart Successfully!", ImageStyleMessageBox.Info);
+                    CusAlert.Show($"Station {job?.Index + 1}: Restart Successfully!", ImageStyleMessageBox.Info, true);
                 }
                 vm?.AutoSaveConnectionSetting(CurrentIndex());
             }
