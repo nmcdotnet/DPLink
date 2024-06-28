@@ -22,7 +22,6 @@ namespace DipesLinkDeviceTransfer
 
             if (SharedValues.OperStatus != OperationStatus.Running && 
                 SharedValues.OperStatus != OperationStatus.Processing && 
-                //SharedValues.OperStatus != OperationStatus.WaitingData && 
                 _SelectedJob?.JobType != JobType.StandAlone)
             {
                 return; // Only implement when Running
@@ -30,7 +29,6 @@ namespace DipesLinkDeviceTransfer
             if (sender is DetectModel detectModel)
             {
                 _QueueBufferCameraReceivedData.Enqueue(detectModel); // Add camera data read to buffer
-               
             }
         }
 
