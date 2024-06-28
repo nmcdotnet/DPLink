@@ -14,6 +14,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="Cognex.DataMan.SDK.Discovery.PC">
+      <HintPath>..\DipesLinkWPF\Libraries\Cameras\Cognex\Dataman\Cognex.DataMan.SDK.Discovery.PC.dll</HintPath>
+    </Reference>
     <Reference Include="Cognex.DataMan.SDK.PC">
       <HintPath>..\DipesLinkWPF\Libraries\Cameras\Cognex\Dataman\Cognex.DataMan.SDK.PC.dll</HintPath>
     </Reference>

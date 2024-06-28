@@ -181,6 +181,23 @@ namespace SharedProgram.Models
             set { _CameraIP = value; OnPropertyChanged(); }
         }
 
+
+        private CameraInfos? _cameraInfo;
+
+        public CameraInfos? CameraInfo
+        {
+            get { return _cameraInfo; }
+            set
+            {
+                if (_cameraInfo != value)
+                {
+                    _cameraInfo = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+
         private string? _ControllerIP = "127.0.0.1";
         public string? ControllerIP
         {

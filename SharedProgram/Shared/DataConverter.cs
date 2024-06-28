@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SharedProgram.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -120,6 +121,7 @@ namespace SharedProgram.Shared
         {
             try
             {
+                
                 Utf8JsonReader reader = new(data);
                 using var doc = JsonDocument.ParseValue(ref reader);
                 return System.Text.Json.JsonSerializer.Deserialize<T>(doc.RootElement.GetRawText());

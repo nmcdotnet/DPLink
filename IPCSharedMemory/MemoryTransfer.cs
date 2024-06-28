@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Windows.Markup;
 using static IPCSharedMemory.Datatypes.Enums;
 using static SharedProgram.DataTypes.CommonDataType;
 
@@ -182,17 +183,36 @@ namespace IPCSharedMemory
             catch (Exception) { }
         }
 
-        public static void SendCameraStatusToUI(IPCSharedHelper? ipc,int index, CameraStatus camStatus)
+        //public static void SendCameraInforToUI(IPCSharedHelper? ipc, int index, CameraStatus camStatus)
+        //{
+        //    try
+        //    {
+        //        byte[] command = {
+        //            (byte)SharedMemoryCommandType.DeviceCommand ,
+        //            (byte)index,
+        //            (byte)SharedMemoryType.CamStatus,
+        //            (byte)camStatus
+        //        };
+        //        SendCommandToUI(ipc, command);
+        //    }
+        //    catch (Exception) { }
+        //}
+
+
+        public static void SendCameraStatusToUI(IPCSharedHelper? ipc,int index, byte[] data)
         {
             try
             {
                 byte[] command = {
                     (byte)SharedMemoryCommandType.DeviceCommand ,
                     (byte)index,
-                    (byte)SharedMemoryType.CamStatus,
-                    (byte)camStatus
+                    (byte)SharedMemoryType.CameraInfo
                 };
-                SendCommandToUI(ipc, command);
+                var newCommand = new byte[command.Length + data.Length];
+                Array.Copy(command, 0, newCommand, 0, command.Length);
+                Array.Copy(data, 0, newCommand, command.Length, data.Length);
+               
+                SendCommandToUI(ipc, newCommand);
             }
             catch (Exception) { }
         }

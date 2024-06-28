@@ -1,5 +1,6 @@
 ﻿using DipesLink.Views.UserControls.MainUc;
 using IPCSharedMemory;
+using SharedProgram.Models;
 using SharedProgram.Shared;
 using System;
 using System.Windows;
@@ -73,6 +74,10 @@ namespace DipesLink.ViewModels
             ConnectParamsList[index].DisableSensor = CurrentConnectParams.DisableSensor;
             ConnectParamsList[index].PulseEncoder = CurrentConnectParams.PulseEncoder;
             ConnectParamsList[index].EncoderDiameter = CurrentConnectParams.EncoderDiameter;
+
+            // Get info camera
+            ConnectParamsList[index].CameraModel = JobList[index].CameraInfo.Info.Name;
+            ConnectParamsList[index].SerialNumber = JobList[index].CameraInfo.Info.SerialNumber;
 
             //ConnectParamsList[index].PrintFieldForVerifyAndPrint = CurrentConnectParams.PrintFieldForVerifyAndPrint;
             //ConnectParamsList[index].FailedDataSentToPrinter = CurrentConnectParams.FailedDataSentToPrinter;

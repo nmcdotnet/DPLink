@@ -518,7 +518,7 @@ namespace DipesLink.Models
             }
         }
 
-        public byte CameraStsBytes { get; set; }
+        public byte[] CameraStsBytes { get; set; }
         public byte PrinterStsBytes { get; set; }
         public byte ControllerStsBytes { get; set; }
 
