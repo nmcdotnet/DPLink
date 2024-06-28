@@ -210,6 +210,7 @@ namespace DipesLink.Views.UserControls.MainUc
             vm.LoadJobList(CurrentIndex()); // Update Job on UI
           //  CallbackCommand(vm => vm.RestartDeviceTransfer(jobIndex)); // Update Job on UI
             vm.UpdateJobInfo(CurrentIndex());
+            ViewModelSharedEvents.OnRestartStationHandler(CurrentIndex());
             //Task.Run(async () => { await PerformLoadDbAfterDelay(vm); });
             PerformLoadDbAfterDelay(vm);
         }

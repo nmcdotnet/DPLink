@@ -1,5 +1,6 @@
 ﻿using DipesLink.Models;
 using DipesLink.ViewModels;
+using DipesLink.Views.Extension;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +38,17 @@ namespace DipesLink.Views.UserControls.MainUc
         {
            
 
+        }
+
+        private void Export_Button_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = sender as Button;
+            if (button != null)
+            {
+                int index = Convert.ToInt32(button.Tag); // Retrieve the index from the Tag property
+                ExportResult.ExportNewResult(index);
+                // Add further handling logic here
+            }
         }
     }
 }

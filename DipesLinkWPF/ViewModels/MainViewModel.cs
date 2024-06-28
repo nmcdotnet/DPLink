@@ -261,7 +261,7 @@ namespace DipesLink.ViewModels
                     Debug.WriteLine("Dont Reload Database for job: " + +stationIndex);
                     JobList[stationIndex].IsShowLoadingDB = Visibility.Collapsed;
                     return;
-                };
+                }
                 Debug.WriteLine("Reload Database for job: " + stationIndex);
                 JobList[stationIndex].IsShowLoadingDB = Visibility.Visible;
                 JobList[stationIndex].IsStartButtonEnable = false;
@@ -281,6 +281,11 @@ namespace DipesLink.ViewModels
                     JobList[stationIndex].RaiseLoadCompleteDatabase(dbInfo);
                     JobList[stationIndex].IsDBExist = true;
                 }
+                if(listDatabase.Count == 0)
+                {
+                    JobList[stationIndex].IsShowLoadingDB = Visibility.Collapsed;
+                }
+
             }
             catch (Exception)
             {

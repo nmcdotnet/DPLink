@@ -339,5 +339,10 @@ namespace DipesLink.Views
             var aboutPopup = new AboutPopup();
             aboutPopup.ShowDialog();
         }
+
+        private void Thinh_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            ExportResult.ExportNewResult(0);
+        }
     }
 }

@@ -268,12 +268,15 @@ namespace SharedProgram.Shared
             writer.Write(content);
         }
 
-        public static PropertyInfo[] GetAllProperty<T>() where T : class
+        public static void SaveStringOfCheckedPath(string directoryPath, string fileName, string content)
         {
-            Type type = typeof(T);
-            PropertyInfo[] properties = type.GetProperties();
-            return properties;
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
+            string filePath = System.IO.Path.Combine(directoryPath, fileName);
+            using var writer = new StreamWriter(filePath, false, Encoding.UTF8);
+            writer.Write(content);
         }
-
     }
 }

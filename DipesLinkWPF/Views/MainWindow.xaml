@@ -195,6 +195,25 @@
                             Text="Logs" />
                     </StackPanel>
                 </ListBoxItem>
+                <ListBoxItem Height="{StaticResource MenuItemHeight}" PreviewMouseDown="Thinh_MouseDown">
+                    <StackPanel
+                        Width="{StaticResource MenuItemSize}"
+                        Height="{StaticResource MenuItemSize}"
+                        Margin="{StaticResource CommonMenuMargin}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                        <fa:IconImage
+                            Width="{StaticResource MenuIconSize}"
+                            Height="{StaticResource MenuIconSize}"
+                            VerticalAlignment="Center"
+                            Foreground="{StaticResource ColorMenuItem}"
+                            Icon="FileExport" />
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            Foreground="White"
+                            Text="Export File" />
+                    </StackPanel>
+                </ListBoxItem>
 
                 <!--<ListBoxItem Height="{StaticResource MenuItemHeight}" PreviewMouseDown="ListBoxItem_PreviewMouseDown_1">
                     <StackPanel
