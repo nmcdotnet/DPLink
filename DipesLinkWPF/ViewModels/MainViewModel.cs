@@ -6,7 +6,7 @@ using DipesLink.Views.UserControls.MainUc;
 using IPCSharedMemory;
 using SharedProgram.Models;
 using SharedProgram.Shared;
-using System;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -343,8 +343,11 @@ namespace DipesLink.ViewModels
                     switch (result[2]) // Shared Memory Type
                     {
                         // Camera Status
-                        case (byte)SharedMemoryType.CamStatus:
-                            JobList[stationIndex].CameraStsBytes = result[3];
+                        case (byte)SharedMemoryType.CameraInfo:
+                            //JobList[stationIndex].CameraStsBytes = result[3];
+                            //JobList[stationIndex].CameraStsBytes = result;
+                            JobList[stationIndex].CameraInfo= DataConverter.FromByteArray<CameraInfos>(result.Skip(3).ToArray());
+                            Debug.WriteLine($"Tram {stationIndex} : {JobList[stationIndex].CameraInfo.Info.Name}");
                             break;
 
                         // Printer Status
@@ -471,12 +474,11 @@ namespace DipesLink.ViewModels
                 {
                     try
                     {
-                        byte camStsBytes = JobList[stationIndex].CameraStsBytes;
                         byte printerStsBytes = JobList[stationIndex].PrinterStsBytes;
                         byte controllerStsBytes = JobList[stationIndex].ControllerStsBytes;
 
                         // CAMERA CONNECTION
-                        if (camStsBytes == (byte)CameraStatus.Connected) // Camera Status Change
+                        if (JobList[stationIndex].CameraInfo?.ConnectionStatus == true) // Camera Status Change
                         {
                             _detectCamDisconnected = false;
                             if (JobDeviceStatusList[stationIndex].CameraStatusColor.Color != Colors.Green)

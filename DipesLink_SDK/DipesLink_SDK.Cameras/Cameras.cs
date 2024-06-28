@@ -1,8 +1,9 @@
 ﻿namespace DipesLink_SDK_Cameras
 {
-    public abstract class CommonCamerasFunctions
+    public interface  Cameras
     {
-        public abstract void Connect();
+        public void Connect();
+        public void Disconnect();
         public abstract bool ManualInputTrigger();
         public abstract bool OutputAction();
 

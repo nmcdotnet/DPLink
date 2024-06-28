@@ -19,11 +19,8 @@ namespace DipesLinkDeviceTransfer
         private IPCSharedHelper? _ipcDeviceToUISharedMemory_DB;
         private IPCSharedHelper? _ipcDeviceToUISharedMemory_RD;
 
-      
-        
         private void InitInstanceIPC()
         {
-            
             _ipcDeviceToUISharedMemory_DT = new(JobIndex, "DeviceToUISharedMemory_DT", SharedValues.SIZE_1MB); // data
             _ipcUIToDeviceSharedMemory_DT = new(JobIndex, "UIToDeviceSharedMemory_DT", SharedValues.SIZE_1MB); // data
             _ipcDeviceToUISharedMemory_DB = new(JobIndex, "DeviceToUISharedMemory_DB", SharedValues.SIZE_200MB); // database
@@ -53,39 +50,24 @@ namespace DipesLinkDeviceTransfer
                         new() { Index = 1,Type=PODModel.TypePOD.FIELD, PODName="", Value=""}
                     }
                 };
-
             }
         }
 
 
         static void Main(string[] args)
         {
-
-#if DEBUG
-            //Console.WriteLine("List of Argument: ");
-            //foreach (var arg in args)
-            //{
-            //    Console.WriteLine(arg);
-            //}
-#endif
             try
             {
-
-           
-            GetArgumentList(args);
-            JobIndex = DeviceSharedValues.Index;
-
-            new Program().NonStaticMainProgram();
+                GetArgumentList(args);
+                JobIndex = DeviceSharedValues.Index;
+                new Program().NonStaticMainProgram();
             }
             catch (Exception ex)
             {
-
                 Console.WriteLine(ex.Message);
             }
 
             #region Hold control Readkey
-            //Don't exit the Control window when pressing a key
-            //Console.ReadKey();
             Thread consoleReadThread = new(() =>
             {
                 while (true)
@@ -140,10 +122,7 @@ namespace DipesLinkDeviceTransfer
             DatamanCameraDeviceHandler = new(JobIndex, _ipcDeviceToUISharedMemory_DT);
             RynanRPrinterDeviceHandler = new(JobIndex, _ipcDeviceToUISharedMemory_DT);
             ControllerDeviceHandler = new(JobIndex, _ipcDeviceToUISharedMemory_DT);
-
-
             InitEvents();
-            //  LoadSelectedJob();
 
             Thread t = new(() =>
             {
@@ -161,26 +140,7 @@ namespace DipesLinkDeviceTransfer
                         ActionButtonFromUIProcessingAsync();
                         keyStep = "";
                     }
-                    //if (keyStep == 'v')
-                    //{
-                    //    SimulateValidDataCamera();
-                    //    keyStep = "";
-                    //}
-                    //if (keyStep == 'f')
-                    //{
-                    //    SimulateInvalidDataCamera(TypeOfSimulateInvalidDataCamera.Fail);
-                    //    keyStep = "";
-                    //}
-                    //if (keyStep == 'd')
-                    //{
-                    //    SimulateInvalidDataCamera(TypeOfSimulateInvalidDataCamera.Duplicate);
-                    //    keyStep = "";
-                    //}
-                    //if ((keyStep == 'n'))
-                    //{
-                    //    SimulateInvalidDataCamera(TypeOfSimulateInvalidDataCamera.Null);
-                    //    keyStep = '\0';
-                    //}
+
                     if ((keyStep == "stop"))
                     {
                         _ = StopProcessAsync();
@@ -206,10 +166,8 @@ namespace DipesLinkDeviceTransfer
 
         public void InitEvents()
         {
-            //SharedPaths.InitCommonPathByIndex(JobIndex);
             PrinterEventInit();
             CameraEventInit();
-
         }
 
 

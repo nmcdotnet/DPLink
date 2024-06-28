@@ -1,6 +1,7 @@
 ﻿using Cognex.DataMan.SDK;
 using Cognex.DataMan.SDK.Discovery;
 using Cognex.DataMan.SDK.Utils;
+using DipesLink_SDK_Cameras.Models;
 using IPCSharedMemory;
 using IPCSharedMemory.Controllers;
 using SharedProgram.DeviceTransfer;
@@ -12,33 +13,32 @@ using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows.Shapes;
 using System.Xml.Linq;
 
 namespace DipesLink_SDK_Cameras
 {
-    public class DatamanCamera : CommonCamerasFunctions
+    public class DatamanCamera : Cameras
     {
         #region Properties and Fields
 
         private int _index;
         private Thread? _threadCameraStatusChecking;
- 
         private bool _IsConnected;
         public bool IsConnected => _IsConnected;
-
         private EthSystemDiscoverer? _ethSystemDiscoverer = new();
         internal List<EthSystemDiscoverer.SystemInfo> _cameraSystemInfoList = new();
         private DataManSystem? _dataManSystem;
         private ResultCollector? _results;
         private ISystemConnector? _connector;
         IPCSharedHelper? _ipc;
+        private readonly object _CurrentResultInfoSyncLock = new();
 
         #endregion
-
+       
         public DatamanCamera(int index, IPCSharedHelper? ipc)
         {
-            _index = index;
+           
+           _index = index;
             _ipc = ipc;
             SharedEventsIpc.CameraStatusChanged += SharedEvents_DeviceStatusChanged;
             SharedEvents.OnCameraOutputSignalChange += SharedEvents_OnCameraOutputSignalChange;
@@ -58,22 +58,21 @@ namespace DipesLink_SDK_Cameras
         {
             while (true)
             {
-#if DEBUG
-                //Console.WriteLine("Cam Current IP : " + DeviceSharedValues.CameraIP);
-#endif
-                if (!IsConnected && PingIPCamera(DeviceSharedValues.CameraIP))  // Kiểm tra có IP mới kết nối thử
+                if (!IsConnected && PingIPCamera(DeviceSharedValues.CameraIP)) // Check if there is a new IP and try connecting
                 {
                     Connect();
                 }
-                else if (!PingIPCamera(DeviceSharedValues.CameraIP)) // Mất IP sẽ mất kết nối
+                else if (!PingIPCamera(DeviceSharedValues.CameraIP)) // Losing IP will result in loss of connection
                 {
                     _IsConnected = false;
                     Disconnect();
                     SharedEventsIpc.RaiseCameraStatusChanged(_IsConnected, EventArgs.Empty);
+                 
                 }
                 Thread.Sleep(2000);
             }
         }
+
         private void SharedEvents_OnCameraOutputSignalChange(object? sender, EventArgs e)
         {
             OutputAction();
@@ -85,31 +84,44 @@ namespace DipesLink_SDK_Cameras
             {
                 if (sender == null) return;
                 bool camIsConnected = (bool)sender;
-                IPCSharedMemory.Datatypes.Enums.CameraStatus camsts;
-                if (camIsConnected)
+                CamInfo camInfo = new()
                 {
-                    camsts = IPCSharedMemory.Datatypes.Enums.CameraStatus.Connected;
-                }
-                else
+                    SerialNumber = _cameraSystemInfoList.FirstOrDefault()?.SerialNumber,
+                    Name = _cameraSystemInfoList.FirstOrDefault()?.Name,
+                    Type = _cameraSystemInfoList.FirstOrDefault()?.Type,
+                };
+
+                CameraInfos camera = new()
                 {
-                    camsts = IPCSharedMemory.Datatypes.Enums.CameraStatus.Disconnected;
-                }
-                MemoryTransfer.SendCameraStatusToUI(_ipc,_index, camsts);
+                    ConnectionStatus = camIsConnected,
+                    Info = camInfo,
+                };
+
+#if DEBUG 
+                Console.WriteLine("Name: " + camera.Info.Name);
+                Console.WriteLine("Serial Number: " + camera.Info.SerialNumber);
+                Console.WriteLine("Type: " + camera.Info.Type);
+#endif 
+                var arrInfo = DataConverter.ToByteArray<CameraInfos>(camera);
+                //Console.WriteLine("ádfy" + arrInfo.Count());
+                //var c = DataConverter.FromByteArray<CameraInfos>(arrInfo);
+                //Console.WriteLine("Name: " + c.Info.Name);
+                //Console.WriteLine("Serial Number: " + c.Info.SerialNumber);
+                //Console.WriteLine("Type: " + c.Info.Type);
+
+                Console.WriteLine("Index" + _index);
+                MemoryTransfer.SendCameraStatusToUI(_ipc,_index, arrInfo);
+
             }
             catch (Exception) { }
         }
 
-
-
-     
-       
-        public override void Connect()
+        public void Connect()
         {
             try
             {
-
 #if DEBUG
-                if (DeviceSharedValues.CameraIP == "127.0.0.1")
+                if (DeviceSharedValues.CameraIP == "127.0.0.1") // Simulate allow local IP addess connected
                 {
                     _IsConnected = true;
 #if DEBUG
@@ -118,37 +130,31 @@ namespace DipesLink_SDK_Cameras
                     SharedEventsIpc.RaiseCameraStatusChanged(_IsConnected, EventArgs.Empty);
                     return;
                 }
-
 #endif
 
-                if (_cameraSystemInfoList.Count < 1) return; // nếu chưa có camera nào thì không thực thi tiếp
-                //ReleaseCameraResource();
+                if (_cameraSystemInfoList.Count < 1) return; 
+
                 EthSystemDiscoverer.SystemInfo? currentCamera = _cameraSystemInfoList
                     .Where(x => x.IPAddress.ToString() == DeviceSharedValues.CameraIP)
                     .ToList()
-                    .FirstOrDefault(); // lấy ra camera có IP đã set trước
-                //Console.WriteLine("Connect IP Cam" +DeviceSharedValues.CameraIP);
-                EthSystemConnector? conn = new(currentCamera?.IPAddress);
+                    .FirstOrDefault(); 
 
+                EthSystemConnector? conn = new(currentCamera?.IPAddress);
+       
                 if (conn.Address != null)
                 {
                     _connector = conn;
-                    _dataManSystem = new(_connector) { DefaultTimeout = 1000 }; // Đối tượng đăng sự kiện xử lý chính của camera
+                    _dataManSystem = new(_connector) { DefaultTimeout = 1000 }; 
 
-                    // sự kiện kết nối và ngắt kết nối
-                    
                     _dataManSystem.SystemConnected += new SystemConnectedHandler(OnSystemConnected);
                     _dataManSystem.SystemDisconnected += new SystemDisconnectedHandler(OnSystemDisconnected);
 
-                    // đăng ký sự kiện lấy ra dữ liệu đọc về gồm xml object chứa thông tin code, Hình ảnh và Graphic trên hình ảnh
                     ResultTypes resultTypes = ResultTypes.ReadXml | ResultTypes.Image | ResultTypes.ImageGraphics;
 
                     _results = new(_dataManSystem, resultTypes);
-
                     _results.ComplexResultCompleted += ResultCollector_ComplexResultCompleted;
-                    _dataManSystem.Connect(); // bắt đầu kết nối 
+                    _dataManSystem.Connect(); 
                     _dataManSystem.SetResultTypes(resultTypes);
-              
                 }
                 if (conn.Address == null)
                 {
@@ -163,7 +169,6 @@ namespace DipesLink_SDK_Cameras
 #endif
             }
         }
-
        
         public void Disconnect()
         {
@@ -180,6 +185,7 @@ namespace DipesLink_SDK_Cameras
             }
             catch { }
         }
+
         private void CleanupConnection()
         {
             if (null != _dataManSystem)
@@ -194,7 +200,6 @@ namespace DipesLink_SDK_Cameras
 
         #region Event
 
-
         private void OnEthSystemDiscovered(EthSystemDiscoverer.SystemInfo systemInfo)
         {
             bool hasExist = CheckCameraInfoHasExist(systemInfo, _cameraSystemInfoList);
@@ -202,9 +207,6 @@ namespace DipesLink_SDK_Cameras
                 _cameraSystemInfoList.Add(systemInfo);
         }
 
-        private readonly object _CurrentResultInfoSyncLock = new();
-
-      
         private void ResultCollector_ComplexResultCompleted(object sender, ComplexResult complexResult)
         {
             ResultCollector resultCollector = (ResultCollector)sender;
@@ -338,9 +340,7 @@ namespace DipesLink_SDK_Cameras
 
         #region Functions
        
-
-
-        private static bool PingIPCamera(string ipAddress) // Hàm kiểm tra địa chỉ IP có tồn tại hay không
+        private static bool PingIPCamera(string ipAddress) // Function to check whether the IP address exists or not
         {
             try
             {
@@ -361,16 +361,12 @@ namespace DipesLink_SDK_Cameras
                 return false;
             }
         }
-        /// <summary>
-        /// Kiểm tra camera có tồn tại trong list hay chưa dựa vào Serial Number
-        /// </summary>
-        /// <param name="cameraInfoNeedCheck"></param>
-        /// <param name="cameraSystemInfoList"></param>
-        /// <returns></returns>
+
         private static bool CheckCameraInfoHasExist(EthSystemDiscoverer.SystemInfo cameraInfoNeedCheck, List<EthSystemDiscoverer.SystemInfo> cameraSystemInfoList)
         {
             foreach (object systemInfo in cameraSystemInfoList)
             {
+              
                 if (systemInfo is EthSystemDiscoverer.SystemInfo)
                 {
                     EthSystemDiscoverer.SystemInfo? ethSystemInfo = systemInfo as EthSystemDiscoverer.SystemInfo;
@@ -387,28 +383,17 @@ namespace DipesLink_SDK_Cameras
 
         #region Operation
 
-        /// <summary>
-        /// Trigger manual take a photo
-        /// </summary>
-        /// <returns></returns>
-        public override bool ManualInputTrigger()
+        public bool ManualInputTrigger()
         {
             try
             {
                 DmccResponse? response = _dataManSystem?.SendCommand("TRIGGER ON");
-#if DEBUG
-                //  Console.WriteLine(response?.PayLoad);
-#endif
                 return true;
             }
             catch (Exception) { return false; }
         }
 
-        /// <summary>
-        /// Trigger USER1 output
-        /// </summary>
-        /// <returns></returns>
-        public override bool OutputAction()
+        public  bool OutputAction()
         {
             try
             {

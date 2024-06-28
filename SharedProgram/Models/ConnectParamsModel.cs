@@ -9,6 +9,7 @@ namespace SharedProgram.Models
        
 
         public string CameraIP { get; set; } = "127.0.0.1";
+        public string CameraModel { get;set; }
         public string PrinterIP { get; set; } = "127.0.0.1";
         public string PrinterPort { get; set; } = "0";
         public string ControllerIP { get; set; } = "127.0.0.1";
@@ -21,6 +22,7 @@ namespace SharedProgram.Models
 
         public bool EnController { get; set; } = false;
 
+        public CameraInfos? CameraInfors { get; set; }
         //private int _delaySensor;
 
         //public int DelaySensor
@@ -137,8 +139,6 @@ namespace SharedProgram.Models
             }
         }
 
-
-
-
+        public string? SerialNumber { get; set; }
     }
 }

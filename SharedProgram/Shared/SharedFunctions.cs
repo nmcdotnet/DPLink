@@ -1,9 +1,11 @@
 ﻿using Cognex.DataMan.SDK;
 using SharedProgram.Models;
+using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Windows.Media.Imaging;
 using System.Xml;

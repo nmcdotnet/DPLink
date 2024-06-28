@@ -21,7 +21,7 @@ namespace IPCSharedMemory.Datatypes
         public enum SharedMemoryType
         {
             JobSetting = 0,
-            CamStatus =1,
+            CameraInfo =1,
             PrinterStatus =2,
             ParamsSetting =3,
             ActionButton = 4,
