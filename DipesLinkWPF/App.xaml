@@ -4,5 +4,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:DipesLink">
     <!--  StartupUri="Views/MainWindow.xaml"  -->
-    <Application.Resources />
+    <!--<Application.Resources />-->
+    <Application.Resources>
+        <!--<ResourceDictionary Source="\Languages\Language\en-US.xaml" />-->
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!--  Language source will be added here.  -->
+                <ResourceDictionary Source="\Languages\Language\en-US.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+        </ResourceDictionary>
+    </Application.Resources>
 </Application>
